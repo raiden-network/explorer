@@ -1,0 +1,6 @@
+{
+  "resource": "/info",
+  "port": 5678,
+  "url": "http://localhost:4567/info",
+  "http_timeout": 600000
+}

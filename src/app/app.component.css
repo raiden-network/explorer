@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+body {
+  margin: 0px;
+  padding: 0px;
+  background-color: black !important;
+}
+
+.topnav {
+  background-color: black;
+  overflow: auto;
+  padding-top: 10px;
+  padding-left: 0px;
+  padding-bottom: 10px;
+  padding-right: 0px;
+  border-bottom: 1px solid white;
+}
+
+.topnav a {
+  font-family: Roboto;
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 100;
+  -webkit-transition: all 1s ease;
+  display: inline-block;
+}
+
+.topnav a:hover {
+  color: #BABABA;
+  -webkit-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  -ms-transition: all 1s ease;
+  transition: all 1s ease;
+}
+
+.topnav img {
+  max-height: 36px;
+  padding: 8px 8px 8px 8px;
+  float: left;
+}
+
+.titlesec {
+  background-color: black;
+  overflow: auto;
+  padding-top: 5%;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+
+.titlesec a {
+  font-family: Roboto;
+  text-align: center;
+  float: inherit;
+  color: white;
+}
+
+.subtitlesec {
+  background-color: black;
+  overflow: auto;
+  padding-top: 0.5%;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+
+.subtitlesec a {
+  font-family: Roboto;
+  text-align: center;
+  float: inherit;
+  color: white;
+}
+
+.abstractinfodisp {
+  background-color: black;
+  overflow: auto;
+  padding-top: 9%;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+
+.abstractinfodisp img {
+  float: inherit;
+  height: 150px;
+  padding-right: 0%;
+}
+
+.abstractinfodisp a {
+  font-family: Roboto;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 100;
+  -webkit-transition: all 1s ease;
+  display: inline-block;
+  float: top;
+}
+
+.innertablediv {
+  background-color: black;
+  overflow: auto;
+  padding-top: 0;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+
+.innertablediv a {
+  font-family: Roboto;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-weight: 100;
+  display: inline-block;
+  float: top;
+  font-size: 300%;
+}
+
+.innertablediv a:hover {
+  color: white;
+}
