@@ -1,0 +1,941 @@
+{
+    "num_networks": 17,
+    "0x7692624c0C43285D51c0DdDfb2A6388f5002762E": {
+        "token_address": "0x7692624c0C43285D51c0DdDfb2A6388f5002762E",
+        "num_channels": 44,
+        "num_nodes": 30,
+        "nodes": [
+            "0x81D11e3fE163cE436Bc51Fdc4fc64F00Eee2D78c",
+            "0x6b2085f4582Cb0d99C10D46650fd463414962000",
+            "0xDf173a5173C3d0Ae5Ba11DAE84470c5d3f1A8413",
+            "0x6BDA97F33f27C15627057D072C799786522588eE",
+            "0x9d44849d9E0611F6b8CD3742cB46829bcDd0605B",
+            "0x000397DFD32aFAAE870E6b5FB44154FD43e43224",
+            "0x008311788dff04E3c0426a3EB19622B2035bA49d",
+            "0xf4f83E745Cf646Db05d8AE512117fC19059878C5",
+            "0x97a9F9222bA359E5547055500769E5cd662ca0AF",
+            "0x13AE1c7fb262be079d7850d435D75a9bFC141b8e",
+            "0x00A33749a231f2e9c10deFE83403a67148D38438",
+            "0x92746ECe9D44e9fCe1D98947658956554CCa452D",
+            "0x4a72F261A053786b1D99AeAe7693f5cE7b1d4543",
+            "0x82641569b2062B545431cF6D7F0A418582865ba7",
+            "0xE0902284c85A9A03dAA3B5ab032e238cc05CFF9a",
+            "0x001EE1B9B78De26879AC9db3854cE1430b339beE",
+            "0x7A664079423fa25B87014EB53282F34c7AC7B87E",
+            "0x161a696F7B1d326Bb12FDda17Bd248F6B87D7C16",
+            "0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82",
+            "0x25511699C252eeA2678266857C98F459Df97B77c",
+            "0x8A0cE8bDA200D64d858957080bf7eDDD3371135F",
+            "0x3C46570896F3eC1323280Df466716d1076a7162B",
+            "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8",
+            "0x5B97ac2021c29108e41B8E8f2CE290715aD2b73c",
+            "0x6D1aE2fA14078B5Dbc46501Bcc0623C67aA7b5cF",
+            "0x04aC0797E036B64C139bb610aD8365089aADCb25",
+            "0xD8869d9E3d497323561Fbca2319a9FC3F6f10c4B",
+            "0x00a9d0CB18F07E94BC8640476DAB202dF7E467d1",
+            "0xEAe264f985CF80845A3efC20b53F915cf5D7C95D",
+            "0x000D91Cf263a11F9BfCeE3752E5B03FC1196CE98"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0x3833e60a5613a1c47c7703e98a4a3f8b81670cade12087c4947ae5b1418385c8",
+                "participant1": "0x00A33749a231f2e9c10deFE83403a67148D38438",
+                "participant2": "0x00a9d0CB18F07E94BC8640476DAB202dF7E467d1",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x66f8c848fa76db3533a946de6e3db63e1ebb63ef334bdddce4316f21434e72e2",
+                "participant1": "0x00A33749a231f2e9c10deFE83403a67148D38438",
+                "participant2": "0x001EE1B9B78De26879AC9db3854cE1430b339beE",
+                "deposit1": 0,
+                "deposit2": 100,
+                "capacity1": 0,
+                "capacity2": 100
+            },
+            {
+                "channel_identifier": "0xb3071bb12c5e24424ab4af69896a13a76d787af34d222576b27af23529c86ba9",
+                "participant1": "0x25511699C252eeA2678266857C98F459Df97B77c",
+                "participant2": "0xDf173a5173C3d0Ae5Ba11DAE84470c5d3f1A8413",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x13fea253b3730f0d5420c4021cea1fd118c1f930519825616a071a3f6c91f266",
+                "participant1": "0xE0902284c85A9A03dAA3B5ab032e238cc05CFF9a",
+                "participant2": "0x001EE1B9B78De26879AC9db3854cE1430b339beE",
+                "deposit1": 100,
+                "deposit2": 0,
+                "capacity1": 100,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xc8dbc3392ffd7d9fa4b251b172870a09cdebf142631d79773a50dc3e8b10f1ed",
+                "participant1": "0x8A0cE8bDA200D64d858957080bf7eDDD3371135F",
+                "participant2": "0x00A33749a231f2e9c10deFE83403a67148D38438",
+                "deposit1": 600,
+                "deposit2": 0,
+                "capacity1": 600,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x3825a5cbf0fe92eb40339ef82e94e5158e867f76d7de4b4501dbd11a50d7df55",
+                "participant1": "0x92746ECe9D44e9fCe1D98947658956554CCa452D",
+                "participant2": "0xDf173a5173C3d0Ae5Ba11DAE84470c5d3f1A8413",
+                "deposit1": 60,
+                "deposit2": 0,
+                "capacity1": 60,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xff9cc3c79e9670257ec5ad3697e00b5662cf50cfcf01eddf1fe9d26987c59156",
+                "participant1": "0x9d44849d9E0611F6b8CD3742cB46829bcDd0605B",
+                "participant2": "0x92746ECe9D44e9fCe1D98947658956554CCa452D",
+                "deposit1": 109,
+                "deposit2": 29,
+                "capacity1": 109,
+                "capacity2": 29
+            },
+            {
+                "channel_identifier": "0xcbe7d2ebf8a207c98433609b00c3a2840cd8bd1d0794e7a777d3ef65334dd30a",
+                "participant1": "0x81D11e3fE163cE436Bc51Fdc4fc64F00Eee2D78c",
+                "participant2": "0x4a72F261A053786b1D99AeAe7693f5cE7b1d4543",
+                "deposit1": 100,
+                "deposit2": 1000,
+                "capacity1": 100,
+                "capacity2": 1000
+            },
+            {
+                "channel_identifier": "0x6b562c3bb8f90800648616dc8f5b1c3e5a033c87ee5ad67a11e868afbb98baf5",
+                "participant1": "0x4a72F261A053786b1D99AeAe7693f5cE7b1d4543",
+                "participant2": "0x00A33749a231f2e9c10deFE83403a67148D38438",
+                "deposit1": 60,
+                "deposit2": 0,
+                "capacity1": 60,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x4aa5e7ecc7040f5f59aa08d3354d8e8046362322d87b7810bf99029c60e4b958",
+                "participant1": "0x00A33749a231f2e9c10deFE83403a67148D38438",
+                "participant2": "0xE0902284c85A9A03dAA3B5ab032e238cc05CFF9a",
+                "deposit1": 0,
+                "deposit2": 180,
+                "capacity1": 0,
+                "capacity2": 180
+            },
+            {
+                "channel_identifier": "0xe1bf298aed690ae8577cb14a2b114659874e7351b1fc34173cd844d51257ee24",
+                "participant1": "0x5B97ac2021c29108e41B8E8f2CE290715aD2b73c",
+                "participant2": "0x9d44849d9E0611F6b8CD3742cB46829bcDd0605B",
+                "deposit1": 20,
+                "deposit2": 0,
+                "capacity1": 20,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xf088988b619234a24976266770ea9c612bc6b216c5fedc2d7d23f5c959b6e55b",
+                "participant1": "0x000397DFD32aFAAE870E6b5FB44154FD43e43224",
+                "participant2": "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xc89e9e91031b19c920f1080a05e0537ea9cfdb03692bdb6649a2ea44640529f5",
+                "participant1": "0x000397DFD32aFAAE870E6b5FB44154FD43e43224",
+                "participant2": "0x5B97ac2021c29108e41B8E8f2CE290715aD2b73c",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x82ec01133190ee5db7cec1e0cd9c1a6d2d53aa771465876d99f769ee6a689e7c",
+                "participant1": "0x008311788dff04E3c0426a3EB19622B2035bA49d",
+                "participant2": "0x81D11e3fE163cE436Bc51Fdc4fc64F00Eee2D78c",
+                "deposit1": 400,
+                "deposit2": 0,
+                "capacity1": 400,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x4bbd4c1ecaf9f59fb10d7e3fb23d971b45b081a29394de78fdd38681ab210fed",
+                "participant1": "0x008311788dff04E3c0426a3EB19622B2035bA49d",
+                "participant2": "0x00A33749a231f2e9c10deFE83403a67148D38438",
+                "deposit1": 400,
+                "deposit2": 0,
+                "capacity1": 400,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xfdc603011f54fca89c31b17a11084e80511e048af8db694c0f64254929bef2cb",
+                "participant1": "0x008311788dff04E3c0426a3EB19622B2035bA49d",
+                "participant2": "0x25511699C252eeA2678266857C98F459Df97B77c",
+                "deposit1": 400,
+                "deposit2": 0,
+                "capacity1": 400,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x60de2ca6f6474d51564e61efd864a1329feb7233b2645c04f39e6258f5bd5d26",
+                "participant1": "0x6BDA97F33f27C15627057D072C799786522588eE",
+                "participant2": "0x81D11e3fE163cE436Bc51Fdc4fc64F00Eee2D78c",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x3ab6cbb38a43514ad793fba7988805e05e3d3b5053f5ce1fa1e867cf1012b8c3",
+                "participant1": "0x6BDA97F33f27C15627057D072C799786522588eE",
+                "participant2": "0xDf173a5173C3d0Ae5Ba11DAE84470c5d3f1A8413",
+                "deposit1": 40,
+                "deposit2": 0,
+                "capacity1": 40,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x607f189e560cac4eb9eefeb247b5696b7b9450fe9e1d247f7439931be8df14ba",
+                "participant1": "0x82641569b2062B545431cF6D7F0A418582865ba7",
+                "participant2": "0x6D1aE2fA14078B5Dbc46501Bcc0623C67aA7b5cF",
+                "deposit1": 70,
+                "deposit2": 0,
+                "capacity1": 70,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x1bd3f2844b489b9297fcf4362fc71e3ad168b8e65cedd625ba80c952d8b08af8",
+                "participant1": "0xE0902284c85A9A03dAA3B5ab032e238cc05CFF9a",
+                "participant2": "0x6D1aE2fA14078B5Dbc46501Bcc0623C67aA7b5cF",
+                "deposit1": 400,
+                "deposit2": 0,
+                "capacity1": 400,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xf403df65f1da93f12f3186cef3a7698c244c5a03944e58ec98033010372de619",
+                "participant1": "0x008311788dff04E3c0426a3EB19622B2035bA49d",
+                "participant2": "0x6D1aE2fA14078B5Dbc46501Bcc0623C67aA7b5cF",
+                "deposit1": 73,
+                "deposit2": 10,
+                "capacity1": 73,
+                "capacity2": 10
+            },
+            {
+                "channel_identifier": "0x13d89b125a522c76203c5fac485ad5c37767b19e6f9cc4e30b507d514e32419e",
+                "participant1": "0x6BDA97F33f27C15627057D072C799786522588eE",
+                "participant2": "0x92746ECe9D44e9fCe1D98947658956554CCa452D",
+                "deposit1": 400,
+                "deposit2": 0,
+                "capacity1": 400,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x3494c489f4a4f6a69c0dac7c55610d7e8752d8331b4570bf6fd21bdcb156e865",
+                "participant1": "0x6BDA97F33f27C15627057D072C799786522588eE",
+                "participant2": "0x008311788dff04E3c0426a3EB19622B2035bA49d",
+                "deposit1": 73,
+                "deposit2": 70,
+                "capacity1": 73,
+                "capacity2": 70
+            },
+            {
+                "channel_identifier": "0x29fee9ae50cd2a4aee2709cd8b9a5610f34ecdd32b2a17ebe6bbaa28ab0166cb",
+                "participant1": "0x008311788dff04E3c0426a3EB19622B2035bA49d",
+                "participant2": "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8",
+                "deposit1": 73,
+                "deposit2": 0,
+                "capacity1": 73,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x36f20e19114f2b020bdd1da5d17e4a743c4f3603be2d672c014a0b7bc6a1f4fd",
+                "participant1": "0x161a696F7B1d326Bb12FDda17Bd248F6B87D7C16",
+                "participant2": "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x2eaa0ced3a8f338e7ea53b080c32a121c10cd04e1b2c3a2232fca8edd53a32b3",
+                "participant1": "0x161a696F7B1d326Bb12FDda17Bd248F6B87D7C16",
+                "participant2": "0x81D11e3fE163cE436Bc51Fdc4fc64F00Eee2D78c",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xcfd10ec82a0c5e88528b2a7f72085534abc178fec310e4af4a073187cf44f8e4",
+                "participant1": "0x000D91Cf263a11F9BfCeE3752E5B03FC1196CE98",
+                "participant2": "0x00a9d0CB18F07E94BC8640476DAB202dF7E467d1",
+                "deposit1": 100,
+                "deposit2": 0,
+                "capacity1": 100,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x7373d7c24714333e6ec74750c832706e89da070a17f1cd01a7760539069dc39d",
+                "participant1": "0x000D91Cf263a11F9BfCeE3752E5B03FC1196CE98",
+                "participant2": "0x00A33749a231f2e9c10deFE83403a67148D38438",
+                "deposit1": 100,
+                "deposit2": 0,
+                "capacity1": 100,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x31ee5cad21e6994ecabd8386da678c55b2b4ac39777199cfff31bbf2e0dca284",
+                "participant1": "0x000D91Cf263a11F9BfCeE3752E5B03FC1196CE98",
+                "participant2": "0x97a9F9222bA359E5547055500769E5cd662ca0AF",
+                "deposit1": 100,
+                "deposit2": 0,
+                "capacity1": 100,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x2ad99a6416310cae7f1f28d9e2a8da6a2c2fda05e26e0edfff62e65f8b772d29",
+                "participant1": "0x000D91Cf263a11F9BfCeE3752E5B03FC1196CE98",
+                "participant2": "0xE0902284c85A9A03dAA3B5ab032e238cc05CFF9a",
+                "deposit1": 100,
+                "deposit2": 100,
+                "capacity1": 100,
+                "capacity2": 100
+            },
+            {
+                "channel_identifier": "0x9598b0118f08a02fe73eb282238172eac55fb5d49f08b9dc2f0c150576afd06f",
+                "participant1": "0xf4f83E745Cf646Db05d8AE512117fC19059878C5",
+                "participant2": "0xD8869d9E3d497323561Fbca2319a9FC3F6f10c4B",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x98ecbda277c3dd69db4a4823ad1012636a1f3de25e5626008dadcf61894966bc",
+                "participant1": "0xf4f83E745Cf646Db05d8AE512117fC19059878C5",
+                "participant2": "0x5B97ac2021c29108e41B8E8f2CE290715aD2b73c",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xb093482c18891647b130179b58c27dcb27df67dc11a23442f683ecbed9450929",
+                "participant1": "0xf4f83E745Cf646Db05d8AE512117fC19059878C5",
+                "participant2": "0xDf173a5173C3d0Ae5Ba11DAE84470c5d3f1A8413",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x2fd82ad8a6988d9efabc36ab0bedadb275d17505360498ba064da9d171aaf772",
+                "participant1": "0x6BDA97F33f27C15627057D072C799786522588eE",
+                "participant2": "0x000D91Cf263a11F9BfCeE3752E5B03FC1196CE98",
+                "deposit1": 73,
+                "deposit2": 153,
+                "capacity1": 73,
+                "capacity2": 153
+            },
+            {
+                "channel_identifier": "0xbaf4c0a88eb5ad351308e795917bdb8bf1cdfaac38094507c3ba59447c47e25e",
+                "participant1": "0xf4f83E745Cf646Db05d8AE512117fC19059878C5",
+                "participant2": "0x000D91Cf263a11F9BfCeE3752E5B03FC1196CE98",
+                "deposit1": 73,
+                "deposit2": 30,
+                "capacity1": 73,
+                "capacity2": 30
+            },
+            {
+                "channel_identifier": "0xce2283dd884aeec753d534968683193bdfb8f92d3e134a992a9b43ee0dd4a613",
+                "participant1": "0x3C46570896F3eC1323280Df466716d1076a7162B",
+                "participant2": "0x13AE1c7fb262be079d7850d435D75a9bFC141b8e",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x48536255fe829271214018fc2d8f2e475d5dce36f067ba6b4d65530f430a2cca",
+                "participant1": "0x7A664079423fa25B87014EB53282F34c7AC7B87E",
+                "participant2": "0x000397DFD32aFAAE870E6b5FB44154FD43e43224",
+                "deposit1": 4,
+                "deposit2": 0,
+                "capacity1": 4,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x80c6642f083f81fa14029598799383b1eb34baded6b58e65849efa1c9024d002",
+                "participant1": "0x7A664079423fa25B87014EB53282F34c7AC7B87E",
+                "participant2": "0x6BDA97F33f27C15627057D072C799786522588eE",
+                "deposit1": 4,
+                "deposit2": 0,
+                "capacity1": 4,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x590d90e011c6932735af3b764aafae74c02aaa28e446a236517d98792085f4cf",
+                "participant1": "0x04aC0797E036B64C139bb610aD8365089aADCb25",
+                "participant2": "0x82641569b2062B545431cF6D7F0A418582865ba7",
+                "deposit1": 10,
+                "deposit2": 0,
+                "capacity1": 10,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xc4e4456eb36df6edc4451dd2ec2edfa53fffb1d151490d62366d8914db7e5330",
+                "participant1": "0x04aC0797E036B64C139bb610aD8365089aADCb25",
+                "participant2": "0x9d44849d9E0611F6b8CD3742cB46829bcDd0605B",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x087e1ecc0a8244fdf208f0b29f12f453eacbef5b14faf259204d2428f00138ee",
+                "participant1": "0x7A664079423fa25B87014EB53282F34c7AC7B87E",
+                "participant2": "0x774aFb0652ca2c711fD13e6E9d51620568f6Ca82",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xadcc9f088c229a7b60c2e5e7f9b01a2fb087ef7541ba5e18d1b4a7cdd97d48f3",
+                "participant1": "0x04aC0797E036B64C139bb610aD8365089aADCb25",
+                "participant2": "0x6b2085f4582Cb0d99C10D46650fd463414962000",
+                "deposit1": 12,
+                "deposit2": 0,
+                "capacity1": 12,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xbcd99f230875f079766751030944c6bb60c6835d103b061f21c8b548ce4b6b92",
+                "participant1": "0x7A664079423fa25B87014EB53282F34c7AC7B87E",
+                "participant2": "0x82641569b2062B545431cF6D7F0A418582865ba7",
+                "deposit1": 100,
+                "deposit2": 0,
+                "capacity1": 100,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x371f212872c058d5b48b681b8cb56d21e9788231057f9f82883183078ef8d26e",
+                "participant1": "0xEAe264f985CF80845A3efC20b53F915cf5D7C95D",
+                "participant2": "0x000D91Cf263a11F9BfCeE3752E5B03FC1196CE98",
+                "deposit1": 1337,
+                "deposit2": 33,
+                "capacity1": 1337,
+                "capacity2": 33
+            }
+        ]
+    },
+    "0x3C158a20b47d9613DDb9409099Be186fC272421a": {
+        "token_address": "0x3C158a20b47d9613DDb9409099Be186fC272421a",
+        "num_channels": 1,
+        "num_nodes": 2,
+        "nodes": [
+            "0x25511699C252eeA2678266857C98F459Df97B77c",
+            "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0xe253d3021f68331c93115e28b60feb999f8ad3bdf3f2b4c4c0700f30f957b3d7",
+                "participant1": "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8",
+                "participant2": "0x25511699C252eeA2678266857C98F459Df97B77c",
+                "deposit1": 1000,
+                "deposit2": 0,
+                "capacity1": 1000,
+                "capacity2": 0
+            }
+        ]
+    },
+    "0xbeB928c9d93Da56286cB10522D6aEb3EfF076a69": {
+        "token_address": "0xbeB928c9d93Da56286cB10522D6aEb3EfF076a69",
+        "num_channels": 1,
+        "num_nodes": 2,
+        "nodes": [
+            "0x92746ECe9D44e9fCe1D98947658956554CCa452D",
+            "0x2222222222222222222222222222222222222222"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0x10ffe0fa858f94f16af33ad68b0e08724ba4da4fc361c662cf280aef9ec110e0",
+                "participant1": "0x92746ECe9D44e9fCe1D98947658956554CCa452D",
+                "participant2": "0x2222222222222222222222222222222222222222",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            }
+        ]
+    },
+    "0xE2Bee0078E1252Da963c389AC55CFEEE624eC712": {
+        "token_address": "0xE2Bee0078E1252Da963c389AC55CFEEE624eC712",
+        "num_channels": 14,
+        "num_nodes": 12,
+        "nodes": [
+            "0xb626843871F547f097d2185342fCbB6f7a28e160",
+            "0x0348DA43961D4aE66aBF8D2b0C1e0Bf5DEd2CdfC",
+            "0x20684C8926B737c65223Ea4D50C8FE52F6b456Cc",
+            "0xCdB598076096F5C2e284B32F32F41e1dDf93425a",
+            "0x2222222222222222222222222222222222222222",
+            "0x36bf76A57bA2458B4fC843Ee87Fed5289b3fc0Fa",
+            "0xdC2A09cb12bd1f642cd1956Be0630CF250A2DFf0",
+            "0x8558751C6944A6e46a19EB601ad32F4C6cf2c3Dd",
+            "0xb49919A11dBe722eD2C9dDdc9C653e644A4AfC22",
+            "0xE0902284c85A9A03dAA3B5ab032e238cc05CFF9a",
+            "0xa771a4Be7f64051d65F3cee15cCefa94e3CBaF91",
+            "0x36C8dcd3665386557b0bD22FD9e26EE4cdB1a411"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0xe45f600d54cc43f04f87ac45482b77cd2c38f6759d56d754c256ad07f65abdd2",
+                "participant1": "0x20684C8926B737c65223Ea4D50C8FE52F6b456Cc",
+                "participant2": "0xb626843871F547f097d2185342fCbB6f7a28e160",
+                "deposit1": 2000,
+                "deposit2": 100,
+                "capacity1": 2000,
+                "capacity2": 100
+            },
+            {
+                "channel_identifier": "0x3743a1ec7e9a32a48b0028cafa8b053e94f748169d5d55c341571101b3327291",
+                "participant1": "0xb626843871F547f097d2185342fCbB6f7a28e160",
+                "participant2": "0x2222222222222222222222222222222222222222",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x2df6b8da550dac3cab08f70d614d607b478ee41bc21b876cf0725b7967986543",
+                "participant1": "0xb626843871F547f097d2185342fCbB6f7a28e160",
+                "participant2": "0x8558751C6944A6e46a19EB601ad32F4C6cf2c3Dd",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xbc420eb25468372144d9063b6b6f4b8840fc061fa52fb79d6d481e13cc0b9849",
+                "participant1": "0xb626843871F547f097d2185342fCbB6f7a28e160",
+                "participant2": "0x36C8dcd3665386557b0bD22FD9e26EE4cdB1a411",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x8fd6d688dd97401e1dba0aaec52ae1960739c69172b3317306ae13140194885a",
+                "participant1": "0x36C8dcd3665386557b0bD22FD9e26EE4cdB1a411",
+                "participant2": "0x0348DA43961D4aE66aBF8D2b0C1e0Bf5DEd2CdfC",
+                "deposit1": 0,
+                "deposit2": 1000,
+                "capacity1": 0,
+                "capacity2": 1000
+            },
+            {
+                "channel_identifier": "0xd1306f364a260e37edfb8d0d6ed0f451b6cd9e8b7ccd20c03ba8b47e2ccfb5a1",
+                "participant1": "0x36C8dcd3665386557b0bD22FD9e26EE4cdB1a411",
+                "participant2": "0x8558751C6944A6e46a19EB601ad32F4C6cf2c3Dd",
+                "deposit1": 267,
+                "deposit2": 0,
+                "capacity1": 267,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x271ca3952241435e11d711629c10a611490bfbfd70e617cd3e1dfb9449b54889",
+                "participant1": "0xCdB598076096F5C2e284B32F32F41e1dDf93425a",
+                "participant2": "0x20684C8926B737c65223Ea4D50C8FE52F6b456Cc",
+                "deposit1": 1000,
+                "deposit2": 0,
+                "capacity1": 1000,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x49fce1a2a811859ae704afd8a72fee974ee2a6265af687d7c1588662a29d443f",
+                "participant1": "0x0348DA43961D4aE66aBF8D2b0C1e0Bf5DEd2CdfC",
+                "participant2": "0x36bf76A57bA2458B4fC843Ee87Fed5289b3fc0Fa",
+                "deposit1": 2000,
+                "deposit2": 0,
+                "capacity1": 2000,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x4bf05a85f25cda0eb0098fc4907f22d01cdaadbf8c7938ccfd1abd1ca02a4d96",
+                "participant1": "0x0348DA43961D4aE66aBF8D2b0C1e0Bf5DEd2CdfC",
+                "participant2": "0xdC2A09cb12bd1f642cd1956Be0630CF250A2DFf0",
+                "deposit1": 1000,
+                "deposit2": 0,
+                "capacity1": 1000,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x5f8a2e01191b3c5684ac2f10184b209ac55085bd8ad7ee394a6074e0bdd11088",
+                "participant1": "0x0348DA43961D4aE66aBF8D2b0C1e0Bf5DEd2CdfC",
+                "participant2": "0xa771a4Be7f64051d65F3cee15cCefa94e3CBaF91",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xbeb05cb22bc3cb788b92e007a8f629b79320de45c995200401e86d1aec199951",
+                "participant1": "0x0348DA43961D4aE66aBF8D2b0C1e0Bf5DEd2CdfC",
+                "participant2": "0xb49919A11dBe722eD2C9dDdc9C653e644A4AfC22",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x56fff5dbea2f3d8a61b1e06d0f83d6d189e26aa312e1a34f2a66d9e11038be9e",
+                "participant1": "0xE0902284c85A9A03dAA3B5ab032e238cc05CFF9a",
+                "participant2": "0xb626843871F547f097d2185342fCbB6f7a28e160",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x84a68918e11af56d065451672de6e8f7056c6d9014dbf1e8c3fc2ac7432d1226",
+                "participant1": "0xE0902284c85A9A03dAA3B5ab032e238cc05CFF9a",
+                "participant2": "0xa771a4Be7f64051d65F3cee15cCefa94e3CBaF91",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x804b6238b4a3ee52d0831b32493b5b1ca1908b8a50ce4a0e20f90228b448604e",
+                "participant1": "0xE0902284c85A9A03dAA3B5ab032e238cc05CFF9a",
+                "participant2": "0x36C8dcd3665386557b0bD22FD9e26EE4cdB1a411",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            }
+        ]
+    },
+    "0x1aC7CA31204989534313f9826686Ca7Fb212DEBb": {
+        "token_address": "0x1aC7CA31204989534313f9826686Ca7Fb212DEBb",
+        "num_channels": 6,
+        "num_nodes": 5,
+        "nodes": [
+            "0x9d44849d9E0611F6b8CD3742cB46829bcDd0605B",
+            "0x2222222222222222222222222222222222222222",
+            "0x8A0cE8bDA200D64d858957080bf7eDDD3371135F",
+            "0x92746ECe9D44e9fCe1D98947658956554CCa452D",
+            "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0x10ffe0fa858f94f16af33ad68b0e08724ba4da4fc361c662cf280aef9ec110e0",
+                "participant1": "0x92746ECe9D44e9fCe1D98947658956554CCa452D",
+                "participant2": "0x2222222222222222222222222222222222222222",
+                "deposit1": 2,
+                "deposit2": 0,
+                "capacity1": 2,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x93be6a2e5747578e83da4a1ac5f8678ed49c8653dec33afa2f48653c6f175bd0",
+                "participant1": "0x8A0cE8bDA200D64d858957080bf7eDDD3371135F",
+                "participant2": "0x92746ECe9D44e9fCe1D98947658956554CCa452D",
+                "deposit1": 0,
+                "deposit2": 20,
+                "capacity1": 0,
+                "capacity2": 20
+            },
+            {
+                "channel_identifier": "0x70682a054e8d19b41ed7446857fb49db0f0d184a66f90c5385c9da42c53e668b",
+                "participant1": "0x8A0cE8bDA200D64d858957080bf7eDDD3371135F",
+                "participant2": "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8",
+                "deposit1": 250,
+                "deposit2": 0,
+                "capacity1": 250,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xd9b4fa3b91541df4ffc97613f410d01ac55bd9635d0e5137a6599979a8bf0a87",
+                "participant1": "0x9d44849d9E0611F6b8CD3742cB46829bcDd0605B",
+                "participant2": "0x8A0cE8bDA200D64d858957080bf7eDDD3371135F",
+                "deposit1": 2,
+                "deposit2": 0,
+                "capacity1": 2,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x8db75b01ec30666022b29ccb129cdbd5fc517cd06cf7987081d83a3ca758317f",
+                "participant1": "0x9d44849d9E0611F6b8CD3742cB46829bcDd0605B",
+                "participant2": "0x92746ECe9D44e9fCe1D98947658956554CCa452D",
+                "deposit1": 2,
+                "deposit2": 2,
+                "capacity1": 2,
+                "capacity2": 2
+            },
+            {
+                "channel_identifier": "0xb3fc0b1f9bb541ffc4a5314bb6835f980d79a77d6e6a77e52ccccb62535205d4",
+                "participant1": "0x9d44849d9E0611F6b8CD3742cB46829bcDd0605B",
+                "participant2": "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8",
+                "deposit1": 2,
+                "deposit2": 0,
+                "capacity1": 2,
+                "capacity2": 0
+            }
+        ]
+    },
+    "0x7b72f33A9aa2cB43039115cCFc080c74411D2d77": {
+        "token_address": "0x7b72f33A9aa2cB43039115cCFc080c74411D2d77",
+        "num_channels": 2,
+        "num_nodes": 4,
+        "nodes": [
+            "0x8A0cE8bDA200D64d858957080bf7eDDD3371135F",
+            "0x5522070585a1a275631ba69c444ac0451AA9Fe4C",
+            "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8",
+            "0x25511699C252eeA2678266857C98F459Df97B77c"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0xf7b6fe6ce96371d2a2380aab4c6ed5cf714be04c376deed050b8be2742e082be",
+                "participant1": "0x25511699C252eeA2678266857C98F459Df97B77c",
+                "participant2": "0x8A0cE8bDA200D64d858957080bf7eDDD3371135F",
+                "deposit1": 100,
+                "deposit2": 300,
+                "capacity1": 100,
+                "capacity2": 300
+            },
+            {
+                "channel_identifier": "0xf5ba35809e7eadea55d6d07d897c3ff3689b1621ff6247ab0f434ed72ea5c426",
+                "participant1": "0xfB398E621c15E2BC5Ae6A508D8D89AF1f88c93e8",
+                "participant2": "0x5522070585a1a275631ba69c444ac0451AA9Fe4C",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            }
+        ]
+    },
+    "0xDBaccaD5BaaBD090184fe587AD9A620395C37348": {
+        "token_address": "0xDBaccaD5BaaBD090184fe587AD9A620395C37348",
+        "num_channels": 1,
+        "num_nodes": 2,
+        "nodes": [
+            "0xed1c588250aEb4633826ff871b7855Bbb06Ae956",
+            "0x1De6E39d93b8af0B9ca001BD0D5a23DEE2c90211"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0x518597d856eb7ef3a840a5f851787afced469261ba1a1ea9887334cdb0868aa3",
+                "participant1": "0xed1c588250aEb4633826ff871b7855Bbb06Ae956",
+                "participant2": "0x1De6E39d93b8af0B9ca001BD0D5a23DEE2c90211",
+                "deposit1": 100000,
+                "deposit2": 0,
+                "capacity1": 100000,
+                "capacity2": 0
+            }
+        ]
+    },
+    "0xCB913ea9Fc054B386C4d3B313dd7Ef1103321973": {
+        "token_address": "0xCB913ea9Fc054B386C4d3B313dd7Ef1103321973",
+        "num_channels": 1,
+        "num_nodes": 2,
+        "nodes": [
+            "0xed1c588250aEb4633826ff871b7855Bbb06Ae956",
+            "0x1De6E39d93b8af0B9ca001BD0D5a23DEE2c90211"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0x518597d856eb7ef3a840a5f851787afced469261ba1a1ea9887334cdb0868aa3",
+                "participant1": "0xed1c588250aEb4633826ff871b7855Bbb06Ae956",
+                "participant2": "0x1De6E39d93b8af0B9ca001BD0D5a23DEE2c90211",
+                "deposit1": 100000,
+                "deposit2": 0,
+                "capacity1": 100000,
+                "capacity2": 0
+            }
+        ]
+    },
+    "0x3A19ADB1384741E10F037011eF0e603EF2F598A2": {
+        "token_address": "0x3A19ADB1384741E10F037011eF0e603EF2F598A2",
+        "num_channels": 0,
+        "num_nodes": 0,
+        "nodes": [],
+        "channels": []
+    },
+    "0x8BC711B9472F2F9305D61E3c3F500366eE331334": {
+        "token_address": "0x8BC711B9472F2F9305D61E3c3F500366eE331334",
+        "num_channels": 0,
+        "num_nodes": 0,
+        "nodes": [],
+        "channels": []
+    },
+    "0x9529D42C7DF2A1bdbD0f84b2EBD79c12FFce89a8": {
+        "token_address": "0x9529D42C7DF2A1bdbD0f84b2EBD79c12FFce89a8",
+        "num_channels": 0,
+        "num_nodes": 0,
+        "nodes": [],
+        "channels": []
+    },
+    "0xBD1553eC7Baef9814A2a01fa6E57fcE2bEaa99e6": {
+        "token_address": "0xBD1553eC7Baef9814A2a01fa6E57fcE2bEaa99e6",
+        "num_channels": 0,
+        "num_nodes": 0,
+        "nodes": [],
+        "channels": []
+    },
+    "0x4083A272653A24ae9B3A7824406eE99520999f78": {
+        "token_address": "0x4083A272653A24ae9B3A7824406eE99520999f78",
+        "num_channels": 4,
+        "num_nodes": 5,
+        "nodes": [
+            "0x7A664079423fa25B87014EB53282F34c7AC7B87E",
+            "0x04aC0797E036B64C139bb610aD8365089aADCb25",
+            "0x4083A272653A24ae9B3A7824406eE99520999f78",
+            "0x8a0c7885e6D446bd4d7AB1Be67653dF944f77ed7",
+            "0x42B8F37Df1e8973934F93f6E19Dc63f557227824"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0xb4b3d930e3b137dcfbe99c050957571fec1d012a0fca8e9b07ad2d8c8649588e",
+                "participant1": "0x7A664079423fa25B87014EB53282F34c7AC7B87E",
+                "participant2": "0x04aC0797E036B64C139bb610aD8365089aADCb25",
+                "deposit1": 3600000000,
+                "deposit2": 0,
+                "capacity1": 3600000000,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x4d256c23d192f4a74e535b3904100deb9aec71fb2d9b81372fd07582233e4471",
+                "participant1": "0x8a0c7885e6D446bd4d7AB1Be67653dF944f77ed7",
+                "participant2": "0x42B8F37Df1e8973934F93f6E19Dc63f557227824",
+                "deposit1": 4000000000,
+                "deposit2": 0,
+                "capacity1": 4000000000,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xc40d9529526c1cb170cc533451d176ab7ab94862174235c596c6a2cb2386b3bd",
+                "participant1": "0x04aC0797E036B64C139bb610aD8365089aADCb25",
+                "participant2": "0x4083A272653A24ae9B3A7824406eE99520999f78",
+                "deposit1": 13380,
+                "deposit2": 0,
+                "capacity1": 13380,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0x33776b268c7c17221219c4c7b6cca271a89ab9e346687c0040d3050118985a32",
+                "participant1": "0x7A664079423fa25B87014EB53282F34c7AC7B87E",
+                "participant2": "0x4083A272653A24ae9B3A7824406eE99520999f78",
+                "deposit1": 13380,
+                "deposit2": 0,
+                "capacity1": 13380,
+                "capacity2": 0
+            }
+        ]
+    },
+    "0x398a45A94292E850932deD44F1db20cA494400db": {
+        "token_address": "0x398a45A94292E850932deD44F1db20cA494400db",
+        "num_channels": 3,
+        "num_nodes": 5,
+        "nodes": [
+            "0xc1B9B0599aF5c7558528Acc745787169592ce5eE",
+            "0x13AE1c7fb262be079d7850d435D75a9bFC141b8e",
+            "0xb9163467fa135Cfa27e485cAC4EB6b4A1ff0843B",
+            "0x3C46570896F3eC1323280Df466716d1076a7162B",
+            "0x61C808D82A3Ac53231750daDc13c777b59310bD9"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0xe18267da3db8404b368c48aa2544a91cfd80f8844007cff133715292cfa7afd1",
+                "participant1": "0xb9163467fa135Cfa27e485cAC4EB6b4A1ff0843B",
+                "participant2": "0x61C808D82A3Ac53231750daDc13c777b59310bD9",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xc14e6f30285467b79082e6e151688aebdd23154c4da30e08ee7354c8d0d38802",
+                "participant1": "0xb9163467fa135Cfa27e485cAC4EB6b4A1ff0843B",
+                "participant2": "0xc1B9B0599aF5c7558528Acc745787169592ce5eE",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xb97e970075c26c930e619350be7293977565499a707491fc4c751230ec58b42f",
+                "participant1": "0x13AE1c7fb262be079d7850d435D75a9bFC141b8e",
+                "participant2": "0x3C46570896F3eC1323280Df466716d1076a7162B",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            }
+        ]
+    },
+    "0x1702768b54E37Bc64314E89769945a1695a505C5": {
+        "token_address": "0x1702768b54E37Bc64314E89769945a1695a505C5",
+        "num_channels": 2,
+        "num_nodes": 4,
+        "nodes": [
+            "0x13AE1c7fb262be079d7850d435D75a9bFC141b8e",
+            "0xA7B2B6374Ea5C840777E0AB85C33f214e1737262",
+            "0x19312D2d01C182c927Fa541d9d4a96Cd352277b5",
+            "0x3C46570896F3eC1323280Df466716d1076a7162B"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0xa8e997184c3481aba28513ea78e48f26ea707d568bc7088237a0cac1ee9c4c56",
+                "participant1": "0xA7B2B6374Ea5C840777E0AB85C33f214e1737262",
+                "participant2": "0x19312D2d01C182c927Fa541d9d4a96Cd352277b5",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            },
+            {
+                "channel_identifier": "0xecb9b32e374be70137d486a7b4b0d1b753364ade94d785e5d80fb14c86b1ce04",
+                "participant1": "0x3C46570896F3eC1323280Df466716d1076a7162B",
+                "participant2": "0x13AE1c7fb262be079d7850d435D75a9bFC141b8e",
+                "deposit1": 0,
+                "deposit2": 0,
+                "capacity1": 0,
+                "capacity2": 0
+            }
+        ]
+    },
+    "0xe1ECeB9Ab17d706a5077Bb9f298Ad0D39b4211D8": {
+        "token_address": "0xe1ECeB9Ab17d706a5077Bb9f298Ad0D39b4211D8",
+        "num_channels": 0,
+        "num_nodes": 0,
+        "nodes": [],
+        "channels": []
+    },
+    "0x7699CF76F525Ca883cC464374c6F7D9F89aB2CBA": {
+        "token_address": "0x7699CF76F525Ca883cC464374c6F7D9F89aB2CBA",
+        "num_channels": 1,
+        "num_nodes": 2,
+        "nodes": [
+            "0x0B14a96CbEd20797341EF18bE27Ec80b7B7e5F20",
+            "0xB770682b5Cd0eD15e1e8056Fb058bdCF611C703a"
+        ],
+        "channels": [
+            {
+                "channel_identifier": "0x9bb089cd260c0c7bc2b690a79a805488f2c505a27f7bca6649386beb458432bd",
+                "participant1": "0xB770682b5Cd0eD15e1e8056Fb058bdCF611C703a",
+                "participant2": "0x0B14a96CbEd20797341EF18bE27Ec80b7B7e5F20",
+                "deposit1": 20,
+                "deposit2": 20,
+                "capacity1": 20,
+                "capacity2": 20
+            }
+        ]
+    }
+}
