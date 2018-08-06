@@ -1,0 +1,360 @@
+<div style="height: 100vh">
+<div class="titlesec" id="titleSec" align="center">
+  <a id="top2" style="font-size: 35px; font-weight: 100; text-underline: none; border: none">Raiden Test Network Metrics</a>
+</div>
+<div class="subtitlesec" id="subtitleSec" align="center">
+  <a style="font-size: 17px; font-weight: 100">Metrics for the Raiden testnet release</a>
+</div>
+<div class="abstractinfodisp" align="center" id="abstractView">
+  <table cellpadding="15">
+    <tr>
+      <td>
+        <img src="../../../assets/networks_icon.png">
+      </td>
+      <td>
+        <div>
+          <a class="innertablediv" style="font-size: 17px" target="_blank">
+            Token Networks
+          </a>
+        </div>
+        <div align="left" class="innertablediv">
+          <a>
+            {{numNetworks}}
+          </a>
+        </div>
+      </td>
+      <td></td><td></td><td></td><td></td><td></td>
+      <td>
+        <img src="../../../assets/channels_icon.png">
+      </td>
+      <td>
+        <div>
+          <a class="innertablediv" style="font-size: 17px" target="_blank">
+            Open Channels
+          </a>
+        </div>
+        <div align="left" class="innertablediv">
+          <a>
+            {{numTotalChannels}}
+          </a>
+        </div>
+      </td>
+      <td></td><td></td><td></td><td></td><td></td>
+      <td>
+        <img src="../../../assets/users_icon.png">
+      </td>
+      <td>
+        <div>
+          <a style="font-size: 17px" target="_blank">
+            Unique Users
+          </a>
+        </div>
+        <div align="left" class="innertablediv">
+          <a>
+            {{numUniqueUsers}}
+          </a>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <table cellpadding="10">
+    <tr>
+      <td>
+        <a href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#tokens" style="border: 1px solid #2191FB; border-radius: 6px; color: #2191FB; width: 200px; font-size: 14px; padding: 7px">
+          Token registration tutorial
+          <span class="tooltiptext">Learn how to register a token</span>
+        </a>
+      </td>
+      <td></td><td></td><td></td><td></td>
+      <td>
+        <a href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#channels" style="border: 1px solid #2191FB; border-radius: 6px; color: #2191FB; width: 200px; padding: 7px; font-size: 14px">
+          Channel creation tutorial
+          <span class="tooltiptext">Learn how to open a channel</span>
+        </a>
+      </td>
+      <td></td><td></td><td></td><td></td>
+      <td>
+        <a href="http://raiden.network/" style="border: 1px solid #2191FB; border-radius: 6px; color: #2191FB; width: 200px; font-size: 14px; padding: 7px">
+          Get Started
+          <span class="tooltiptext">Get started with the Raiden Network</span>
+        </a>
+      </td>
+      <td></td><td></td><td></td><td></td>
+      <td>
+        <a (click)="scrollToA('netVis')" style="cursor: pointer;border: 1px solid #2191FB; border-radius: 6px; color: #2191FB; width: 200px; font-size: 14px; padding: 7px">
+          Visualize
+          <span class="tooltiptext">Interactive visualization of the Raiden Network</span>
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="metricsdiv" align="center">
+  <script type="text/javascript">
+    document.getElementById("largestNetworkButton").click();
+  </script>
+  <table>
+    <tr>
+      <td style="border: none">
+        <button type="button" (click)="showLargestNetworks()" label="Largest Tokens" id="largestNetworkButton"><a style="font-size: 100%">Largest Networks</a></button>
+      </td>
+      <td style="border: none">
+        <button type="button" (click)="showBusiestNetworks()" label="Busiest Tokens"><a style="font-size: 100%">Busiest Networks</a></button>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="metricsdiv" align="center" *ngIf="largestTokenDisp" style="padding-top: 0">
+  <table cellpadding="17" align="center">
+    <tr>
+      <td align="center">
+        <a style="color: #BABABA">Token Address</a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a style="color: #BABABA">Channels</a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a style="color: #BABABA">Users</a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a>
+          {{getIndexedNetworkAddress(0, largestNetworks)}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{getIndexedSecondaryMetric(0, largestNetworks)}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{getIndexedMetric(0, largestNetworks)}}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a>
+          {{getIndexedNetworkAddress(1, largestNetworks)}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{getIndexedSecondaryMetric(1, largestNetworks)}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{getIndexedMetric(1, largestNetworks)}}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a>
+          {{getIndexedNetworkAddress(2, largestNetworks)}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{getIndexedSecondaryMetric(2, largestNetworks)}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{getIndexedMetric(2, largestNetworks)}}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a>
+          {{getIndexedNetworkAddress(3, largestNetworks)}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{getIndexedSecondaryMetric(3, largestNetworks)}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{getIndexedMetric(3, largestNetworks)}}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a>
+          {{getIndexedNetworkAddress(4, largestNetworks)}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{getIndexedSecondaryMetric(4, largestNetworks)}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{getIndexedMetric(4, largestNetworks)}}
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="metricsdiv" align="center" *ngIf="busiestTokenDisp" style="padding-top: 0">
+  <table cellpadding="17" align="center">
+    <tr>
+      <td align="center">
+        <a style="color: #BABABA">Token Address</a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a style="color: #BABABA">Channels</a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a style="color: #BABABA">Users</a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a>
+          {{busiestNetworks[0].tokenAddress}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{busiestNetworks[0].metricValue}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{busiestNetworks[0].secondaryMetricValue}}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a>
+          {{busiestNetworks[1].tokenAddress}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{busiestNetworks[1].metricValue}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{busiestNetworks[1].secondaryMetricValue}}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a>
+          {{busiestNetworks[2].tokenAddress}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{busiestNetworks[2].metricValue}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{busiestNetworks[2].secondaryMetricValue}}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a>
+          {{busiestNetworks[3].tokenAddress}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{busiestNetworks[3].metricValue}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{busiestNetworks[3].secondaryMetricValue}}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a>
+          {{busiestNetworks[4].tokenAddress}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{busiestNetworks[4].metricValue}}
+        </a>
+      </td>
+      <td></td>
+      <td align="center">
+        <a>
+          {{busiestNetworks[4].secondaryMetricValue}}
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+<footer>
+<div class="networkpage" align="center" style='height: 85vh; width: 100vw'>
+  <a id="netVis" style="font-size: 35px; font-weight: 100">Network Visualization</a>
+  <p>
+    <a style="font-size: 17px">
+      A visualization of the current state of the Raiden network
+      <span class="tooltiptext1">The graph below is draggable and zoomable. Mouse hover over nodes shows the node ID</span>
+    </a>
+  </p>
+  <p align="center">
+    <a (click)="refreshToggle = true;" style="cursor: pointer ;border: 1px solid black; border-radius: 6px; color: black; width: 200px; font-size: 14px; padding: 7px">
+      Refresh
+      <span class="tooltiptext1">Refreshes graph data during next update cycle</span>
+    </a>
+  </p>
+  <graph [nodes]="nodes" [links]="links" align="center"></graph>
+</div>
+  <div style="background-color: white; height: auto" class="networkpage" align="center">
+    <p style="padding: 2%">
+      <a (click)="scrollToA('top')" style="cursor: pointer ;border: 1px solid black; border-radius: 6px; color: black; width: 200px; font-size: 14px; padding: 7px">
+        Go to top
+      </a>
+    </p>
+  </div>
+</footer>
+
+
+
+

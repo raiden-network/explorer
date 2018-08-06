@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+.titlesec {
+  background-color: black;
+  overflow: auto;
+  padding-top: 2.75%;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+
+.titlesec a {
+  font-family: Roboto;
+  text-align: center;
+  float: inherit;
+  color: white;
+  text-decoration: none;
+}
+
+.subtitlesec {
+  background-color: black;
+  overflow: auto;
+  padding-top: 0.5%;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+
+.subtitlesec a {
+  font-family: Roboto;
+  text-align: center;
+  float: inherit;
+  color: white;
+  text-decoration: none;
+}
+
+.abstractinfodisp {
+  background-color: black;
+  overflow: auto;
+  padding-top: 2.5%;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+
+.abstractinfodisp img {
+  float: inherit;
+  height: 90px;
+  padding-right: 0;
+}
+
+.abstractinfodisp a {
+  font-family: Roboto;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 100;
+  -webkit-transition: all 1s ease;
+  display: inline-block;
+  float: top;
+}
+
+
+.abstractinfodisp .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  opacity: 0;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  float: right;
+  font-family: Roboto;
+  font-size: 10px;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  animation-delay: inherit;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 10;
+}
+
+.abstractinfodisp a:hover .tooltiptext {
+  visibility: visible;
+  background-color: dimgray;
+  opacity: inherit;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  animation-delay: inherit;
+}
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.innertablediv {
+  background-color: black;
+  overflow: auto;
+  padding-top: 0;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+
+.innertablediv a {
+  font-family: Roboto;
+  color: white;
+  text-align: center;
+  padding: 8px 16px;
+  text-decoration: none;
+  font-weight: 100;
+  display: inline-block;
+  -webkit-transition: all 3s ease;
+  float: top;
+  font-size: 200%;
+}
+
+.innertablediv a:hover {
+  color: white;
+}
+
+.metricsdiv {
+  background-color: black;
+  overflow: auto;
+  padding-top: 2%;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+
+.metricsdiv table {
+  border-collapse: collapse;
+}
+
+.metricsdiv td {
+  border-bottom: 1px solid dimgray;
+  width: 100px;
+}
+
+.metricsdiv th {
+  border-bottom: 1px solid dimgrey;
+}
+
+.metricsdiv button {
+  background-color: black;
+  width: 200px;
+  height: auto;
+  border-left-width: 0;
+  border-top-width: 0;
+  border-right-width: 0;
+  border-bottom-width: 2px;
+  border-bottom-color: white;
+}
+
+.metricsdiv button:focus{
+  border-bottom-color: #2191FB;
+  border-bottom-width: 2px;
+  outline: 0;
+}
+
+.metricsdiv button.click {
+  border-bottom-color: #2191FB;
+  border-bottom-width: 2px;
+  outline: 0;
+}
+
+.metricsdiv a {
+  font-family: Roboto;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 100;
+  display: inline-block;
+  -webkit-transition: all 3s ease;
+  float: top;
+  font-size: 100%;
+}
+
+.networkpage {
+  background-color: white;
+  height: 100vh;
+  padding-top: 2.75%;
+}
+
+.networkpage a {
+  color: black;
+  font-family: Roboto;
+}
+
+.networkpage .tooltiptext1 {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  opacity: 0;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  float: right;
+  font-family: Roboto;
+  font-size: 10px;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  animation-delay: inherit;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 10;
+}
+
+.networkpage a:hover .tooltiptext1 {
+  visibility: visible;
+  background-color: dimgray;
+  opacity: inherit;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  animation-delay: inherit;
+}

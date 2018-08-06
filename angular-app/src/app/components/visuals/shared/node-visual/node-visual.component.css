@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+.node {
+  cursor: pointer;
+  transition: opacity 0.5s ease-in-out;
+  transition: stroke-width 0.1s ease-out,
+  fill 0.1s ease-out,
+  stroke 0.1s ease-out;
+
+  stroke: white;
+  stroke-width: 0.1px;
+}
+
+.node-name {
+  font-family: 'Roboto';
+  text-anchor: middle;
+  alignment-baseline: central;
+  font-weight: 300;
+  fill: white;
+  cursor: pointer;
+}
+
+.node-name .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  opacity: 0;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  float: right;
+  font-family: Roboto;
+  font-size: 10px;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  animation-delay: inherit;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 10;
+}
+
+.node-name a:hover .tooltiptext {
+  visibility: visible;
+  background-color: dimgray;
+  opacity: inherit;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  animation-delay: inherit;
+}
+
