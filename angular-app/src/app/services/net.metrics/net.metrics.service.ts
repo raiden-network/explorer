@@ -38,12 +38,14 @@ export class NetMetricsService {
     try {
       JSON.parse(JSON.stringify(newMetrics));
     } catch (e) {
+      console.error('setCurrentMetrics',e);
       return;
     }
     this.currentMetrics = newMetrics;
   }
 
   protected updateLargestNetworks(tokenInfo: any) {
+    // console.log('updateLargestNetworks',tokenInfo);
     const that = this;
     if (that.largestNetworks.length > 0) {
       let lastNet = that.largestNetworks[that.largestNetworks.length - 1];
@@ -125,7 +127,9 @@ export class NetMetricsService {
       that.http.get<NMAPIResponse>(this.nmConfig.defaultConfig.url)
         .subscribe(
           (result: any) => {
-            that.setCurrentMetrics(result[that.resultKey]);
+            // console.log('updateCurrentMetrics', result);
+            that.setCurrentMetrics(result);
+            // that.setCurrentMetrics(result[that.resultKey]); // doesn't fit current json format
             fulfill({
               code: 200,
               body: 'Successfully updated '
