@@ -123,6 +123,10 @@ export class HomeComponent implements OnInit {
   }
 
   public getIndexedNetworkAddress(i: number, list: Array<NMComparativeMetrics>) {
+    // console.log('getIndexedNetworkAddress list ', typeof list);
+    // if (typeof list === 'undefined') { console.log('getIndexedNetworkAddress no list'); list = []; }
+    // if (typeof list === 'undefined') { console.log('getIndexedNetworkAddress no list'); return ''; }
+    // if (!list || typeof list.length === 'undefined') { console.log('getIndexedNetworkAddress no list'); return; }
     if (i >= list.length) {
       return '';
     } else {
