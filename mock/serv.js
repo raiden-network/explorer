@@ -5,10 +5,11 @@ const fs = require('fs'),
 const app = express(),
       port = 4567;
 
+// Allow all cors (cross domain requests):
 app.use(cors());
 
 app.get('/info', (req, res) => {
   res.sendFile('network-info.json', { root: __dirname });
 });
 
-app.listen(port);
+app.listen(port, f=>{ console.log(`app listening on port ${port}`) });
