@@ -10,7 +10,7 @@ import {Node} from '../../../../services/d3';
         [attr.fill]="node.color"
         cx="0"
         cy="0"
-        [attr.r]="node.r">
+        [attr.r]="10">
       </svg:circle>
       <svg:text class="node-name">
         {{node.linkCount}}
@@ -27,3 +27,5 @@ import {Node} from '../../../../services/d3';
 export class NodeVisualComponent {
   @Input('nodeVisual') node: Node;
 }
+
+// [attr.r]="node.r">
