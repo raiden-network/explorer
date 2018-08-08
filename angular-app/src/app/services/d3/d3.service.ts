@@ -39,18 +39,23 @@ export class D3Service {
         graph.simulation.alphaTarget(0.3).restart();
       }
 
-      const tooltip = d3.select('body')
+/*      const tooltip = d3.select('body')
         .append('div')
         .style('position', 'absolute')
         .style('z-index', '10')
         .style('visibility', 'hidden')
-        .text(node.id);
+        .text(node.id);*/
 
       d3.event
         .on('drag', dragged)
         .on('end', ended)
-        .on('mouseover', function() {return tooltip.style('visibility', 'visible'); })
-        .on('mouseout', function() {return tooltip.style('visibility', 'hidden'); });
+        // Causes error: `unknown type: mouseover`
+        // .on('mouseover', function() {return tooltip.style('visibility', 'visible'); })
+        // .on('mouseout', function() {return tooltip.style('visibility', 'hidden'); });
+
+        // Successful click listener:
+      /*d3element.select('circle')
+      .on('click', e=>{ console.log('click', d3.event); });*/
 
       function dragged() {
         node.x = d3.event.x;
