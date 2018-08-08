@@ -174,14 +174,14 @@ export class NetMetricsService {
             address: obj[that.tokenAddressKey],
             weight: Math.floor(Math.random() * 999) + 100,
             numChannels: obj[that.numChannelsKey]
-        });
+          }); // push
           const objChannels = obj[that.channelsKey];
           for (const channel of objChannels) {
             restructuredData.links.push({
               source: channel[that.channelSourceKey],
               target: channel[that.channelTargetKey],
             });
-          }
+          } // for
           numNetworksRecorded++;
           if (numNetworksRecorded === that.currentMetrics[that.numNetworksKey]) {
             that.http.put(that.restructuredDataEndpoint, restructuredData)
@@ -197,11 +197,11 @@ export class NetMetricsService {
                   body: err
                 });
                 });
-          }
-        }
-      });
-    });
-  }
+          } // if (numNetworksRecorded
+        } // if(!(key ...
+      }); // Object.keys .. .map
+    }); // return new Promies
+  } // restructureAndPersistData
 
   public retrievePersistedDataForGraph() {
     const that = this;

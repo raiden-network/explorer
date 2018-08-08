@@ -61,8 +61,8 @@ export class HomeComponent implements OnInit {
                       that.initGraphData();
                       that.refreshToggle = false;
                     }
-                    console.log(that.nodes);
-                    console.log(that.links);
+                    /*console.log('updateMetrics updateCurrentMetrics res3: that.nodes, that.links'
+                      , that.nodes, that.links);*/
                   })
                   .catch();
               })
@@ -89,19 +89,21 @@ export class HomeComponent implements OnInit {
     that.netMetricsService.retrievePersistedDataForGraph()
       .then((res: NMResponse) => {
         const persistedData = res.body;
-        console.log(persistedData);
+        console.log('initGraphData: persistedData', persistedData);
         const psuedoNodes = persistedData['nodes'];
         const pseudoLinks = persistedData['links'];
         that.nodes = [];
         that.links = [];
         for (const pseudoNode of psuedoNodes) {
-          const node = new Node(pseudoNode['address']);
+          const node = new Node(pseudoNode['id']);
+          // const node = new Node(pseudoNode['address']); // Here's where the bug is at: 'id' iso 'address'
           node.x = Math.floor(Math.random() * 600) + 100;
           node.y = Math.floor(Math.random() * 600) + 100;
           node.linkCount = pseudoNode['numChannels'];
           that.nodes.push(node);
         }
         for (const pseudoLink of pseudoLinks) {
+          // const link = new Link(pseudoLink['source'], pseudoLink['target']);
           const link = new Link(that.getMatchingNode(pseudoLink['source'], that.nodes), that.getMatchingNode(pseudoLink['target'], that.nodes));
           that.links.push(link);
         }
