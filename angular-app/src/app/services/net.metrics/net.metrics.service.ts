@@ -34,6 +34,7 @@ export class NetMetricsService {
   }
 
   // Helpers
+  /*  Set this.currentMetics from new data, if valid */
   protected setCurrentMetrics(newMetrics: any) {
     try {
       JSON.parse(JSON.stringify(newMetrics));
@@ -44,6 +45,8 @@ export class NetMetricsService {
     this.currentMetrics = newMetrics;
   }
 
+  /*  Update this.largestNetworks with new data. 
+      Algorithm unclear.  */
   protected updateLargestNetworks(tokenInfo: any) {
     // console.log('updateLargestNetworks',tokenInfo);
     const that = this;
@@ -62,7 +65,7 @@ export class NetMetricsService {
         } else {
           break;
         }
-      }
+      } // for
       if (that.largestNetworks.length === that.numComparativeTuples + 2) {
         that.largestNetworks.pop();
       }
@@ -72,9 +75,11 @@ export class NetMetricsService {
         metricValue: tokenInfo[that.numUsersKey],
         secondaryMetricValue: tokenInfo[that.numChannelsKey]
       });
-    }
-  }
+    } // if if (that.largestNetworks.length .. - else
+  } // method
 
+  /*  Update this.busiestNetworks with new data. 
+      Algorithm unclear. */
   protected updateBusiestNetworks(tokenInfo: any) {
     const that = this;
     if (that.busiestNetworks.length > 0) {
@@ -105,6 +110,8 @@ export class NetMetricsService {
     }
   }
 
+  /*  Run through users in new data; if new entries,
+      add them to this.users. (Why not just overwrite with new values?) */
   protected updateUniqueUserArray(tokenInfo: any) {
     const that = this;
     const userArr: Array<string> = tokenInfo[that.usersKey];
@@ -116,11 +123,13 @@ export class NetMetricsService {
     }
   }
 
+  /*  Set this.numNetworks with value from new data */
   public updateNumNetworks() {
     this.numNetworks = this.currentMetrics[this.numNetworksKey];
   }
 
   // Functionality
+  /*  Get data from server endpoint, then run setCurrentMetrics() */
   public updateCurrentMetrics(): Promise<NMResponse> {
     const that = this;
     return new Promise<NMResponse>((fulfill, reject) => {
@@ -144,6 +153,12 @@ export class NetMetricsService {
     });
   }
 
+  /*  
+      Reset `largestNetworks`, `busiesNetworks` and other properties,
+      then proceeds to update them  with various methods; 
+      update `users, numTotalChannels` etc. 
+      Called currently only from home.component
+  */
   public updateTotalsAndComparativeMetrics() {
     this.largestNetworks = [];
     this.busiestNetworks = [];
@@ -203,6 +218,10 @@ export class NetMetricsService {
     }); // return new Promies
   } // restructureAndPersistData
 
+  /*  Get d3 chart data with `GET` request. Returns promise. 
+      Called currently from 
+      `src/app/components/home/home.component.ts` and `src/app/services/graph.visual/graph.visual.service.ts`
+  */
   public retrievePersistedDataForGraph() {
     const that = this;
     return new Promise<NMResponse>((fulfill, reject) => {

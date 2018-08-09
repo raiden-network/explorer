@@ -32,6 +32,12 @@ export class HomeComponent implements OnInit {
 
   }
 
+  /*  Get data from server and update local values. 
+      It has much repeated and redundant code; error prone and messy
+      It calls `service.updateCurrentMetrics`, then runs redunant methods on the service
+      (they are run within `updateCurrentMetrics`), then typed the same sequense again
+      within a `setInterval`. 
+  */
   public updateMetrics() {
     const that = this;
     this.netMetricsService.updateCurrentMetrics()
@@ -74,26 +80,34 @@ export class HomeComponent implements OnInit {
       .catch();
   }
 
+  /*  Set values to show/hide correct view */
   public showLargestNetworks() {
     this.largestTokenDisp = true;
     this.busiestTokenDisp = false;
   }
 
+  /*  Set values to show/hide correct view */
   public showBusiestNetworks() {
     this.largestTokenDisp = false;
     this.busiestTokenDisp = true;
   }
 
+  /*  Get data for d3 chart. Sets local `nodes` and `links` values. 
+      Uses `netMetricsService.retrievePersistedDataForGraph` w `GET` 
+      request to api. 
+      Called at `setInterval` by `updateMetrics`. 
+  */
   public initGraphData() {
     const that = this;
     that.netMetricsService.retrievePersistedDataForGraph()
       .then((res: NMResponse) => {
         const persistedData = res.body;
-        console.log('initGraphData: persistedData', persistedData);
+        // console.log('initGraphData: persistedData', persistedData);
         const psuedoNodes = persistedData['nodes'];
         const pseudoLinks = persistedData['links'];
         that.nodes = [];
         that.links = [];
+        // Instantiate real Node insances iso literal object:
         for (const pseudoNode of psuedoNodes) {
           const node = new Node(pseudoNode['id']);
           // const node = new Node(pseudoNode['address']); // Here's where the bug is at: 'id' iso 'address'
@@ -102,6 +116,7 @@ export class HomeComponent implements OnInit {
           node.linkCount = pseudoNode['numChannels'];
           that.nodes.push(node);
         }
+        // Get the real Node instance iso literal object:
         for (const pseudoLink of pseudoLinks) {
           // const link = new Link(pseudoLink['source'], pseudoLink['target']);
           const link = new Link(that.getMatchingNode(pseudoLink['source'], that.nodes), that.getMatchingNode(pseudoLink['target'], that.nodes));
@@ -109,10 +124,12 @@ export class HomeComponent implements OnInit {
         }
       })
       .catch((err: any) => {
-
+        console.log('initGraphData error:', err);
       });
   }
 
+  /*  Return the node matching the provided address:
+  */
   public getMatchingNode(address: string, nodes: Array<Node>) {
     let res: Node;
     for (const node of nodes) {
@@ -124,6 +141,10 @@ export class HomeComponent implements OnInit {
     return res;
   }
 
+  /*  Get address string based on position in array. 
+      Causes error when executed by angular when array does not exist yet. 
+      Method redundant: Access data directly in template and use ng-for to repeat 4 times. 
+  */
   public getIndexedNetworkAddress(i: number, list: Array<NMComparativeMetrics>) {
     // console.log('getIndexedNetworkAddress list ', typeof list);
     // if (typeof list === 'undefined') { console.log('getIndexedNetworkAddress no list'); list = []; }
@@ -136,6 +157,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  /*  Get # channels based on position in array. 
+      Causes error when executed by angular when array does not exist yet. 
+      Method redundant: Access data directly in template and use ng-for to repeat 4 times. 
+  */
   public getIndexedMetric(i: number, list: Array<NMComparativeMetrics>) {
     if (i >= list.length) {
       return null;
@@ -144,6 +169,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  /*  Roughly the same as the 2 above ... */
   public getIndexedSecondaryMetric(i: number, list: Array<NMComparativeMetrics>) {
     if (i >= list.length) {
       return null;
