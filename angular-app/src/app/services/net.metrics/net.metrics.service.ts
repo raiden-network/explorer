@@ -176,6 +176,12 @@ export class NetMetricsService {
     });
   }
 
+  /*  This method is a mystery:
+      - Why does it use PUT iso GET?
+      - What is the `restructuredData` for?
+      - Why PUT it to the server?
+      - Why is it only called twice from home.component?
+  */
   public restructureAndPersistData() {
     return new Promise<NMResponse>((fulfill, reject) => {
       const that = this;
