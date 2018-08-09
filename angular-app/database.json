@@ -1,0 +1,50 @@
+{
+  "data": {
+    "nodes": [
+      {
+        "node": "0x5CAEEDbfB2e32f96929232923e42dae9f281D028",
+        "address": "0x5CAEEDbfB2e32f96929232923e42dae9f281D028",
+        "weight": 852,
+        "numChannels": 2
+      },
+      {
+        "node": "0x96FA1F89c080222381344d38d27f756416e7518D",
+        "address": "0x96FA1F89c080222381344d38d27f756416e7518D",
+        "weight": 237,
+        "numChannels": 2
+      },
+      {
+        "node": "0x4962F6a8d854432EE948B411Cd8B9B9016056895",
+        "address": "0x4962F6a8d854432EE948B411Cd8B9B9016056895",
+        "weight": 790,
+        "numChannels": 2
+      }
+    ],
+    "links": [
+      {
+        "source": "0x5CAEEDbfB2e32f96929232923e42dae9f281D028",
+        "target": "0x96FA1F89c080222381344d38d27f756416e7518D"
+      },
+      {
+        "source": "0x5CAEEDbfB2e32f96929232923e42dae9f281D028",
+        "target": "0x4962F6a8d854432EE948B411Cd8B9B9016056895"
+      },
+      {
+        "source": "0x96FA1F89c080222381344d38d27f756416e7518D",
+        "target": "0x5CAEEDbfB2e32f96929232923e42dae9f281D028"
+      },
+      {
+        "source": "0x96FA1F89c080222381344d38d27f756416e7518D",
+        "target": "0x4962F6a8d854432EE948B411Cd8B9B9016056895"
+      },
+      {
+        "source": "0x4962F6a8d854432EE948B411Cd8B9B9016056895",
+        "target": "0x5CAEEDbfB2e32f96929232923e42dae9f281D028"
+      },
+      {
+        "source": "0x4962F6a8d854432EE948B411Cd8B9B9016056895",
+        "target": "0x96FA1F89c080222381344d38d27f756416e7518D"
+      }
+    ]
+  }
+}
