@@ -25,6 +25,7 @@ export class HomeComponent implements OnInit {
   public largestTokenDisp = true;
   public busiestTokenDisp = false;
   public refreshToggle = true;
+  public warningMsg: object = null;
 
   constructor(private netMetricsService: NetMetricsService, private sharedService: SharedService) {
     // this.updateMetrics();
@@ -64,11 +65,13 @@ export class HomeComponent implements OnInit {
     // (should be done by service, not component; refactor)
     const _getMetrics = ()=>{
       that.netMetricsService.updateCurrentMetrics()
-      .then((res: any) => { 
+      .then((res: any) => {
+        that.showWarning(null, null); 
         _updMetrics();
         _updGraphData();
       }).catch(e=>{
-        console.log('Error getting metrics: ', e)
+        console.log('Error getting metrics: ', e);
+        that.showWarning("Error", `Error getting data: "${e.body.message}"`);
       });
     }
 
@@ -80,6 +83,11 @@ export class HomeComponent implements OnInit {
 
   } // updateMetrics
 
+  /*  Show a warning message. Parameters are title and body strings. 
+      To close the message, pass in falsy parameters (null or "") */
+  public showWarning(title:string, body:string) {
+    title && body ? this.warningMsg = { title, body } : this.warningMsg = null;
+  }
   /*  Set values to show/hide correct view */
   public showLargestNetworks() {
     this.largestTokenDisp = true;
