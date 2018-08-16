@@ -2,4 +2,9 @@ body {
   margin: 0px;
   padding: 0px;
   background-color: black !important;
+  font-family: Roboto, Helvetica, non-serif;
+}
+
+.clickable {
+  cursor: pointer;
 }
