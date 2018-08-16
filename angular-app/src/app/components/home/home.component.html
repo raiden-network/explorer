@@ -6,6 +6,12 @@
   <a style="font-size: 17px; font-weight: 100">Metrics for the Raiden testnet release</a>
 </div>
 <div class="abstractinfodisp" align="center" id="abstractView">
+
+  <div class="warning" *ngIf="warningMsg"
+    style="background: #ff7f00; width: 80%; margin: auto; padding: 1rem; border-radius: 0.5rem;">
+    <h2>{{warningMsg.title}}</h2>
+    <p>{{warningMsg.body}}</p>
+  </div>
   
   <table cellpadding="15">
     <tr>
