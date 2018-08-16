@@ -3,7 +3,8 @@ import {NetMetricsService} from '../../services/net.metrics/net.metrics.service'
 import {SharedService} from '../../services/net.metrics/shared.service';
 import {NMComparativeMetrics} from '../../models/NMComparativeMetrics';
 import {Link, Node} from '../../services/d3/models';
-import {NMResponse} from '../../models/NMResponse';
+// import {NMResponse} from '../../models/NMResponse';
+import {NMRestructuredData} from '../../models/NMRestructuredData';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,7 @@ import {NMResponse} from '../../models/NMResponse';
 export class HomeComponent implements OnInit {
 
   public currentMetrics: any;
+  public restructuredData: NMRestructuredData;
   public numUniqueUsers = 0;
   public numNetworks = 0;
   public numTotalChannels = 0;
@@ -25,60 +27,58 @@ export class HomeComponent implements OnInit {
   public refreshToggle = true;
 
   constructor(private netMetricsService: NetMetricsService, private sharedService: SharedService) {
-    this.updateMetrics();
+    // this.updateMetrics();
   }
 
   ngOnInit() {
-
+    this.updateMetrics();
+    // setTimeout(a=>{ this.showLargestNetworks, console.log('this.showLargestNetworks'); }, 3000);
   }
 
   /*  Get data from server and update local values. 
-      It has much repeated and redundant code; error prone and messy
-      It calls `service.updateCurrentMetrics`, then runs redunant methods on the service
-      (they are run within `updateCurrentMetrics`), then typed the same sequense again
-      within a `setInterval`. 
   */
   public updateMetrics() {
     const that = this;
-    this.netMetricsService.updateCurrentMetrics()
-      .then((res: any) => {
-        that.currentMetrics = that.netMetricsService.getCurrentMetrics();
-        that.netMetricsService.updateTotalsAndComparativeMetrics();
-        that.numUniqueUsers = that.netMetricsService.getNumUniqueUsers();
-        that.numNetworks = that.netMetricsService.getNumNetworks();
-        that.numTotalChannels = that.netMetricsService.getTotalChannels();
-        that.largestNetworks = that.netMetricsService.getLargestNetworks();
-        that.busiestNetworks = that.netMetricsService.getBusiestNetworks();
-        that.netMetricsService.restructureAndPersistData()
-          .then((res2: any) => {
-          setInterval(() => {
-            this.netMetricsService.updateCurrentMetrics()
-              .then((res1: any) => {
-                that.currentMetrics = that.netMetricsService.getCurrentMetrics();
-                that.netMetricsService.updateTotalsAndComparativeMetrics();
-                that.numUniqueUsers = that.netMetricsService.getNumUniqueUsers();
-                that.numNetworks = that.netMetricsService.getNumNetworks();
-                that.numTotalChannels = that.netMetricsService.getTotalChannels();
-                that.largestNetworks = that.netMetricsService.getLargestNetworks();
-                that.busiestNetworks = that.netMetricsService.getBusiestNetworks();
-                that.netMetricsService.restructureAndPersistData()
-                  .then((res3: any) => {
-                    if (that.refreshToggle) {
-                      that.initGraphData();
-                      that.refreshToggle = false;
-                    }
-                    /*console.log('updateMetrics updateCurrentMetrics res3: that.nodes, that.links'
-                      , that.nodes, that.links);*/
-                  })
-                  .catch();
-              })
-              .catch();
-          }, 3000);
-        })
-          .catch();
-      })
-      .catch();
-  }
+
+    // Update local metric variables from the nmservice:
+    const _updMetrics = ()=>{
+      that.currentMetrics = that.netMetricsService.getCurrentMetrics();
+      that.netMetricsService.updateTotalsAndComparativeMetrics();
+      that.numUniqueUsers = that.netMetricsService.getNumUniqueUsers();
+      that.numNetworks = that.netMetricsService.getNumNetworks();
+      that.numTotalChannels = that.netMetricsService.getTotalChannels();
+      that.largestNetworks = that.netMetricsService.getLargestNetworks();
+      that.busiestNetworks = that.netMetricsService.getBusiestNetworks();
+    };
+
+    // Update d3 chart/graph data from service:
+    // (no need for promise; refactor to sequence)
+    const _updGraphData = ()=>{
+      const rsData: NMRestructuredData = that.netMetricsService.restructureAndPersistData();
+      // console.log('_updGraphData', rsData);
+      this.restructuredData = rsData;
+      that.initGraphData();
+    };
+
+    // Get metrics from server,then update local values:
+    // (should be done by service, not component; refactor)
+    const _getMetrics = ()=>{
+      that.netMetricsService.updateCurrentMetrics()
+      .then((res: any) => { 
+        _updMetrics();
+        _updGraphData();
+      }).catch(e=>{
+        console.log('Error getting metrics: ', e)
+      });
+    }
+
+    // Do it now and at interval:
+    // (temp: clears interval after a while to spare server)
+    _getMetrics();
+    const si = setInterval(_getMetrics, 3000);
+    // setTimeout(a=>{ clearInterval(si) }, 12e3)
+
+  } // updateMetrics
 
   /*  Set values to show/hide correct view */
   public showLargestNetworks() {
@@ -93,39 +93,36 @@ export class HomeComponent implements OnInit {
   }
 
   /*  Get data for d3 chart. Sets local `nodes` and `links` values. 
-      Uses `netMetricsService.retrievePersistedDataForGraph` w `GET` 
-      request to api. 
-      Called at `setInterval` by `updateMetrics`. 
+      Uses `netMetricsService.retrievePersistedDataForGraph`. 
   */
   public initGraphData() {
     const that = this;
-    that.netMetricsService.retrievePersistedDataForGraph()
-      .then((res: NMResponse) => {
-        const persistedData = res.body;
-        // console.log('initGraphData: persistedData', persistedData);
-        const psuedoNodes = persistedData['nodes'];
-        const pseudoLinks = persistedData['links'];
-        that.nodes = [];
-        that.links = [];
-        // Instantiate real Node insances iso literal object:
-        for (const pseudoNode of psuedoNodes) {
-          const node = new Node(pseudoNode['id']);
-          // const node = new Node(pseudoNode['address']); // Here's where the bug is at: 'id' iso 'address'
-          node.x = Math.floor(Math.random() * 600) + 100;
-          node.y = Math.floor(Math.random() * 600) + 100;
-          node.linkCount = pseudoNode['numChannels'];
-          that.nodes.push(node);
-        }
-        // Get the real Node instance iso literal object:
-        for (const pseudoLink of pseudoLinks) {
-          // const link = new Link(pseudoLink['source'], pseudoLink['target']);
-          const link = new Link(that.getMatchingNode(pseudoLink['source'], that.nodes), that.getMatchingNode(pseudoLink['target'], that.nodes));
-          that.links.push(link);
-        }
-      })
-      .catch((err: any) => {
-        console.log('initGraphData error:', err);
-      });
+    const persistedData: NMRestructuredData = that.netMetricsService.retrievePersistedDataForGraph();
+    // console.log('initGraphData: persistedData', persistedData);
+    const psuedoNodes = persistedData['nodes'];
+    const pseudoLinks = persistedData['links'];
+    that.nodes = [];
+    that.links = [];
+    // Instantiate real Node instances iso literal object:
+    for (const pseudoNode of psuedoNodes) {
+      const node = new Node(pseudoNode['id']);
+      // const node = new Node(pseudoNode['address']); // Here's where the bug is at: 'id' iso 'address'
+      node.x = Math.floor(Math.random() * 600) + 100;
+      node.y = Math.floor(Math.random() * 600) + 100;
+      node.linkCount = pseudoNode['numChannels'];
+      that.nodes.push(node);
+    }
+    // Get the real Node instance iso literal object:
+    for (const pseudoLink of pseudoLinks) {
+      // const link = new Link(pseudoLink['source'], pseudoLink['target']);
+      const src = that.getMatchingNode(pseudoLink['source'], that.nodes),
+        trg = that.getMatchingNode(pseudoLink['target'], that.nodes);
+      // Only add link if match:
+      if(src && trg){
+        const link = new Link(src, trg);
+        that.links.push(link);
+      }
+    }
   }
 
   /*  Return the node matching the provided address:
@@ -139,43 +136,6 @@ export class HomeComponent implements OnInit {
       }
     }
     return res;
-  }
-
-  /*  Get address string based on position in array. 
-      Causes error when executed by angular when array does not exist yet. 
-      Method redundant: Access data directly in template and use ng-for to repeat 4 times. 
-  */
-  public getIndexedNetworkAddress(i: number, list: Array<NMComparativeMetrics>) {
-    // console.log('getIndexedNetworkAddress list ', typeof list);
-    // if (typeof list === 'undefined') { console.log('getIndexedNetworkAddress no list'); list = []; }
-    // if (typeof list === 'undefined') { console.log('getIndexedNetworkAddress no list'); return ''; }
-    // if (!list || typeof list.length === 'undefined') { console.log('getIndexedNetworkAddress no list'); return; }
-    if (i >= list.length) {
-      return '';
-    } else {
-      return list[i].tokenAddress;
-    }
-  }
-
-  /*  Get # channels based on position in array. 
-      Causes error when executed by angular when array does not exist yet. 
-      Method redundant: Access data directly in template and use ng-for to repeat 4 times. 
-  */
-  public getIndexedMetric(i: number, list: Array<NMComparativeMetrics>) {
-    if (i >= list.length) {
-      return null;
-    } else {
-      return list[i].metricValue;
-    }
-  }
-
-  /*  Roughly the same as the 2 above ... */
-  public getIndexedSecondaryMetric(i: number, list: Array<NMComparativeMetrics>) {
-    if (i >= list.length) {
-      return null;
-    } else {
-      return list[i].secondaryMetricValue;
-    }
   }
 
   public scrollToA(loc: string) {

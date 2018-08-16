@@ -10,13 +10,15 @@ export class GraphVisualService implements OnInit {
 
   constructor(private http: HttpClient, private nmService: NetMetricsService, private sharedService: SharedService) {
     const that = this;
-    nmService.retrievePersistedDataForGraph()
+
+    that.restructuredMetrics = nmService.retrievePersistedDataForGraph();
+    /*nmService.retrievePersistedDataForGraph()
       .then((res: any) => {
         that.restructuredMetrics = res;
       })
       .catch((err: any) => {
         console.log(err);
-      });
+      });*/
   }
 
   ngOnInit() {

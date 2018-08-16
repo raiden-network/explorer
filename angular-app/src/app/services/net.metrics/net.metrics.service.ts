@@ -12,6 +12,7 @@ import {NMRestructuredData} from '../../models/NMRestructuredData';
 export class NetMetricsService {
 
   private currentMetrics: any = {};
+  private restructuredData: NMRestructuredData;
   private numNetworks = 0;
   private numTotalChannels = 0;
   private numUniqueUsers = 0;
@@ -108,6 +109,8 @@ export class NetMetricsService {
         secondaryMetricValue: tokenInfo[that.numUsersKey]
       });
     }
+    // To be removed; the purpose is visible change of mock data in UI:
+    this.busiestNetworks.reverse();
   }
 
   /*  Run through users in new data; if new entries,
@@ -146,7 +149,7 @@ export class NetMetricsService {
           },
           (err: any) => {
             reject({
-              code: 200,
+              code: 400,
               body: err
             });
           });
@@ -176,76 +179,40 @@ export class NetMetricsService {
     });
   }
 
-  /*  This method is a mystery:
-      - Why does it use PUT iso GET?
-      - What is the `restructuredData` for?
-      - Why PUT it to the server?
-      - Why is it only called twice from home.component?
+  /*  Restructure metric data to fit d3 chart
+      Returns the restructed data and also sets it
+      to the `this.restructuredData` property. 
   */
-  public restructureAndPersistData() {
-    return new Promise<NMResponse>((fulfill, reject) => {
-      const that = this;
-      let numNetworksRecorded = 0;
-      const restructuredData: NMRestructuredData = {nodes: [], links: []};
-      Object.keys(this.currentMetrics).map((key: string) => {
-        if (!(key === that.numNetworksKey)) {
-          const obj = that.currentMetrics[key];
-          restructuredData.nodes.push({
-            node: obj[that.tokenAddressKey],
-            address: obj[that.tokenAddressKey],
-            weight: Math.floor(Math.random() * 999) + 100,
-            numChannels: obj[that.numChannelsKey]
+  public restructureAndPersistData(): NMRestructuredData {
+    const restructuredData: NMRestructuredData = {nodes: [], links: []};
+    Object.keys(this.currentMetrics).map((key: string) => {
+      if (!(key === this.numNetworksKey)) {
+        const obj = this.currentMetrics[key];
+        const objNodes = obj[this.usersKey];
+        objNodes.forEach(id=>{
+          restructuredData.nodes.push({id});
+        }); 
+        const objChannels = obj[this.channelsKey];
+        for (const channel of objChannels) {
+          restructuredData.links.push({
+            source: channel[this.channelSourceKey],
+            target: channel[this.channelTargetKey],
           }); // push
-          const objChannels = obj[that.channelsKey];
-          for (const channel of objChannels) {
-            restructuredData.links.push({
-              source: channel[that.channelSourceKey],
-              target: channel[that.channelTargetKey],
-            });
-          } // for
-          numNetworksRecorded++;
-          if (numNetworksRecorded === that.currentMetrics[that.numNetworksKey]) {
-            that.http.put(that.restructuredDataEndpoint, restructuredData)
-              .subscribe((res: any) => {
-                fulfill({
-                  code: 200,
-                  body: res
-                });
-              },
-                (err: any) => {
-                reject({
-                  code: 400,
-                  body: err
-                });
-                });
-          } // if (numNetworksRecorded
-        } // if(!(key ...
-      }); // Object.keys .. .map
-    }); // return new Promies
+        } // for
+      } // if(!(key ...
+    }); // Object.keys .. .map
+    this.restructuredData = restructuredData;
+    return restructuredData;
   } // restructureAndPersistData
 
-  /*  Get d3 chart data with `GET` request. Returns promise. 
-      Called currently from 
-      `src/app/components/home/home.component.ts` and `src/app/services/graph.visual/graph.visual.service.ts`
+  /*  Get d3 chart data. 
+      Returns the data;
   */
-  public retrievePersistedDataForGraph() {
-    const that = this;
-    return new Promise<NMResponse>((fulfill, reject) => {
-      that.http.get(that.restructuredDataEndpoint)
-        .subscribe
-        ((res: any) => {
-          fulfill({
-            code: 200,
-            body: res
-          });
-        },
-        (err: any) => {
-          reject({
-            code: 400,
-            body: err
-          });
-        });
-    });
+  public retrievePersistedDataForGraph(): NMRestructuredData {
+    // Temporary fix using json file because restructuredData causes error:
+    // const data: NMRestructuredData = require('../../../../../mock/data/graphics-data.json');
+    const data = this.restructuredData;
+    return data;
   }
 
   // Getters and setters
