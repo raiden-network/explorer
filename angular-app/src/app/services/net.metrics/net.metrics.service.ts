@@ -222,4 +222,8 @@ export class NetMetricsService {
   public getCurrentMetrics() {
     return this.currentMetrics;
   }
+
+  public getCurrentNetworks() {
+    return this.currentNetworks;
+  }
 }
