@@ -5,13 +5,14 @@ import { SharedService } from './shared.service';
 import { NMAPIResponse } from '../../models/NMAPIResponse';
 import { NMResponse } from '../../models/NMResponse';
 import { NMConfig } from '../../models/NMConfig';
-import { NMComparativeMetrics } from '../../models/NMComparativeMetrics';
+import { NMNetwork } from '../../models/NMNetwork';
 import {NMRestructuredData} from '../../models/NMRestructuredData';
 
 @Injectable()
 export class NetMetricsService {
 
   private currentMetrics: any = {};
+  private currentNetworks: Array<NMNetwork> = [];
   private restructuredData: NMRestructuredData;
   private numNetworks = 0;
   private numTotalChannels = 0;
@@ -26,8 +27,8 @@ export class NetMetricsService {
   private channelsKey = 'channels';
   private channelSourceKey = 'participant1';
   private channelTargetKey = 'participant2';
-  private largestNetworks: Array<NMComparativeMetrics> = [];
-  private busiestNetworks: Array<NMComparativeMetrics> = [];
+  private largestNetworks: Array<NMNetwork> = [];
+  private busiestNetworks: Array<NMNetwork> = [];
   private numComparativeTuples = 9;
   private restructuredDataEndpoint = 'http://localhost:3000/data';
 
@@ -37,6 +38,7 @@ export class NetMetricsService {
   // Helpers
   /*  Set this.currentMetics from new data, if valid */
   protected setCurrentMetrics(newMetrics: any) {
+    const that = this;
     try {
       JSON.parse(JSON.stringify(newMetrics));
     } catch (e) {
@@ -44,73 +46,38 @@ export class NetMetricsService {
       return;
     }
     this.currentMetrics = newMetrics;
+    // Turn the metrics in to a useful array of networks:
+    this.currentNetworks = [];
+    Object.keys(this.currentMetrics).map((key: string) => {
+      if (!(key === that.numNetworksKey)) {
+        that.currentNetworks.push(that.currentMetrics[key]);
+      }
+    });
   }
 
   /*  Update this.largestNetworks with new data. 
-      Algorithm unclear.  */
-  protected updateLargestNetworks(tokenInfo: any) {
-    // console.log('updateLargestNetworks',tokenInfo);
-    const that = this;
-    if (that.largestNetworks.length > 0) {
-      let lastNet = that.largestNetworks[that.largestNetworks.length - 1];
-      that.largestNetworks.push({
-        tokenAddress: tokenInfo[that.tokenAddressKey],
-        metricValue: tokenInfo[that.numUsersKey],
-        secondaryMetricValue: tokenInfo[that.numChannelsKey]
-      });
-      for (let i = that.largestNetworks.length - 2; i >= 0; i--) {
-        lastNet = that.largestNetworks[i];
-        if (lastNet.metricValue < tokenInfo[that.numUsersKey]) {
-          that.largestNetworks[i] = that.largestNetworks[i + 1];
-          that.largestNetworks[i + 1] = lastNet;
-        } else {
-          break;
-        }
-      } // for
-      if (that.largestNetworks.length === that.numComparativeTuples + 2) {
-        that.largestNetworks.pop();
-      }
-    } else {
-      that.largestNetworks.push({
-        tokenAddress: tokenInfo[that.tokenAddressKey],
-        metricValue: tokenInfo[that.numUsersKey],
-        secondaryMetricValue: tokenInfo[that.numChannelsKey]
-      });
-    } // if if (that.largestNetworks.length .. - else
+      Sorty by number of nodes. */
+  protected updateLargestNetworks() {
+    // `slice` to return a clone of the array iso pointer to same array:
+    this.largestNetworks = this.currentNetworks.slice().sort((a,b)=>{ 
+      return b.num_nodes - a.num_nodes;
+    });
+    // console.log('sorted largetNetworks', this.listNetworks(this.largestNetworks));
   } // method
 
   /*  Update this.busiestNetworks with new data. 
-      Algorithm unclear. */
-  protected updateBusiestNetworks(tokenInfo: any) {
-    const that = this;
-    if (that.busiestNetworks.length > 0) {
-      let lastNet: NMComparativeMetrics = that.busiestNetworks[that.busiestNetworks.length - 1];
-      that.busiestNetworks.push({
-        tokenAddress: tokenInfo[that.tokenAddressKey],
-        metricValue: tokenInfo[that.numChannelsKey],
-        secondaryMetricValue: tokenInfo[that.numUsersKey]
-      });
-      for (let i = that.busiestNetworks.length - 2; i >= 0; i--) {
-        lastNet = that.busiestNetworks[i];
-        if (lastNet.metricValue < tokenInfo[that.numChannelsKey]) {
-          that.busiestNetworks[i] = that.busiestNetworks[i + 1];
-          that.busiestNetworks[i + 1] = lastNet;
-        } else {
-          break;
-        }
-      }
-      if (that.busiestNetworks.length === that.numComparativeTuples + 2) {
-        that.busiestNetworks.pop();
-      }
-    } else {
-      that.busiestNetworks.push({
-        tokenAddress: tokenInfo[that.tokenAddressKey],
-        metricValue: tokenInfo[that.numChannelsKey],
-        secondaryMetricValue: tokenInfo[that.numUsersKey]
-      });
-    }
-    // To be removed; the purpose is visible change of mock data in UI:
-    this.busiestNetworks.reverse();
+      Sort by number of channels. */
+  protected updateBusiestNetworks() {
+
+    this.busiestNetworks = this.currentNetworks.slice().sort((a,b)=>{ 
+      return b.num_channels - a.num_channels;
+    });
+    // console.log('sorted busiestNetworks', this.listNetworks(this.busiestNetworks) );
+  }
+
+  // Debugging only: return a simplified array
+  private listNetworks(arr:NMNetwork[]){
+    return arr.map(n=>{ return [n.num_nodes, n.num_channels].join() });
   }
 
   /*  Run through users in new data; if new entries,
@@ -173,10 +140,12 @@ export class NetMetricsService {
         const tokenInfo = that.currentMetrics[key];
         that.numTotalChannels += tokenInfo[that.numChannelsKey];
         that.updateUniqueUserArray(tokenInfo);
-        that.updateLargestNetworks(tokenInfo);
-        that.updateBusiestNetworks(tokenInfo);
+        // that.updateLargestNetworks(tokenInfo);
+        // that.updateBusiestNetworks(tokenInfo);
       }
     });
+    this.updateLargestNetworks();
+    this.updateBusiestNetworks();
   }
 
   /*  Restructure metric data to fit d3 chart
@@ -240,11 +209,13 @@ export class NetMetricsService {
     this.numComparativeTuples = num;
   }
 
-  public getLargestNetworks(): Array<NMComparativeMetrics> {
+  public getLargestNetworks(): Array<NMNetwork> {
+    // console.log('getLargestNetworks',this.listNetworks(this.largestNetworks));
     return this.largestNetworks;
   }
 
-  public getBusiestNetworks(): Array<NMComparativeMetrics> {
+  public getBusiestNetworks(): Array<NMNetwork> {
+    // console.log('getBusiestNetworks',this.listNetworks(this.busiestNetworks));
     return this.busiestNetworks;
   }
 

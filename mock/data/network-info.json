@@ -3,7 +3,7 @@
     "0x7692624c0C43285D51c0DdDfb2A6388f5002762E": {
         "token_address": "0x7692624c0C43285D51c0DdDfb2A6388f5002762E",
         "num_channels": 44,
-        "num_nodes": 30,
+        "num_nodes": 20,
         "nodes": [
             "0x81D11e3fE163cE436Bc51Fdc4fc64F00Eee2D78c",
             "0x6b2085f4582Cb0d99C10D46650fd463414962000",
@@ -478,7 +478,7 @@
     "0xE2Bee0078E1252Da963c389AC55CFEEE624eC712": {
         "token_address": "0xE2Bee0078E1252Da963c389AC55CFEEE624eC712",
         "num_channels": 14,
-        "num_nodes": 12,
+        "num_nodes": 30,
         "nodes": [
             "0xb626843871F547f097d2185342fCbB6f7a28e160",
             "0x0348DA43961D4aE66aBF8D2b0C1e0Bf5DEd2CdfC",
