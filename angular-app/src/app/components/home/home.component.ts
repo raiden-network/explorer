@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {NetMetricsService} from '../../services/net.metrics/net.metrics.service';
 import {SharedService} from '../../services/net.metrics/shared.service';
-import {NMComparativeMetrics} from '../../models/NMComparativeMetrics';
+import {NMNetwork} from '../../models/NMNetwork';
 import {Link, Node} from '../../services/d3/models';
-// import {NMResponse} from '../../models/NMResponse';
 import {NMRestructuredData} from '../../models/NMRestructuredData';
 
 @Component({
@@ -18,8 +17,8 @@ export class HomeComponent implements OnInit {
   public numUniqueUsers = 0;
   public numNetworks = 0;
   public numTotalChannels = 0;
-  public largestNetworks: Array<NMComparativeMetrics>;
-  public busiestNetworks: Array<NMComparativeMetrics>;
+  public largestNetworks: Array<NMNetwork>;
+  public busiestNetworks: Array<NMNetwork>;
   public nodes: Array<Node> = [];
   public links: Array<Link> = [];
   public largestTokenDisp = true;
@@ -79,7 +78,7 @@ export class HomeComponent implements OnInit {
     // (temp: clears interval after a while to spare server)
     _getMetrics();
     const si = setInterval(_getMetrics, 3000);
-    // setTimeout(a=>{ clearInterval(si) }, 12e3)
+    // setTimeout(a=>{ clearInterval(si) }, 5e3);
 
   } // updateMetrics
 

@@ -87,18 +87,18 @@
     <ng-template [ngIf]="largestNetworks && largestTokenDisp">
       <ng-template ngFor let-i="index" let-ntw [ngForOf]="largestNetworks">
         <tr *ngIf="i<5">
-          <td>{{ntw.tokenAddress}}</td> <td></td>
-          <td>{{ntw.metricValue}}</td> <td></td>
-          <td>{{ntw.secondaryMetricValue}}</td>
+          <td>{{ntw.token_address}}</td> <td></td>
+          <td>{{ntw.num_nodes}}</td> <td></td>
+          <td>{{ntw.num_channels}}</td>
         </tr>
       </ng-template> <!-- ngFor -->
     </ng-template> <!-- ngIf -->
     <ng-template [ngIf]="busiestNetworks && busiestTokenDisp">
       <ng-template ngFor let-i="index" let-ntw [ngForOf]="busiestNetworks">
         <tr *ngIf="i<5">
-          <td>{{ntw.tokenAddress}}</td> <td></td>
-          <td>{{ntw.metricValue}}</td> <td></td>
-          <td>{{ntw.secondaryMetricValue}}</td>
+          <td>{{ntw.token_address}}</td> <td></td>
+          <td>{{ntw.num_nodes}}</td> <td></td>
+          <td>{{ntw.num_channels}}</td>
         </tr>
       </ng-template> <!-- ngFor -->
     </ng-template> <!-- ngIf -->
