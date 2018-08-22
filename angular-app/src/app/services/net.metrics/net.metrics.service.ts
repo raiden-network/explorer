@@ -62,8 +62,7 @@ export class NetMetricsService {
     this.largestNetworks = this.currentNetworks.slice().sort((a,b)=>{ 
       return b.num_nodes - a.num_nodes;
     });
-    // console.log('sorted largetNetworks', this.listNetworks(this.largestNetworks));
-  } // method
+  }
 
   /*  Update this.busiestNetworks with new data. 
       Sort by number of channels. */
@@ -72,12 +71,6 @@ export class NetMetricsService {
     this.busiestNetworks = this.currentNetworks.slice().sort((a,b)=>{ 
       return b.num_channels - a.num_channels;
     });
-    // console.log('sorted busiestNetworks', this.listNetworks(this.busiestNetworks) );
-  }
-
-  // Debugging only: return a simplified array
-  private listNetworks(arr:NMNetwork[]){
-    return arr.map(n=>{ return [n.num_nodes, n.num_channels].join() });
   }
 
   /*  Run through users in new data; if new entries,
@@ -106,7 +99,6 @@ export class NetMetricsService {
       that.http.get<NMAPIResponse>(this.nmConfig.defaultConfig.url)
         .subscribe(
           (result: any) => {
-            // console.log('updateCurrentMetrics', result);
             that.setCurrentMetrics(result);
             // that.setCurrentMetrics(result[that.resultKey]); // doesn't fit current json format
             fulfill({
@@ -140,8 +132,6 @@ export class NetMetricsService {
         const tokenInfo = that.currentMetrics[key];
         that.numTotalChannels += tokenInfo[that.numChannelsKey];
         that.updateUniqueUserArray(tokenInfo);
-        // that.updateLargestNetworks(tokenInfo);
-        // that.updateBusiestNetworks(tokenInfo);
       }
     });
     this.updateLargestNetworks();
@@ -210,12 +200,10 @@ export class NetMetricsService {
   }
 
   public getLargestNetworks(): Array<NMNetwork> {
-    // console.log('getLargestNetworks',this.listNetworks(this.largestNetworks));
     return this.largestNetworks;
   }
 
   public getBusiestNetworks(): Array<NMNetwork> {
-    // console.log('getBusiestNetworks',this.listNetworks(this.busiestNetworks));
     return this.busiestNetworks;
   }
 

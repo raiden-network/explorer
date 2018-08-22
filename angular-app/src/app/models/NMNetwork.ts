@@ -3,7 +3,6 @@ export interface NMNetwork {
   num_channels: number;
   num_nodes: number;
   nodes: Array<string>;
-  // channels: Array<object>;
   channels: Array<{
     channel_identifier: string,
     participant1: string,
