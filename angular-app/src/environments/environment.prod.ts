@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiURL: 'http://localhost:3000'
+  // configFile: '../assets/config.json',
+  // apiURL: 'http://localhost:3000'
 };
