@@ -31,8 +31,10 @@ const appRoutes: Routes = [
   {path: 'home', component: HomeComponent}
 ];
 
+// Loading config file to browser seems redundant as this dummy function works fine:
 export function ConfigLoader(nmConfig: NetMetricsConfig) {
-  return () => nmConfig.load(environment.configFile);
+  // return () => nmConfig.load(environment.configFile);
+  return function(){};
 }
 
 @NgModule({
