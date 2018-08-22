@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  webui:
+    image: node:alpine
+    restart: always
+    volumes:
+      - ./angular-app/dist:/app/dist
+      - ./angular-app/serv-dist:/app/serv-dist
+    working_dir: /app
+    ports:
+      - "8888:3000"
+    command:
+      - sh
+      - -c
+      - npm i express cors && node serv-dist/serv.js
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.frontend.rule=Host: status.raiden.network,status.test.raiden.network"
