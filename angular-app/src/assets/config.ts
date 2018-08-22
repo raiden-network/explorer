@@ -1,6 +1,4 @@
 export const config = {
-  // resource: "/info",
-  // port: 4567,
   url: "http://localhost:4567/info",
   http_timeout: 600000
 }
