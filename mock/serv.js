@@ -8,6 +8,6 @@ const app = express(),
 // Allow all cors (cross domain requests):
 app.use(cors());
 app.get('/info', (req, res) => {
-  res.sendFile('network-info.json', { root: __dirname + '/data/' });
+  res.sendFile('network-info-2.json', { root: __dirname + '/data/' });
 });
 app.listen(port, f=>{ console.log(`app listening on path '/info' on port ${port}`) });

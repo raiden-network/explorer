@@ -17,7 +17,7 @@ export class NetMetricsService {
   private numNetworks = 0;
   private numTotalChannels = 0;
   private numUniqueUsers = 0;
-  private numChannelsKey = 'num_channels';
+  private numChannelsKey = 'num_channels_opened';
   private usersKey = 'nodes';
   private resultKey = 'result';
   private numNetworksKey = 'num_networks';
@@ -74,7 +74,7 @@ export class NetMetricsService {
   }
 
   /*  Run through users in new data; if new entries,
-      add them to this.users. (Why not just overwrite with new values?) */
+      increment user counter `this.numUniqueUsers`. */
   protected updateUniqueUserArray(tokenInfo: any) {
     const that = this;
     const userArr: Array<string> = tokenInfo[that.usersKey];
@@ -168,8 +168,6 @@ export class NetMetricsService {
       Returns the data;
   */
   public retrievePersistedDataForGraph(): NMRestructuredData {
-    // Temporary fix using json file because restructuredData causes error:
-    // const data: NMRestructuredData = require('../../../../../mock/data/graphics-data.json');
     const data = this.restructuredData;
     return data;
   }

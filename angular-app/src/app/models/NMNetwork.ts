@@ -1,6 +1,9 @@
 export interface NMNetwork {
   token_address: string;
-  num_channels: number;
+  num_channels_total: number,
+  num_channels_opened: number,
+  num_channels_closed: number,
+  num_channels_settled: number,
   num_nodes: number;
   nodes: Array<string>;
   channels: Array<{
