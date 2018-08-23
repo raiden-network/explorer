@@ -1,0 +1,15 @@
+-r requirements.txt
+
+pip>=18.0.0
+bumpversion>=0.5.3
+wheel>=0.30.0
+watchdog>=0.8.3
+flake8>=3.5.0
+mypy>=0.620
+coverage>=4.5.1
+
+ipython
+pdbpp
+psutil
+
+eth-tester[py-evm]==0.1.0-beta.28

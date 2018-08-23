@@ -3,6 +3,10 @@ export interface NMNetwork {
   num_channels: number;
   num_nodes: number;
   nodes: Array<string>;
+<<<<<<< HEAD
+=======
+  // channels: Array<object>;
+>>>>>>> parent/master
   channels: Array<{
     channel_identifier: string,
     participant1: string,
