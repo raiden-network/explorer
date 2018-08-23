@@ -1,0 +1,10 @@
+version: '2.1'
+
+services:
+  backend:
+    image: backend
+    build: .
+    ports:
+      - 4567:4567
+    volumes:
+      - ./:/app
