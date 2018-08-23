@@ -31,10 +31,6 @@ const appRoutes: Routes = [
   {path: 'home', component: HomeComponent}
 ];
 
-export function ConfigLoader(nmConfig: NetMetricsConfig) {
-  return () => nmConfig.load(environment.configFile);
-}
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -78,7 +74,7 @@ export function ConfigLoader(nmConfig: NetMetricsConfig) {
     NetMetricsConfig,
     {
       provide: APP_INITIALIZER,
-      useFactory: ConfigLoader,
+      useFactory: f=>{ return function(){}; },
       deps: [NetMetricsConfig],
       multi: true
     },
