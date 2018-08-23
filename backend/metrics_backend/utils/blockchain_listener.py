@@ -284,7 +284,7 @@ class BlockchainListener(gevent.Greenlet):
                 callback(decoded_event)
 
     def _detected_chain_reorg(self, current_block: int):
-        log.info(
+        log.debug(
             'Chain reorganization detected. '
             'Resyncing unconfirmed events (unconfirmed_head=%d) [@%d] '
             'delta=%d block(s)',
