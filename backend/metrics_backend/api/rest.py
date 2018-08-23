@@ -46,5 +46,5 @@ class NetworkInfoAPI:
             self.api.add_resource(resource, endpoint_url, resource_class_kwargs=kwargs)
 
     def run(self, port: int = 5002):
-        self.rest_server = WSGIServer(('localhost', port), self.flask_app)
+        self.rest_server = WSGIServer(('0.0.0.0', port), self.flask_app)
         self.server_greenlet = gevent.spawn(self.rest_server.serve_forever)
