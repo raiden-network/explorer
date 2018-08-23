@@ -889,7 +889,7 @@
   "0x1D09Ae0084e2Ae270c75cBadaF0515F1C127c869": {
     "token_address": "0x1D09Ae0084e2Ae270c75cBadaF0515F1C127c869",
     "num_channels_total": 8,
-    "num_channels_opened": 7,
+    "num_channels_opened": 70,
     "num_channels_closed": 0,
     "num_channels_settled": 1,
     "num_nodes": 7,

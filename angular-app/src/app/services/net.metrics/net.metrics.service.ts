@@ -69,7 +69,7 @@ export class NetMetricsService {
   protected updateBusiestNetworks() {
 
     this.busiestNetworks = this.currentNetworks.slice().sort((a,b)=>{ 
-      return b.num_channels - a.num_channels;
+      return b.num_channels_opened - a.num_channels_opened;
     });
   }
 
