@@ -8,11 +8,10 @@ export interface NMNetwork {
   nodes: Array<string>;
   channels: Array<{
     channel_identifier: string,
+    status: string,
     participant1: string,
     participant2: string,
     deposit1: number,
-    deposit2: number,
-    capacity1: number,
-    capacity2: number
+    deposit2: number
   }>;
 }
