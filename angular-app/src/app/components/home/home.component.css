@@ -254,4 +254,13 @@
   background-color: #1960A6 !important;
 }
 
-
+.warning-div {
+  background: #ff7f00; 
+  width: 60%; 
+  margin: auto; 
+  padding: 1rem 8rem; 
+  border-radius: 0.5rem;
+}
+.warning-div p {
+  text-align: left;
+}
