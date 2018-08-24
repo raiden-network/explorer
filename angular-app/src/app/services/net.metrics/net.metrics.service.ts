@@ -1,3 +1,4 @@
+declare let require: any; 
 import { NetMetricsConfig } from './net.metrics.config';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -6,7 +7,12 @@ import { NMAPIResponse } from '../../models/NMAPIResponse';
 import { NMResponse } from '../../models/NMResponse';
 import { NMConfig } from '../../models/NMConfig';
 import { NMNetwork } from '../../models/NMNetwork';
-import {NMRestructuredData} from '../../models/NMRestructuredData';
+import * as NMNetworkSchema from '../../models/NMNetwork.schema'; 
+import { NMRestructuredData } from '../../models/NMRestructuredData';
+const Ajv = require('ajv'); 
+
+const networkSchema = NMNetworkSchema.schema;
+const ajv = new Ajv({ allErrors: true });
 
 @Injectable()
 export class NetMetricsService {
@@ -43,16 +49,31 @@ export class NetMetricsService {
       JSON.parse(JSON.stringify(newMetrics));
     } catch (e) {
       console.error('setCurrentMetrics',e);
-      return;
+      throw new Error(e);
+      // return;
     }
     this.currentMetrics = newMetrics;
     // Turn the metrics in to a useful array of networks:
     this.currentNetworks = [];
     Object.keys(this.currentMetrics).map((key: string) => {
       if (!(key === that.numNetworksKey)) {
-        that.currentNetworks.push(that.currentMetrics[key]);
+        const ntw = that.currentMetrics[key];
+        const valid = ajv.validate(networkSchema, ntw);
+        if(!valid){ 
+          throw new Error("Malformed API data: \n" + this.ajvErrorsToString(ajv.errors)); 
+        }
+        else { that.currentNetworks.push(ntw); }
       }
     });
+  }
+
+  /* Returns a readable summary of ajv errors as string: */
+  private ajvErrorsToString(errors: any):string {
+    // Create meaningful string of errors:
+    return errors.map(e=>{ 
+      const str = e.dataPath ? `${e.keyword} '${e.dataPath}'; ${e.message}.` : `${e.keyword}; ${e.message}.`;
+      return str;
+    }).join('\n');
   }
 
   /*  Update this.largestNetworks with new data. 
@@ -99,8 +120,11 @@ export class NetMetricsService {
       that.http.get<NMAPIResponse>(this.nmConfig.defaultConfig.url)
         .subscribe(
           (result: any) => {
-            that.setCurrentMetrics(result);
-            // that.setCurrentMetrics(result[that.resultKey]); // doesn't fit current json format
+            try {
+              that.setCurrentMetrics(result);
+            } catch(e){
+              reject({code: 400, body: e});
+            }
             fulfill({
               code: 200,
               body: 'Successfully updated '

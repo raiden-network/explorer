@@ -7,10 +7,9 @@
 </div>
 <div class="abstractinfodisp" align="center" id="abstractView">
 
-  <div class="warning" *ngIf="warningMsg"
-    style="background: #ff7f00; width: 80%; margin: auto; padding: 1rem; border-radius: 0.5rem;">
+  <div class="warning-div" *ngIf="warningMsg">
     <h2>{{warningMsg.title}}</h2>
-    <p>{{warningMsg.body}}</p>
+    <p [innerHTML]="warningMsg.body"></p>
   </div>
   
   <table cellpadding="15">

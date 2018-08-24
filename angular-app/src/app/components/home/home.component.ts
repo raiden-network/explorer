@@ -70,7 +70,7 @@ export class HomeComponent implements OnInit {
         _updGraphData();
       }).catch(e=>{
         console.log('Error getting metrics: ', e);
-        that.showWarning("Error", `Error getting data: "${e.body.message}"`);
+        that.showWarning("Error", `Error getting data: \n"${e.body.message}"` );
       });
     }
 
@@ -85,7 +85,8 @@ export class HomeComponent implements OnInit {
   /*  Show a warning message. Parameters are title and body strings. 
       To close the message, pass in falsy parameters (null or "") */
   public showWarning(title:string, body:string) {
-    title && body ? this.warningMsg = { title, body } : this.warningMsg = null;
+    title && body ? this.warningMsg = { title, body: body.replace(/\n/g,'<br/>') } 
+      : this.warningMsg = null;
   }
   /*  Set values to show/hide correct view */
   public showLargestNetworks() {
