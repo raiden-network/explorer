@@ -1,18 +1,17 @@
-declare let require: any; 
+declare let require: any;
 import { NetMetricsConfig } from './net.metrics.config';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { SharedService } from './shared.service';
 import { NMAPIResponse } from '../../models/NMAPIResponse';
 import { NMResponse } from '../../models/NMResponse';
-import { NMConfig } from '../../models/NMConfig';
 import { NMNetwork } from '../../models/NMNetwork';
-import * as NMNetworkSchema from '../../models/NMNetwork.schema'; 
+import * as NMNetworkSchema from '../../models/NMNetwork.schema';
 import { NMRestructuredData } from '../../models/NMRestructuredData';
-const Ajv = require('ajv'); 
+
+const Ajv = require('ajv');
 
 const networkSchema = NMNetworkSchema.schema;
-const ajv = new Ajv({ allErrors: true });
+const ajv = new Ajv({allErrors: true});
 
 @Injectable()
 export class NetMetricsService {
@@ -25,95 +24,27 @@ export class NetMetricsService {
   private numUniqueUsers = 0;
   private numChannelsKey = 'num_channels_opened';
   private usersKey = 'nodes';
-  private resultKey = 'result';
   private numNetworksKey = 'num_networks';
   private users: Array<string> = [];
-  private numUsersKey = 'num_nodes';
-  private tokenAddressKey = 'token_address';
   private channelsKey = 'channels';
   private channelSourceKey = 'participant1';
   private channelTargetKey = 'participant2';
   private largestNetworks: Array<NMNetwork> = [];
   private busiestNetworks: Array<NMNetwork> = [];
-  private numComparativeTuples = 9;
-  private restructuredDataEndpoint = 'http://localhost:3000/data';
 
-  public constructor(private http: HttpClient, private nmConfig: NetMetricsConfig, private sharedService: SharedService) {
+  public constructor(private http: HttpClient, private nmConfig: NetMetricsConfig) {
   }
 
-  // Helpers
-  /*  Set this.currentMetics from new data, if valid */
-  protected setCurrentMetrics(newMetrics: any) {
-    const that = this;
-    try {
-      JSON.parse(JSON.stringify(newMetrics));
-    } catch (e) {
-      console.error('setCurrentMetrics',e);
-      throw new Error(e);
-      // return;
-    }
-    this.currentMetrics = newMetrics;
-    // Turn the metrics in to a useful array of networks:
-    this.currentNetworks = [];
-    Object.keys(this.currentMetrics).map((key: string) => {
-      if (!(key === that.numNetworksKey)) {
-        const ntw = that.currentMetrics[key];
-        const valid = ajv.validate(networkSchema, ntw);
-        if(!valid){ 
-          throw new Error("Malformed API data: \n" + this.ajvErrorsToString(ajv.errors)); 
-        }
-        else { that.currentNetworks.push(ntw); }
-      }
-    });
-  }
-
-  /* Returns a readable summary of ajv errors as string: */
-  private ajvErrorsToString(errors: any):string {
-    // Create meaningful string of errors:
-    return errors.map(e=>{ 
-      const str = e.dataPath ? `${e.keyword} '${e.dataPath}'; ${e.message}.` : `${e.keyword}; ${e.message}.`;
-      return str;
-    }).join('\n');
-  }
-
-  /*  Update this.largestNetworks with new data. 
-      Sorty by number of nodes. */
-  protected updateLargestNetworks() {
-    // `slice` to return a clone of the array iso pointer to same array:
-    this.largestNetworks = this.currentNetworks.slice().sort((a,b)=>{ 
-      return b.num_nodes - a.num_nodes;
-    });
-  }
-
-  /*  Update this.busiestNetworks with new data. 
-      Sort by number of channels. */
-  protected updateBusiestNetworks() {
-
-    this.busiestNetworks = this.currentNetworks.slice().sort((a,b)=>{ 
-      return b.num_channels_opened - a.num_channels_opened;
-    });
-  }
-
-  /*  Run through users in new data; if new entries,
-      increment user counter `this.numUniqueUsers`. */
-  protected updateUniqueUserArray(tokenInfo: any) {
-    const that = this;
-    const userArr: Array<string> = tokenInfo[that.usersKey];
-    for (const user of userArr) {
-      if (!that.users.includes(user)) {
-        that.users.push(user);
-        that.numUniqueUsers++;
-      }
-    }
-  }
-
-  /*  Set this.numNetworks with value from new data */
+  /**
+   * Set this.numNetworks with value from new data
+   */
   public updateNumNetworks() {
     this.numNetworks = this.currentMetrics[this.numNetworksKey];
   }
 
-  // Functionality
-  /*  Get data from server endpoint, then run setCurrentMetrics() */
+  /**
+   * Get data from server endpoint, then run setCurrentMetrics()
+   */
   public updateCurrentMetrics(): Promise<NMResponse> {
     const that = this;
     return new Promise<NMResponse>((fulfill, reject) => {
@@ -122,7 +53,7 @@ export class NetMetricsService {
           (result: any) => {
             try {
               that.setCurrentMetrics(result);
-            } catch(e){
+            } catch (e) {
               reject({code: 400, body: e});
             }
             fulfill({
@@ -139,12 +70,12 @@ export class NetMetricsService {
     });
   }
 
-  /*  
-      Reset `largestNetworks`, `busiesNetworks` and other properties,
-      then proceeds to update them  with various methods; 
-      update `users, numTotalChannels` etc. 
-      Called currently only from home.component
-  */
+  /**
+   * Reset `largestNetworks`, `busiesNetworks` and other properties,
+   * then proceeds to update them  with various methods;
+   * update `users, numTotalChannels` etc.
+   * Called currently only from home.component
+   */
   public updateTotalsAndComparativeMetrics() {
     this.largestNetworks = [];
     this.busiestNetworks = [];
@@ -162,43 +93,39 @@ export class NetMetricsService {
     this.updateBusiestNetworks();
   }
 
-  /*  Restructure metric data to fit d3 chart
-      Returns the restructed data and also sets it
-      to the `this.restructuredData` property. 
-  */
+  /**
+   * Restructure metric data to fit d3 chart
+   * Returns the restructured data and also sets it
+   * to the `this.restructuredData` property.
+   */
   public restructureAndPersistData(): NMRestructuredData {
     const restructuredData: NMRestructuredData = {nodes: [], links: []};
     Object.keys(this.currentMetrics).map((key: string) => {
       if (!(key === this.numNetworksKey)) {
         const obj = this.currentMetrics[key];
         const objNodes = obj[this.usersKey];
-        objNodes.forEach(id=>{
+        objNodes.forEach(id => {
           restructuredData.nodes.push({id});
-        }); 
+        });
         const objChannels = obj[this.channelsKey];
         for (const channel of objChannels) {
           restructuredData.links.push({
             source: channel[this.channelSourceKey],
             target: channel[this.channelTargetKey],
-          }); // push
-        } // for
-      } // if(!(key ...
-    }); // Object.keys .. .map
+          });
+        }
+      }
+    });
     this.restructuredData = restructuredData;
     return restructuredData;
-  } // restructureAndPersistData
-
-  /*  Get d3 chart data. 
-      Returns the data;
-  */
-  public retrievePersistedDataForGraph(): NMRestructuredData {
-    const data = this.restructuredData;
-    return data;
   }
 
-  // Getters and setters
-  public getConfig(): NMConfig {
-    return this.nmConfig.defaultConfig;
+  /**
+   * Get d3 chart data.
+   * Returns the data;
+   */
+  public retrievePersistedDataForGraph(): NMRestructuredData {
+    return this.restructuredData;
   }
 
   public getNumNetworks(): number {
@@ -213,14 +140,6 @@ export class NetMetricsService {
     return this.numUniqueUsers;
   }
 
-  public getUniqueUsers(): Array<string> {
-    return this.users;
-  }
-
-  public setNumComparativeTuples(num: number) {
-    this.numComparativeTuples = num;
-  }
-
   public getLargestNetworks(): Array<NMNetwork> {
     return this.largestNetworks;
   }
@@ -233,7 +152,84 @@ export class NetMetricsService {
     return this.currentMetrics;
   }
 
-  public getCurrentNetworks() {
-    return this.currentNetworks;
+
+  /**
+   * Set this.currentMetics from new data, if valid
+   * @param newMetrics
+   */
+  protected setCurrentMetrics(newMetrics: any) {
+    const that = this;
+    try {
+      JSON.parse(JSON.stringify(newMetrics));
+    } catch (e) {
+      console.error('setCurrentMetrics', e);
+      throw new Error(e);
+      // return;
+    }
+    this.currentMetrics = newMetrics;
+    // Turn the metrics in to a useful array of networks:
+    this.currentNetworks = [];
+
+    Object.keys(this.currentMetrics).map((key: string) => {
+      if (!(key === that.numNetworksKey)) {
+        const ntw = that.currentMetrics[key];
+        const valid = ajv.validate(networkSchema, ntw);
+
+        if (!valid) {
+          throw new Error('Malformed API data: \n' + this.ajvErrorsToString(ajv.errors));
+        } else {
+          that.currentNetworks.push(ntw);
+        }
+      }
+    });
+  }
+
+  /**
+   * Update this.largestNetworks with new data.
+   * Sort by number of nodes.
+   */
+  protected updateLargestNetworks() {
+    // `slice` to return a clone of the array iso pointer to same array:
+    this.largestNetworks = this.currentNetworks.slice().sort((a, b) => {
+      return b.num_nodes - a.num_nodes;
+    });
+  }
+
+  /**
+   * Update this.busiestNetworks with new data.
+   * Sort by number of channels.
+   */
+  protected updateBusiestNetworks() {
+    this.busiestNetworks = this.currentNetworks.slice().sort((a, b) => {
+      return b.num_channels_opened - a.num_channels_opened;
+    });
+  }
+
+  /**
+   * Run through users in new data; if new entries,
+   * increment user counter `this.numUniqueUsers`.
+   * @param tokenInfo
+   */
+  protected updateUniqueUserArray(tokenInfo: any) {
+    const that = this;
+    const userArr: Array<string> = tokenInfo[that.usersKey];
+    for (const user of userArr) {
+      if (!that.users.includes(user)) {
+        that.users.push(user);
+        that.numUniqueUsers++;
+      }
+    }
+  }
+
+  //noinspection JSMethodCanBeStatic
+  /**
+   * Returns a readable summary of ajv errors as string
+   * @param errors
+   */
+  private ajvErrorsToString(errors: any): string {
+    // Create meaningful string of errors:
+    return errors.map(e => {
+      return e.dataPath ? `${e.keyword} '${e.dataPath}'; ${e.message}.` : `${e.keyword}; ${e.message}.`;
+    }).join('\n');
   }
 }

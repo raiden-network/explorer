@@ -7,7 +7,7 @@ const FORCES = {
   LINKS: 1 / 50,
   COLLISION: 1,
   CHARGE: -1
-}
+};
 
 export class ForceDirectedGraph {
   public ticker: EventEmitter<d3.Simulation<Node, Link>> = new EventEmitter();
@@ -21,21 +21,6 @@ export class ForceDirectedGraph {
     this.links = links;
 
     this.initSimulation(options);
-  }
-
-  connectNodes(source, target) {
-    let link;
-
-    if (!this.nodes[source] || !this.nodes[target]) {
-      throw new Error('One of the nodes does not exist');
-    }
-
-    link = new Link(source, target);
-    this.simulation.stop();
-    this.links.push(link);
-    this.simulation.alphaTarget(0.3).restart();
-
-    this.initLinks();
   }
 
   initNodes() {

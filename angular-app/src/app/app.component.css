@@ -1,18 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 body {
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   background-color: black !important;
 }
 
 .topnav {
   background-color: black;
   overflow: auto;
-  padding-top: 10px;
-  padding-left: 0px;
-  padding-bottom: 10px;
-  padding-right: 0px;
+  padding: 10px 0;
   border-bottom: 1px solid white;
 }
 

@@ -3,14 +3,11 @@
 .titlesec {
   background-color: black;
   overflow: auto;
-  padding-top: 2.75%;
-  padding-left: 0;
-  padding-bottom: 0;
-  padding-right: 0;
+  padding: 2.75% 0 0;
 }
 
 .titlesec a {
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   text-align: center;
   float: inherit;
   color: white;
@@ -20,14 +17,11 @@
 .subtitlesec {
   background-color: black;
   overflow: auto;
-  padding-top: 0.5%;
-  padding-left: 0;
-  padding-bottom: 0;
-  padding-right: 0;
+  padding: 0.5% 0 0;
 }
 
 .subtitlesec a {
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   text-align: center;
   float: inherit;
   color: white;
@@ -37,10 +31,7 @@
 .abstractinfodisp {
   background-color: black;
   overflow: auto;
-  padding-top: 2.5%;
-  padding-left: 0;
-  padding-bottom: 0;
-  padding-right: 0;
+  padding: 2.5% 0 0;
 }
 
 .abstractinfodisp img {
@@ -50,7 +41,7 @@
 }
 
 .abstractinfodisp a {
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   color: white;
   text-align: center;
   padding: 14px 16px;
@@ -73,7 +64,7 @@
   border-radius: 6px;
   padding: 5px;
   float: right;
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   font-size: 10px;
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
@@ -106,20 +97,17 @@
 
 .nodes circle {
   stroke: #fff;
-  stroke-width: 1.5px;
+  stroke-width: 2px;
 }
 
 .innertablediv {
   background-color: black;
   overflow: auto;
-  padding-top: 0;
-  padding-left: 0;
-  padding-bottom: 0;
-  padding-right: 0;
+  padding: 0;
 }
 
 .innertablediv a {
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   color: white;
   text-align: center;
   padding: 8px 16px;
@@ -138,10 +126,7 @@
 .metricsdiv {
   background-color: black;
   overflow: auto;
-  padding-top: 2%;
-  padding-left: 0;
-  padding-bottom: 0;
-  padding-right: 0;
+  padding: 2% 0 0;
 }
 
 .metricsdiv table {
@@ -164,35 +149,22 @@
   background-color: black;
   width: 20rem;
   margin: auto 1rem;
-  /*width: 200px;*/
-  /*height: auto;*/
-  /*border-left-width: 0;*/
-  /*border-top-width: 0;*/
-  /*border-right-width: 0;*/
-  /*border-bottom-width: 2px;*/
-  /*border-bottom-color: white;*/
   border: 1px solid #1C60A5;
-  /*border: none;*/
   border-radius: 6px;
   padding: 0.3rem;
   font-size: 100%;
-  /*font-size: 120%;*/
 }
 
 .metricsdiv button:focus{
-  /*border-bottom-color: #2191FB;*/
-  /*border-bottom-width: 2px;*/
   outline: 0;
 }
 
 .metricsdiv button.click {
-  /*border-bottom-color: #2191FB;*/
-  /*border-bottom-width: 2px;*/
   outline: 0;
 }
 
 .metricsdiv a {
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   color: white;
   text-align: center;
   text-decoration: none;
@@ -211,7 +183,7 @@
 
 .networkpage a {
   color: black;
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
 }
 
 .networkpage .tooltiptext1 {
@@ -224,7 +196,7 @@
   border-radius: 6px;
   padding: 5px;
   float: right;
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   font-size: 10px;
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
