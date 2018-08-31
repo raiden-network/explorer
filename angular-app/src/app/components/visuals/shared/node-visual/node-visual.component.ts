@@ -1,23 +1,23 @@
 import { Component, Input } from '@angular/core';
-import {Node} from '../../../../services/d3';
+import { Node } from '../../../../services/d3';
 
 @Component({
   selector: '[nodeVisual]',
   template: `
-    <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
+    <svg:g [attr.transform]="'translate(' + nodeVisual.x + ',' + nodeVisual.y + ')'">
       <svg:circle
         class="node"
-        [attr.fill]="node.color"
+        [attr.fill]="nodeVisual.color"
         cx="0"
         cy="0"
         [attr.r]="10">
       </svg:circle>
       <svg:text class="node-name">
-        {{node.linkCount}}
+        {{nodeVisual.linkCount}}
       </svg:text>
       <svg:title>
         <svg:text>
-          {{node.id}}
+          {{nodeVisual.id}}
         </svg:text>
       </svg:title>
     </svg:g>
@@ -25,7 +25,5 @@ import {Node} from '../../../../services/d3';
   styleUrls: ['./node-visual.component.css']
 })
 export class NodeVisualComponent {
-  @Input('nodeVisual') node: Node;
+  @Input() nodeVisual: Node;
 }
-
-// [attr.r]="node.r">

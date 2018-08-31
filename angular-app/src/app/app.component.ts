@@ -1,6 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {Title} from '@angular/platform-browser';
-import {NetMetricsService} from './services/net.metrics/net.metrics.service';
+import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +9,8 @@ import {NetMetricsService} from './services/net.metrics/net.metrics.service';
 export class AppComponent implements OnInit {
   title = 'Raiden Network';
 
-  public constructor(private titleService: Title, netMetricsService: NetMetricsService) {}
+  public constructor(private titleService: Title) {
+  }
 
   ngOnInit() {
 

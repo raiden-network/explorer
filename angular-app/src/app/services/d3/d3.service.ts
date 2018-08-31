@@ -1,5 +1,5 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { Node, Link, ForceDirectedGraph } from './models';
+import { Injectable } from '@angular/core';
+import { ForceDirectedGraph, Link, Node } from './models';
 import * as d3 from 'd3';
 
 @Injectable()
@@ -7,7 +7,8 @@ export class D3Service {
   /** This service will provide methods to enable user interaction with elements
    * while maintaining the d3 simulations physics
    */
-  constructor() { }
+  constructor() {
+  }
 
   /** A method to bind a pan and zoom behaviour to an svg element */
   applyZoomableBehaviour(svgElement, containerElement) {
@@ -39,23 +40,9 @@ export class D3Service {
         graph.simulation.alphaTarget(0.3).restart();
       }
 
-/*      const tooltip = d3.select('body')
-        .append('div')
-        .style('position', 'absolute')
-        .style('z-index', '10')
-        .style('visibility', 'hidden')
-        .text(node.id);*/
-
       d3.event
         .on('drag', dragged)
-        .on('end', ended)
-        // Causes error: `unknown type: mouseover`
-        // .on('mouseover', function() {return tooltip.style('visibility', 'visible'); })
-        // .on('mouseout', function() {return tooltip.style('visibility', 'hidden'); });
-
-        // Successful click listener:
-      /*d3element.select('circle')
-      .on('click', e=>{ console.log('click', d3.event); });*/
+        .on('end', ended);
 
       function dragged() {
         node.x = d3.event.x;
@@ -79,8 +66,8 @@ export class D3Service {
       .on('start', started));
   }
 
+  //noinspection JSMethodCanBeStatic
   getForceDirectedGraph(nodes: Node[], links: Link[], options: { width, height }) {
-    const sg = new ForceDirectedGraph(nodes, links, options);
-    return sg;
+    return new ForceDirectedGraph(nodes, links, options);
   }
 }
