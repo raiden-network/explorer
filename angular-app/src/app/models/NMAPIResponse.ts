@@ -1,3 +1,5 @@
+import { NMNetwork } from './NMNetwork';
+
 export interface NMAPIResponse {
-  result: any;
+  result: { [key: string]: NMNetwork | number };
 }

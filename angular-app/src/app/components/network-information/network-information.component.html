@@ -1,0 +1,87 @@
+<div class="information-container">
+  <div class="title">{{tokenNetwork.networkAddress}}</div>
+</div>
+
+<div class="information-container">
+  <div class="information-column">
+    <div class="information-group first">
+      <div class="item-row no-center">
+        <div class="item-column">
+          <app-donut-chart [data]="chart(tokenNetwork)"></app-donut-chart>
+        </div>
+        <div class="item-column">
+          <div class="metric-information">{{tokenNetwork.openedChannels}}</div>
+          <div class="metric-description">Open Channels</div>
+          <div class="metric-information">{{tokenNetwork.closedChannels}}</div>
+          <div class="metric-description">Closed Channels</div>
+          <div class="metric-information">{{tokenNetwork.settledChannels}}</div>
+          <div class="metric-description">Settled Channels</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="information-group second">
+      <div class="title">Top channels by deposit</div>
+
+      <table cellpadding="4" *ngIf="tokenNetwork.topChannelsByDeposit.length > 0; else no_channels">
+        <tr>
+          <th>Participants</th>
+          <th>Channel Deposit</th>
+        </tr>
+
+        <tr *ngFor="let channel of tokenNetwork.topChannelsByDeposit">
+          <td>{{channel.participant1}}<br/>{{channel.participant2}}</td>
+          <td align="right">{{channel.deposit1 + channel.deposit2 | number}}</td>
+        </tr>
+      </table>
+
+      <ng-template #no_channels>
+        <div class="empty-text">
+          No channels found for this network.
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <div class="information-column">
+    <div class="information-group first">
+      <div>
+        <div class="metric-information">{{tokenNetwork.averageDepositPerParticipant | number}}</div>
+        <div class="metric-description">Deposit per participant</div>
+      </div>
+      <div>
+        <div class="metric-information">{{tokenNetwork.channelsPerParticipant | number}}</div>
+        <div class="metric-description">Channels per participant</div>
+      </div>
+      <div>
+        <div class="metric-information">{{tokenNetwork.averageDepositPerChannel | number}}</div>
+        <div class="metric-description">Deposit per channel</div>
+      </div>
+    </div>
+
+    <div class="information-group second">
+      <div class="title">Top participants by channels</div>
+      <table cellpadding="8"
+             align="center"
+             *ngIf="tokenNetwork.topParticipantsByChannels.length > 0; else no_participants">
+        <tr>
+          <th>Participant</th>
+          <th>Channels</th>
+        </tr>
+
+        <tr *ngFor="let participant of tokenNetwork.topParticipantsByChannels">
+          <td>{{participant.address}}</td>
+          <td align="right">{{participant.channels}}</td>
+        </tr>
+      </table>
+
+      <ng-template #no_participants>
+
+        <div class="empty-text">
+          No participants for this network
+        </div>
+
+      </ng-template>
+    </div>
+  </div>
+
+</div>
