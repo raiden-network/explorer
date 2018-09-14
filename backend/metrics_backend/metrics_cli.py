@@ -19,7 +19,7 @@ from metrics_backend.utils.serialisation import token_network_to_dict
 
 log = logging.getLogger(__name__)
 
-REGISTRY_ADDRESS = '0x445D79052522eC94078Dfccf96d9302775cA5b4E'
+REGISTRY_ADDRESS = '0xf2a175A52Bd3c815eD7500c765bA19652AB89B30'
 DEFAULT_PORT = 4567
 OUTPUT_FILE = 'network-info.json'
 TEMP_FILE = 'tmp.json'
