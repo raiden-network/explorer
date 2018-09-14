@@ -144,3 +144,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# info file
+network-info.json
