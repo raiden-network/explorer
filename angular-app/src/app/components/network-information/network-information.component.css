@@ -1,0 +1,72 @@
+:host {
+  color: #f2f2f2;
+}
+
+.information-container {
+  margin: 0.2em;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.information-column {
+  margin: 0.2em;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+.information-column .first {
+  height: 165px;
+}
+
+.information-column .second {
+  height: 290px;
+}
+
+.information-group {
+  border: 1px solid #263238;
+  border-radius: 5px;
+  box-shadow: 0 0 1px 0 #06060d;
+  width: 450px;
+  padding: 7px;
+  margin-bottom: 0.2em;
+  font-size: 14px;
+}
+
+.information-group .title {
+  font-size: 1em;
+  font-weight: 500;
+  margin-bottom: 0.6em;
+}
+
+.title {
+  font-size: 1em;
+  font-weight: 500;
+}
+
+.information-group table {
+  width: 100%;
+}
+
+.metric-description {
+  font-size: 1.1em;
+  font-weight: 500;
+  color: #bdbdbd;
+}
+
+.metric-information {
+  font-size: 1.8em;
+  font-weight: 400;
+}
+
+.empty-text {
+  height: 90%;
+  margin: 0 auto;
+  font-size: 1.4em;
+  font-weight: 400;
+  display: flex;              /* establish flex container */
+  flex-direction: column;     /* stack flex items vertically */
+  justify-content: center;    /* center items vertically, in this case */
+  align-items: center;
+}

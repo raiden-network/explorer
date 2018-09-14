@@ -1,224 +1,251 @@
-declare let require: any;
+import { catchError, flatMap, map, reduce, share, skipWhile, switchMap, tap, toArray } from 'rxjs/operators';
 import { NetMetricsConfig } from './net.metrics.config';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NMAPIResponse } from '../../models/NMAPIResponse';
-import { NMResponse } from '../../models/NMResponse';
-import { NMNetwork } from '../../models/NMNetwork';
+import { NMChannel, NMNetwork } from '../../models/NMNetwork';
 import * as NMNetworkSchema from '../../models/NMNetwork.schema';
-import { NMRestructuredData } from '../../models/NMRestructuredData';
+import { GraphData, NetworkGraph } from '../../models/NetworkGraph';
+import { BehaviorSubject, from, Observable, of, zip } from 'rxjs';
+import { Participant, RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
+import { Link, Node } from '../d3/models';
+import { SharedService } from './shared.service';
+import { Message } from './message';
+
+declare let require: any;
 
 const Ajv = require('ajv');
 
-const networkSchema = NMNetworkSchema.schema;
+const schema = NMNetworkSchema.schema;
 const ajv = new Ajv({allErrors: true});
 
 @Injectable()
 export class NetMetricsService {
+  private pollingSubject: BehaviorSubject<void> = new BehaviorSubject(null);
+  readonly metrics$: Observable<RaidenNetworkMetrics>;
+  private unique = function (value, index, self) {
+    return self.indexOf(value) === index;
+  };
 
-  private currentMetrics: any = {};
-  private currentNetworks: Array<NMNetwork> = [];
-  private restructuredData: NMRestructuredData;
-  private numNetworks = 0;
-  private numTotalChannels = 0;
-  private numUniqueUsers = 0;
-  private numChannelsKey = 'num_channels_opened';
-  private usersKey = 'nodes';
-  private numNetworksKey = 'num_networks';
-  private users: Array<string> = [];
-  private channelsKey = 'channels';
-  private channelSourceKey = 'participant1';
-  private channelTargetKey = 'participant2';
-  private largestNetworks: Array<NMNetwork> = [];
-  private busiestNetworks: Array<NMNetwork> = [];
+  public constructor(
+    private http: HttpClient,
+    private nmConfig: NetMetricsConfig,
+    private sharedService: SharedService
+  ) {
+    let timeout: number;
 
-  public constructor(private http: HttpClient, private nmConfig: NetMetricsConfig) {
+    this.metrics$ = this.pollingSubject.pipe(
+      tap(() => clearTimeout(timeout)),
+      switchMap(() => this.getMetrics()),
+      tap(() => {
+        timeout = setTimeout(() => {
+          this.pollingSubject.next(null);
+        }, 5000);
+      }),
+      share()
+    );
   }
 
   /**
-   * Set this.numNetworks with value from new data
+   * Get data for d3 chart. Sets local `nodes` and `links` values.
+   * Uses `netMetricsService.retrievePersistedDataForGraph`.
    */
-  public updateNumNetworks() {
-    this.numNetworks = this.currentMetrics[this.numNetworksKey];
+  public transformGraph(graph: NetworkGraph): GraphData {
+    const graphData: GraphData = {
+      nodes: [],
+      links: []
+    };
+
+    const pseudoNodes = graph.nodes;
+    const pseudoLinks = graph.links;
+
+    // Instantiate real Node instances iso literal object:
+    for (const pseudoNode of pseudoNodes) {
+      const node = new Node(pseudoNode['id']);
+      node.x = Math.floor(Math.random() * 600) + 100;
+      node.y = Math.floor(Math.random() * 600) + 100;
+      node.linkCount = pseudoNode['numChannels'];
+      graphData.nodes.push(node);
+    }
+
+    // Get the real Node instance iso literal object:
+    for (const pseudoLink of pseudoLinks) {
+      const src = this.getMatchingNode(pseudoLink['source'], graphData.nodes),
+        trg = this.getMatchingNode(pseudoLink['target'], graphData.nodes);
+
+      if (src && trg) {
+        const link = new Link(src, trg, pseudoLink.status);
+        graphData.links.push(link);
+      }
+    }
+    return graphData;
+  }
+
+  // noinspection JSMethodCanBeStatic
+  /**
+   * Return the node matching the provided address
+   * @param address
+   * @param nodes
+   */
+  public getMatchingNode(address: string, nodes: Array<Node>) {
+    let res: Node;
+    for (const node of nodes) {
+      if (address === node.id) {
+        res = node;
+        break;
+      }
+    }
+    return res;
   }
 
   /**
    * Get data from server endpoint, then run setCurrentMetrics()
    */
-  public updateCurrentMetrics(): Promise<NMResponse> {
-    const that = this;
-    return new Promise<NMResponse>((fulfill, reject) => {
-      that.http.get<NMAPIResponse>(this.nmConfig.defaultConfig.url)
-        .subscribe(
-          (result: any) => {
-            try {
-              that.setCurrentMetrics(result);
-            } catch (e) {
-              reject({code: 400, body: e});
-            }
-            fulfill({
-              code: 200,
-              body: 'Successfully updated '
-            });
-          },
-          (err: any) => {
-            reject({
-              code: 400,
-              body: err
-            });
-          });
-    });
-  }
+  private getMetrics(): Observable<RaidenNetworkMetrics> {
+    const metrics = this.http.get<NMAPIResponse>(this.nmConfig.defaultConfig.url).pipe(
+      flatMap(value => from(Object.values(value.result))),
+      skipWhile(value => typeof value === 'number'),
+      share()
+    );
 
-  /**
-   * Reset `largestNetworks`, `busiesNetworks` and other properties,
-   * then proceeds to update them  with various methods;
-   * update `users, numTotalChannels` etc.
-   * Called currently only from home.component
-   */
-  public updateTotalsAndComparativeMetrics() {
-    this.largestNetworks = [];
-    this.busiestNetworks = [];
-    const that = this;
-    this.numTotalChannels = 0;
-    this.updateNumNetworks();
-    Object.keys(this.currentMetrics).map((key: string) => {
-      if (!(key === that.numNetworksKey)) {
-        const tokenInfo = that.currentMetrics[key];
-        that.numTotalChannels += tokenInfo[that.numChannelsKey];
-        that.updateUniqueUserArray(tokenInfo);
-      }
-    });
-    this.updateLargestNetworks();
-    this.updateBusiestNetworks();
-  }
-
-  /**
-   * Restructure metric data to fit d3 chart
-   * Returns the restructured data and also sets it
-   * to the `this.restructuredData` property.
-   */
-  public restructureAndPersistData(): NMRestructuredData {
-    const restructuredData: NMRestructuredData = {nodes: [], links: []};
-    Object.keys(this.currentMetrics).map((key: string) => {
-      if (!(key === this.numNetworksKey)) {
-        const obj = this.currentMetrics[key];
-        const objNodes = obj[this.usersKey];
-        objNodes.forEach(id => {
-          restructuredData.nodes.push({id});
-        });
-        const objChannels = obj[this.channelsKey];
-        for (const channel of objChannels) {
-          restructuredData.links.push({
-            source: channel[this.channelSourceKey],
-            target: channel[this.channelTargetKey],
-          });
-        }
-      }
-    });
-    this.restructuredData = restructuredData;
-    return restructuredData;
-  }
-
-  /**
-   * Get d3 chart data.
-   * Returns the data;
-   */
-  public retrievePersistedDataForGraph(): NMRestructuredData {
-    return this.restructuredData;
-  }
-
-  public getNumNetworks(): number {
-    return this.numNetworks;
-  }
-
-  public getTotalChannels(): number {
-    return this.numTotalChannels;
-  }
-
-  public getNumUniqueUsers(): number {
-    return this.numUniqueUsers;
-  }
-
-  public getLargestNetworks(): Array<NMNetwork> {
-    return this.largestNetworks;
-  }
-
-  public getBusiestNetworks(): Array<NMNetwork> {
-    return this.busiestNetworks;
-  }
-
-  public getCurrentMetrics() {
-    return this.currentMetrics;
-  }
-
-
-  /**
-   * Set this.currentMetics from new data, if valid
-   * @param newMetrics
-   */
-  protected setCurrentMetrics(newMetrics: any) {
-    const that = this;
-    try {
-      JSON.parse(JSON.stringify(newMetrics));
-    } catch (e) {
-      console.error('setCurrentMetrics', e);
-      throw new Error(e);
-      // return;
-    }
-    this.currentMetrics = newMetrics;
-    // Turn the metrics in to a useful array of networks:
-    this.currentNetworks = [];
-
-    Object.keys(this.currentMetrics).map((key: string) => {
-      if (!(key === that.numNetworksKey)) {
-        const ntw = that.currentMetrics[key];
-        const valid = ajv.validate(networkSchema, ntw);
-
+    const networkMetrics = metrics.pipe(
+      map((value: NMNetwork) => {
+        const valid = ajv.validate(schema, value);
         if (!valid) {
-          throw new Error('Malformed API data: \n' + this.ajvErrorsToString(ajv.errors));
-        } else {
-          that.currentNetworks.push(ntw);
+          throw new Error(`Malformed API data: ${this.ajvErrorsToString(ajv.errors)}`);
         }
-      }
-    });
+        return this.createTokenNetwork(value);
+      }),
+      toArray(),
+      catchError(err => {
+        let message: Message;
+        if (err.name === 'HttpErrorResponse') {
+          message = {
+            title: 'Network error',
+            description: 'Communication with the metrics server could not be established.'
+          };
+        } else {
+          message = {
+            title: err.name,
+            description: err.message
+          };
+        }
+        this.sharedService.post(message);
+        return of(err.message);
+      })
+    );
+
+    const networkGraph = metrics.pipe(
+      reduce((graph: NetworkGraph, network: NMNetwork) => {
+        const networkNodes = network.nodes;
+
+        networkNodes.forEach(id => {
+          graph.nodes.push({id});
+        });
+
+        const networkChannels = network.channels;
+
+        for (const channel of networkChannels) {
+          graph.links.push({
+            source: channel.participant1,
+            target: channel.participant2,
+            status: channel.status
+          });
+        }
+        return graph;
+      }, {nodes: [], links: []}),
+      map(value => {
+        return this.transformGraph(value);
+      })
+    );
+
+    return zip(networkMetrics, networkGraph)
+      .pipe(map(([data, graph]) => {
+        return {
+          totalTokenNetworks: data.length,
+          openChannels: data.map(value1 => value1.openedChannels).reduce((acc, openChannels) => acc + openChannels),
+          uniqueUsers: data.map(networks => networks.participants).filter(this.unique).length,
+          tokenNetworks: data,
+          networkGraph: graph
+        };
+      }));
   }
 
-  /**
-   * Update this.largestNetworks with new data.
-   * Sort by number of nodes.
-   */
-  protected updateLargestNetworks() {
-    // `slice` to return a clone of the array iso pointer to same array:
-    this.largestNetworks = this.currentNetworks.slice().sort((a, b) => {
-      return b.num_nodes - a.num_nodes;
-    });
-  }
+  private createTokenNetwork(network: NMNetwork): TokenNetwork {
 
-  /**
-   * Update this.busiestNetworks with new data.
-   * Sort by number of channels.
-   */
-  protected updateBusiestNetworks() {
-    this.busiestNetworks = this.currentNetworks.slice().sort((a, b) => {
-      return b.num_channels_opened - a.num_channels_opened;
-    });
-  }
+    const channels = network.channels;
 
-  /**
-   * Run through users in new data; if new entries,
-   * increment user counter `this.numUniqueUsers`.
-   * @param tokenInfo
-   */
-  protected updateUniqueUserArray(tokenInfo: any) {
-    const that = this;
-    const userArr: Array<string> = tokenInfo[that.usersKey];
-    for (const user of userArr) {
-      if (!that.users.includes(user)) {
-        that.users.push(user);
-        that.numUniqueUsers++;
-      }
-    }
+    const openedChannels = channels.filter(value => value.status === 'opened');
+    const closedChannels = channels.filter(value => value.status === 'closed');
+    const settledChannels = channels.filter(value => value.status === 'settled');
+
+    const uniqueParticipants = channels.map(value => [value.participant1, value.participant2])
+      .reduceRight((previousValue, currentValue) => previousValue.concat(currentValue), [])
+      .filter(this.unique);
+
+    const channelsByPart: { [participant: string]: NMChannel[] } = openedChannels.reduce((channelsPerPart, channel) => {
+      const participantChannels = (participant: string) => {
+        let element: NMChannel[] | null = channelsPerPart[participant];
+        if (!element) {
+          element = [];
+          channelsPerPart[participant] = element;
+        }
+        return element;
+      };
+
+      participantChannels(channel.participant1).push(channel);
+      participantChannels(channel.participant2).push(channel);
+      return channelsPerPart;
+    }, {});
+
+    const channelEntries = Object.entries(channelsByPart);
+
+    const participants: Participant[] = channelEntries.map(value => {
+      return {
+        address: value[0],
+        channels: value[1].length
+      };
+    });
+
+    const channelsPerParticipant = channels.length / uniqueParticipants.length || 0;
+
+    const deposits = channelEntries.map(value => {
+      const address = value[0];
+      const participantChannels = value[1];
+      return participantChannels.reduce((accumulator, channel) => {
+        let participantDeposit: number;
+
+        if (address === channel.participant1) {
+          participantDeposit = channel.deposit1;
+        } else {
+          participantDeposit = channel.deposit2;
+        }
+
+        return accumulator + participantDeposit;
+      }, 0);
+    }).reduce((accumulator, participantsDeposits) => accumulator + participantsDeposits, 0);
+
+    const averagePerParticipant = deposits / channelEntries.length;
+
+    const topParticipants = participants.sort((a, b) => b.channels - a.channels).slice(0, 5);
+
+    const deposit = openedChannels.reduce((accumulator, channel) => accumulator + channel.deposit1 + channel.deposit2, 0);
+    const channelAverage = deposit / openedChannels.length;
+
+    const topChannelsByDeposit = openedChannels.sort((a, b) => (b.deposit1 + b.deposit2) - (a.deposit1 + a.deposit2)).slice(0, 5);
+
+    return {
+      networkAddress: network.token_address,
+      topParticipantsByChannels: topParticipants,
+      openedChannels: openedChannels.length,
+      closedChannels: closedChannels.length,
+      settledChannels: settledChannels.length,
+      channelsPerParticipant: channelsPerParticipant,
+      participants: uniqueParticipants.length,
+      topChannelsByDeposit: topChannelsByDeposit,
+      averageDepositPerChannel: channelAverage || 0,
+      averageDepositPerParticipant: averagePerParticipant || 0
+    };
   }
 
   //noinspection JSMethodCanBeStatic

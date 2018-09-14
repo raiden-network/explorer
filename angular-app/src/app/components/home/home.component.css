@@ -1,58 +1,42 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
-
-.titlesec {
-  background-color: black;
+.metrics-title {
+  color: white;
+  text-align: center;
   overflow: auto;
+  font-weight: 500;
   padding: 2.75% 0 0;
 }
 
-.titlesec a {
-  font-family: 'Roboto', sans-serif;
-  text-align: center;
-  float: inherit;
+.metrics-subtitle {
   color: white;
-  text-decoration: none;
-}
-
-.subtitlesec {
-  background-color: black;
   overflow: auto;
+  font-weight: 400;
   padding: 0.5% 0 0;
-}
-
-.subtitlesec a {
-  font-family: 'Roboto', sans-serif;
   text-align: center;
-  float: inherit;
-  color: white;
-  text-decoration: none;
 }
 
 .abstractinfodisp {
   background-color: black;
   overflow: auto;
   padding: 2.5% 0 0;
+  color: white;
 }
 
 .abstractinfodisp img {
   float: inherit;
-  height: 90px;
+  height: 70px;
   padding-right: 0;
 }
 
 .abstractinfodisp a {
-  font-family: 'Roboto', sans-serif;
   color: white;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
   font-size: 17px;
   font-weight: 100;
-  -webkit-transition: all 1s ease;
   display: inline-block;
   float: top;
 }
-
 
 .abstractinfodisp .tooltiptext {
   visibility: hidden;
@@ -100,81 +84,6 @@
   stroke-width: 2px;
 }
 
-.innertablediv {
-  background-color: black;
-  overflow: auto;
-  padding: 0;
-}
-
-.innertablediv a {
-  font-family: 'Roboto', sans-serif;
-  color: white;
-  text-align: center;
-  padding: 8px 16px;
-  text-decoration: none;
-  font-weight: 100;
-  display: inline-block;
-  -webkit-transition: all 3s ease;
-  float: top;
-  font-size: 200%;
-}
-
-.innertablediv a:hover {
-  color: white;
-}
-
-.metricsdiv {
-  background-color: black;
-  overflow: auto;
-  padding: 2% 0 0;
-}
-
-.metricsdiv table {
-  border-collapse: collapse;
-}
-
-.metricsdiv td {
-  border-bottom: 1px solid dimgray;
-  color: white;
-  width: 100px;
-  text-align: center;
-}
-
-.metricsdiv th {
-  border-bottom: 1px solid dimgrey;
-  color: #BABABA;
-}
-
-.metricsdiv button {
-  background-color: black;
-  width: 20rem;
-  margin: auto 1rem;
-  border: 1px solid #1C60A5;
-  border-radius: 6px;
-  padding: 0.3rem;
-  font-size: 100%;
-}
-
-.metricsdiv button:focus{
-  outline: 0;
-}
-
-.metricsdiv button.click {
-  outline: 0;
-}
-
-.metricsdiv a {
-  font-family: 'Roboto', sans-serif;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  font-weight: 100;
-  display: inline-block;
-  -webkit-transition: all 3s ease;
-  float: top;
-  font-size: 100%;
-}
-
 .networkpage {
   background-color: white;
   height: 100vh;
@@ -183,10 +92,9 @@
 
 .networkpage a {
   color: black;
-  font-family: 'Roboto', sans-serif;
 }
 
-.networkpage .tooltiptext1 {
+.networkpage .tooltip {
   visibility: hidden;
   width: 120px;
   background-color: black;
@@ -210,7 +118,7 @@
   z-index: 10;
 }
 
-.networkpage a:hover .tooltiptext1 {
+.networkpage a:hover .tooltip {
   visibility: visible;
   background-color: dimgray;
   opacity: inherit;
@@ -227,12 +135,106 @@
 }
 
 .warning-div {
-  background: #ff7f00; 
-  width: 60%; 
-  margin: auto; 
-  padding: 1rem 8rem; 
+  background: #ff7f00;
+  width: 60%;
+  margin: auto;
+  padding: 1rem 8rem;
   border-radius: 0.5rem;
 }
+
 .warning-div p {
   text-align: left;
+}
+
+.network-metrics {
+  margin-top: 1em;
+  display: flex;
+  justify-content: center;
+}
+
+.category-title {
+  font-size: 15px;
+}
+
+.statistics-section {
+  height: 100%;
+  min-height: 100vh;
+}
+
+.link-button {
+  border: 1px solid #2191FB;
+  border-radius: 6px;
+  color: #2191FB !important;
+  width: 200px;
+  font-size: 14px !important;
+  padding: 7px;
+}
+
+.metric-description {
+  font-size: 1.1em;
+  font-weight: 500;
+  color: #bdbdbd;
+}
+
+.metric-information {
+  font-size: 1.8em;
+  font-weight: 400;
+}
+
+.carousel-button {
+  height: 100%;
+  color: white;
+  border: transparent;
+  background: transparent;
+  outline: none;
+}
+
+.scroll-up {
+  background-color: white;
+  height: auto;
+}
+
+.scroll-up-link {
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 6px;
+  color: black;
+  width: 200px;
+  font-size: 14px;
+  padding: 7px;
+}
+
+.metrics-title {
+  font-size: 35px;
+  font-weight: 100;
+  text-underline: none;
+  border: none;
+}
+
+.graph-container {
+  height: 85vh;
+  width: 100vw;
+}
+
+.graph-subtitle {
+  font-size: 17px;
+}
+
+.graph-title {
+  font-size: 35px;
+  font-weight: 100;
+}
+
+.refresh-button {
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 6px;
+  color: black;
+  width: 200px;
+  font-size: 14px;
+  padding: 7px;
+}
+
+.warning-wrapper {
+  padding-top: 3em;
 }

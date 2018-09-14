@@ -1,133 +1,126 @@
-<div style="height: 100vh"> <!-- container -->
-<div class="titlesec" id="titleSec" align="center">
-  <a id="top2" style="font-size: 35px; font-weight: 100; text-underline: none; border: none">Raiden Test Network Metrics</a>
-</div>
-<div class="subtitlesec" id="subtitleSec" align="center">
-  <a style="font-size: 17px; font-weight: 100">Metrics for the Raiden testnet release</a>
-</div>
-<div class="abstractinfodisp" align="center" id="abstractView">
+<div class="statistics-section"> <!-- container -->
+  <div [@flyInOut]="'in'">
+    <div class="metrics-title">Raiden Test Network Metrics</div>
 
-  <div class="warning-div" *ngIf="warningMsg">
-    <h2>{{warningMsg.title}}</h2>
-    <p [innerHTML]="warningMsg.body"></p>
+    <div class="metrics-subtitle">Metrics for the Raiden testnet release</div>
   </div>
-  
-  <table cellpadding="15">
-    <tr>
-      <td><img src="../../../assets/networks_icon.png"></td>
-      <td>
-        <div><a class="innertablediv" style="font-size: 17px" target="_blank">Token Networks</a></div>
-        <div align="left" class="innertablediv">
-          <a>{{numNetworks}}</a>
+
+
+  <div *ngIf="(metrics$ | async) as metrics; else error">
+    <div class="abstractinfodisp" [@flyInOut]="'in'">
+
+      <div class="item-row">
+        <div class="item-column">
+          <img src="../../../assets/networks_icon.png">
         </div>
-      </td>
-      <td></td><td></td><td></td><td></td><td></td>
-      <td><img src="../../../assets/channels_icon.png"></td>
-      <td>
-        <div><a class="innertablediv" style="font-size: 17px" target="_blank">Open Channels</a></div>
-        <div align="left" class="innertablediv"><a>{{numTotalChannels}}</a></div>
-      </td>
-      <td></td><td></td><td></td><td></td><td></td>
-      <td><img src="../../../assets/users_icon.png"></td>
-      <td>
-        <div><a style="font-size: 17px" target="_blank">Unique Users</a></div>
-        <div align="left" class="innertablediv"><a>{{numUniqueUsers}}</a></div>
-      </td>
-    </tr>
-  </table>
 
-  <table cellpadding="10">
-    <tr>
-      <td>
-        <a href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#tokens" style="border: 1px solid #2191FB; border-radius: 6px; color: #2191FB; width: 200px; font-size: 14px; padding: 7px">
-          Token registration tutorial
-          <span class="tooltiptext">Learn how to register a token</span></a>
-      </td>
-      <td></td><td></td><td></td><td></td>
-      <td>
-        <a href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#channels" style="border: 1px solid #2191FB; border-radius: 6px; color: #2191FB; width: 200px; padding: 7px; font-size: 14px">
-          Channel creation tutorial
-          <span class="tooltiptext">Learn how to open a channel</span></a>
-      </td>
-      <td></td><td></td><td></td><td></td>
-      <td>
-        <a href="http://raiden.network/" style="border: 1px solid #2191FB; border-radius: 6px; color: #2191FB; width: 200px; font-size: 14px; padding: 7px">
-          Get Started
-          <span class="tooltiptext">Get started with the Raiden Network</span></a>
-      </td>
-      <td></td><td></td><td></td><td></td>
-      <td>
-        <a (click)="scrollToA('netVis')" style="cursor: pointer;border: 1px solid #2191FB; border-radius: 6px; color: #2191FB; width: 200px; font-size: 14px; padding: 7px">
-          Visualize
-          <span class="tooltiptext">Interactive visualization of the Raiden Network</span></a>
-      </td>
-    </tr>
-  </table>
+        <div *ngIf="metrics.totalTokenNetworks > 1" class="item-column">
+          <div class="item-row metric-information">{{metrics.totalTokenNetworks}}</div>
+          <div class="item-row metric-description">Token Networks</div>
+        </div>
 
-</div> <!-- class="abstractinfodisp" id="abstractView" -->
+        <div class="item-column">
+          <img src="../../../assets/channels_icon.png">
+        </div>
 
-<div class="metricsdiv" align="center">
-  <button type="button" (click)="showLargestNetworks()" label="Largest Tokens"
-      [class.active-view]="largestTokenDisp" class="clickable">
-    <a>Largest Networks</a></button>
-  <button type="button" (click)="showBusiestNetworks()" label="Busiest Tokens"
-      [class.active-view]="busiestTokenDisp" class="clickable">
-    <a>Busiest Networks</a></button>
-</div>
+        <div class="item-column">
+          <div class="item-row metric-information">{{metrics.openChannels}}</div>
+          <div class="item-row metric-description">Open Channels</div>
+        </div>
 
-<!-- Show largest or busiest networks: -->
-<div class="metricsdiv" align="center" style="padding-top: 0">
-  <table cellpadding="17" align="center">
-    <tr>
-      <th>Token Address</th> <th></th>
-      <th>Channels</th> <th></th>
-      <th>Users</th>
-    </tr>
-    <ng-template [ngIf]="largestNetworks && largestTokenDisp">
-      <ng-template ngFor let-i="index" let-ntw [ngForOf]="largestNetworks">
-        <tr *ngIf="i<5">
-          <td>{{ntw.token_address}}</td> <td></td>
-          <td>{{ntw.num_nodes}}</td> <td></td>
-          <td>{{ntw.num_channels_opened}}</td>
-        </tr>
-      </ng-template> <!-- ngFor -->
-    </ng-template> <!-- ngIf -->
-    <ng-template [ngIf]="busiestNetworks && busiestTokenDisp">
-      <ng-template ngFor let-i="index" let-ntw [ngForOf]="busiestNetworks">
-        <tr *ngIf="i<5">
-          <td>{{ntw.token_address}}</td> <td></td>
-          <td>{{ntw.num_nodes}}</td> <td></td>
-          <td>{{ntw.num_channels_opened}}</td>
-        </tr>
-      </ng-template> <!-- ngFor -->
-    </ng-template> <!-- ngIf -->
-  </table>
-</div> 
+        <div class="item-column">
+          <img src="../../../assets/users_icon.png">
+        </div>
+
+        <div class="item-column">
+          <div class="item-row metric-information">{{metrics.uniqueUsers}}</div>
+          <div class="item-row metric-description">Unique Users</div>
+        </div>
+      </div>
+
+      <div class="item-row">
+        <div class="item-column">
+          <a href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#tokens" class="link-button">
+            Token registration tutorial
+            <span class="tooltiptext">Learn how to register a token</span></a>
+        </div>
+        <div class="item-row">
+          <a href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#channels" class="link-button">
+            Channel creation tutorial
+            <span class="tooltiptext">Learn how to open a channel</span>
+          </a>
+        </div>
+        <div class="item-row">
+          <a href="http://raiden.network/" class="link-button">
+            Get Started
+            <span class="tooltiptext">Get started with the Raiden Network</span>
+          </a>
+        </div>
+        <div class="item-row">
+          <a (click)="scrollToA('netVis')" class="link-button">
+            Visualize
+            <span class="tooltiptext">Interactive visualization of the Raiden Network</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="network-metrics item-row" [@flyInOut]="'in'">
+      <div class="item-column" *ngIf="metrics.totalTokenNetworks > 1">
+        <button (click)="carousel.showPrev()" class="carousel-button">
+          <img src="../../../assets/baseline-navigate_before-24px.svg">
+        </button>
+      </div>
+
+      <carousel #carousel [showControls]="false">
+        <ng-container *ngFor="let tokenNetwork of metrics.tokenNetworks; trackBy: trackByFn">
+          <ng-container *carouselItem>
+            <app-network-information class="item" [tokenNetwork]="tokenNetwork">
+            </app-network-information>
+          </ng-container>
+        </ng-container>
+      </carousel>
+      <div class="item-column"*ngIf="metrics.totalTokenNetworks > 1">
+        <button (click)="carousel.showNext()" class="carousel-button">
+          <img src="../../../assets/baseline-navigate_next-24px.svg">
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <ng-template #error>
+    <div class="warning-wrapper" [@flyInOut]="'in'">
+      <div class="warning-div" *ngIf="(messages$ | async) as message">
+        <h2>{{message.title}}</h2>
+        <p>{{message.description}}</p>
+      </div>
+    </div>
+  </ng-template>
 
 </div> <!-- container -->
 
-<div class="networkpage" align="center" style='height: 85vh; width: 100vw'>
-  <a id="netVis" style="font-size: 35px; font-weight: 100">Network Visualization</a>
-  <p>
-    <a style="font-size: 17px">
-      A visualization of the current state of the Raiden network
-      <span class="tooltiptext1">The graph below is draggable and zoomable. Mouse hover over nodes shows the node ID</span>
-    </a>
-  </p>
+<div class="networkpage graph-container" align="center" *ngIf="(metrics$ | async) as metrics">
+  <div class="graph-title">Network Visualization</div>
+  <a class="graph-subtitle">
+    A visualization of the current state of the Raiden network
+    <span class="tooltip">The graph below is draggable and zoomable. Mouse hover over nodes shows the node ID</span>
+  </a>
   <p align="center">
-    <a (click)="refreshToggle = true;" style="cursor: pointer ;border: 1px solid black; border-radius: 6px; color: black; width: 200px; font-size: 14px; padding: 7px">
+    <a (click)="refreshToggle = true;" class="refresh-button">
       Refresh
-      <span class="tooltiptext1">Refreshes graph data during next update cycle</span>
+      <span class="tooltip">Refreshes graph data during next update cycle</span>
     </a>
   </p>
-  <graph [nodes]="nodes" [links]="links" align="center"></graph>
+  <graph [nodes]="metrics.networkGraph.nodes" [links]="metrics.networkGraph.links" align="center"></graph>
 </div>
 
 <!-- <pre style="color: red;">{{ restructuredData | json: 2 }}</pre> -->
 <footer>
-  <div style="background-color: white; height: auto" class="networkpage" align="center">
+  <div class="networkpage scroll-up" align="center">
     <p style="padding: 2%">
-      <a (click)="scrollToA('top')" style="cursor: pointer ;border: 1px solid black; border-radius: 6px; color: black; width: 200px; font-size: 14px; padding: 7px">
+      <a (click)="scrollToA('top')" class="scroll-up-link">
         Go to top
       </a>
     </p>
