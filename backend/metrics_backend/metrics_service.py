@@ -43,6 +43,7 @@ class MetricsService(gevent.Greenlet):
         contract_manager: ContractManager,
         registry_address: Address,
         sync_start_block: int = 0,
+        required_confirmations: int = 8,  # ~2min
     ) -> None:
         """ Creates a new pathfinding service
 
@@ -53,6 +54,7 @@ class MetricsService(gevent.Greenlet):
         super().__init__()
         self.web3 = web3
         self.contract_manager = contract_manager
+        self.required_confirmations = required_confirmations
 
         self.is_running = gevent.event.Event()
         self.token_networks: Dict[Address, TokenNetwork] = {}
@@ -65,6 +67,7 @@ class MetricsService(gevent.Greenlet):
             contract_name=CONTRACT_TOKEN_NETWORK_REGISTRY,
             contract_address=registry_address,
             sync_start_block=sync_start_block,
+            required_confirmations=self.required_confirmations,
         )
         self._setup_token_networks()
 
@@ -216,6 +219,7 @@ class MetricsService(gevent.Greenlet):
             contract_address=token_network_address,
             contract_name=CONTRACT_TOKEN_NETWORK,
             sync_start_block=block_number,
+            required_confirmations=self.required_confirmations,
         )
 
         # subscribe to event notifications from blockchain listener
