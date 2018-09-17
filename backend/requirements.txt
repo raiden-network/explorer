@@ -11,4 +11,4 @@ networkx==2.1
 requests==2.19.1
 
 raiden-libs==0.1.5
-raiden-contracts==0.3.0
+raiden-contracts==0.3.1
