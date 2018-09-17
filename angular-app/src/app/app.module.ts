@@ -10,15 +10,12 @@ import { NetMetricsService } from './services/net.metrics/net.metrics.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './components/home/home.component';
 import { NetMetricsInterceptor } from './services/net.metrics/net.metrics.interceptor';
-import { GraphComponent } from './components/visuals/graph/graph.component';
-import { D3_DIRECTIVES } from './services/d3/directives';
-import { D3Service } from './services/d3';
-import { SHARED_VISUALS } from './components/visuals/shared';
 import { NetworkInformationComponent } from './components/network-information/network-information.component';
 import { CarouselComponent, CarouselItemElementDirective } from './components/carousel/carousel.component';
 import { CarouselItemDirective } from './directives/carousel-item.directive';
 import { CommonModule } from '@angular/common';
 import { DonutChartComponent } from './components/donut-chart/donut-chart.component';
+import { NetworkGraphComponent } from './components/network-graph/network-graph.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -29,14 +26,12 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
-    GraphComponent,
-    ...SHARED_VISUALS,
-    ...D3_DIRECTIVES,
     NetworkInformationComponent,
     CarouselComponent,
     CarouselItemDirective,
     CarouselItemElementDirective,
-    DonutChartComponent
+    DonutChartComponent,
+    NetworkGraphComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -63,8 +58,7 @@ const appRoutes: Routes = [
       deps: [NetMetricsConfig],
       multi: true
     },
-    NetMetricsService,
-    D3Service
+    NetMetricsService
   ],
   bootstrap: [AppComponent]
 })

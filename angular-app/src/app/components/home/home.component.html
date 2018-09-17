@@ -107,13 +107,8 @@
     A visualization of the current state of the Raiden network
     <span class="tooltip">The graph below is draggable and zoomable. Mouse hover over nodes shows the node ID</span>
   </a>
-  <p align="center">
-    <a (click)="refreshToggle = true;" class="refresh-button">
-      Refresh
-      <span class="tooltip">Refreshes graph data during next update cycle</span>
-    </a>
-  </p>
-  <graph [nodes]="metrics.networkGraph.nodes" [links]="metrics.networkGraph.links" align="center"></graph>
+
+  <app-network-graph [data]="metrics.networkGraph"></app-network-graph>
 </div>
 
 <!-- <pre style="color: red;">{{ restructuredData | json: 2 }}</pre> -->

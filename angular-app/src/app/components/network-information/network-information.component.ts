@@ -23,7 +23,7 @@ export class NetworkInformationComponent implements OnInit {
 
     if (tokenNetwork.openedChannels) {
       chartData.push({
-        status: 'open',
+        status: 'opened',
         channels: tokenNetwork.openedChannels
       });
     }

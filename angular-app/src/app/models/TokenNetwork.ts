@@ -1,4 +1,4 @@
-import { GraphData } from './NetworkGraph';
+import { NetworkGraph } from './NetworkGraph';
 
 export interface Channel {
   readonly participant1: string;
@@ -30,5 +30,5 @@ export interface RaidenNetworkMetrics {
   readonly openChannels: number;
   readonly uniqueUsers: number;
   readonly tokenNetworks: TokenNetwork[];
-  readonly networkGraph: GraphData;
+  readonly networkGraph: NetworkGraph;
 }

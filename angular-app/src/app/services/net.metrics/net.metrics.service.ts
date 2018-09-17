@@ -5,10 +5,9 @@ import { HttpClient } from '@angular/common/http';
 import { NMAPIResponse } from '../../models/NMAPIResponse';
 import { NMChannel, NMNetwork } from '../../models/NMNetwork';
 import * as NMNetworkSchema from '../../models/NMNetwork.schema';
-import { GraphData, NetworkGraph } from '../../models/NetworkGraph';
+import { NetworkGraph } from '../../models/NetworkGraph';
 import { BehaviorSubject, from, Observable, of, zip } from 'rxjs';
 import { Participant, RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
-import { Link, Node } from '../d3/models';
 import { SharedService } from './shared.service';
 import { Message } from './message';
 
@@ -21,8 +20,8 @@ const ajv = new Ajv({allErrors: true});
 
 @Injectable()
 export class NetMetricsService {
-  private pollingSubject: BehaviorSubject<void> = new BehaviorSubject(null);
   readonly metrics$: Observable<RaidenNetworkMetrics>;
+  private pollingSubject: BehaviorSubject<void> = new BehaviorSubject(null);
   private unique = function (value, index, self) {
     return self.indexOf(value) === index;
   };
@@ -44,58 +43,6 @@ export class NetMetricsService {
       }),
       share()
     );
-  }
-
-  /**
-   * Get data for d3 chart. Sets local `nodes` and `links` values.
-   * Uses `netMetricsService.retrievePersistedDataForGraph`.
-   */
-  public transformGraph(graph: NetworkGraph): GraphData {
-    const graphData: GraphData = {
-      nodes: [],
-      links: []
-    };
-
-    const pseudoNodes = graph.nodes;
-    const pseudoLinks = graph.links;
-
-    // Instantiate real Node instances iso literal object:
-    for (const pseudoNode of pseudoNodes) {
-      const node = new Node(pseudoNode['id']);
-      node.x = Math.floor(Math.random() * 600) + 100;
-      node.y = Math.floor(Math.random() * 600) + 100;
-      node.linkCount = pseudoNode['numChannels'];
-      graphData.nodes.push(node);
-    }
-
-    // Get the real Node instance iso literal object:
-    for (const pseudoLink of pseudoLinks) {
-      const src = this.getMatchingNode(pseudoLink['source'], graphData.nodes),
-        trg = this.getMatchingNode(pseudoLink['target'], graphData.nodes);
-
-      if (src && trg) {
-        const link = new Link(src, trg, pseudoLink.status);
-        graphData.links.push(link);
-      }
-    }
-    return graphData;
-  }
-
-  // noinspection JSMethodCanBeStatic
-  /**
-   * Return the node matching the provided address
-   * @param address
-   * @param nodes
-   */
-  public getMatchingNode(address: string, nodes: Array<Node>) {
-    let res: Node;
-    for (const node of nodes) {
-      if (address === node.id) {
-        res = node;
-        break;
-      }
-    }
-    return res;
   }
 
   /**
@@ -136,27 +83,35 @@ export class NetMetricsService {
     );
 
     const networkGraph = metrics.pipe(
-      reduce((graph: NetworkGraph, network: NMNetwork) => {
-        const networkNodes = network.nodes;
+      map((network: NMNetwork) => {
+        const graph: NetworkGraph = {nodes: [], links: []};
 
-        networkNodes.forEach(id => {
-          graph.nodes.push({id});
+        network.nodes.forEach(id => {
+          const openChannels = network.channels.filter(value => {
+            return (value.participant1 === id || value.participant2 === id) && value.status === 'opened';
+          }).length;
+          graph.nodes.push({
+            id,
+            openChannels,
+            tokenAddress: network.token_address
+          });
         });
 
-        const networkChannels = network.channels;
-
-        for (const channel of networkChannels) {
+        for (const channel of network.channels) {
           graph.links.push({
-            source: channel.participant1,
-            target: channel.participant2,
-            status: channel.status
+            sourceAddress: channel.participant1,
+            targetAddress: channel.participant2,
+            status: channel.status,
+            tokenAddress: network.token_address
           });
         }
         return graph;
-      }, {nodes: [], links: []}),
-      map(value => {
-        return this.transformGraph(value);
-      })
+      }),
+      reduce((acc: NetworkGraph, value: NetworkGraph) => {
+        acc.nodes.push(...value.nodes);
+        acc.links.push(...value.links);
+        return acc;
+      }, {nodes: [], links: []})
     );
 
     return zip(networkMetrics, networkGraph)
