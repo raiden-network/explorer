@@ -51,7 +51,7 @@ export class DonutChartComponent implements OnInit {
     const innerRadius = 50;
 
     this.color = d3Scale.scaleOrdinal()
-      .domain(['open', 'closed', 'settled'])
+      .domain(['opened', 'closed', 'settled'])
       .range(['#64dd17', '#e65100', '#8e24aa']);
 
     this.arc = d3Shape.arc<ChannelData>()

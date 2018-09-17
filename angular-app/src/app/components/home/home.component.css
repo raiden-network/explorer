@@ -87,6 +87,7 @@
 .networkpage {
   background-color: white;
   height: 100vh;
+  min-width: 960px;
   padding-top: 2.75%;
 }
 

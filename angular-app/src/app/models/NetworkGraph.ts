@@ -1,15 +1,17 @@
-import { Link, Node } from '../services/d3/models';
-
-export interface NetworkGraph {
-  nodes: Array<{ id: string }>;
-  links: Array<{
-    source: string,
-    target: string,
-    status: string
-  }>;
+export interface Link {
+  readonly sourceAddress: string;
+  readonly targetAddress: string;
+  readonly status: string;
+  readonly tokenAddress: string;
 }
 
-export interface GraphData {
+export interface Node {
+  readonly id: string;
+  readonly openChannels: number;
+  readonly tokenAddress: string;
+}
+
+export interface NetworkGraph {
   readonly nodes: Node[];
   readonly links: Link[];
 }
