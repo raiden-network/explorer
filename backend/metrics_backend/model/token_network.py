@@ -14,6 +14,7 @@ log = logging.getLogger(__name__)
 
 @dataclass
 class TokenInfo:
+    address: str
     name: str
     symbol: str
     decimals: int

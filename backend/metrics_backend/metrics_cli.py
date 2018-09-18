@@ -72,7 +72,7 @@ def main(
 
             api = NetworkInfoAPI(service)
             api.run(port=DEFAULT_PORT)
-            print(f'Running metrics endpoint at http://localhost:{DEFAULT_PORT}/info')
+            print(f'Running metrics endpoint at http://localhost:{DEFAULT_PORT}/json')
 
             print('Raiden Status Page backend running...')
             service.run()
