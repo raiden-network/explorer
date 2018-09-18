@@ -81,6 +81,11 @@ def token_network_to_dict(token_network: TokenNetwork) -> Dict:
 
     return dict(
         token_address=token_network.address,
+        token_info=dict(
+            name=token_network.token_info.name,
+            symbol=token_network.token_info.symbol,
+            decimals=token_network.token_info.decimals,
+        ),
         num_channels_total=len(channels),
         num_channels_opened=num_channels_opened,
         num_channels_closed=num_channels_closed,
