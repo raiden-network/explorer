@@ -15,12 +15,13 @@ from raiden_contracts.constants import (
     CONTRACT_HUMAN_STANDARD_TOKEN,
     CONTRACT_TOKEN_NETWORK_REGISTRY,
 )
-from metrics_backend.model import TokenNetwork, TokenInfo
+from metrics_backend.model import TokenNetwork
 from metrics_backend.utils.blockchain_listener import (
     BlockchainListener,
     create_registry_event_topics,
     create_channel_event_topics,
 )
+from metrics_backend.utils.token import get_token_info
 
 log = logging.getLogger(__name__)
 
@@ -217,15 +218,11 @@ class MetricsService(gevent.Greenlet):
         block_number: int = 0,
     ):
         # get token infos
-        token_proxy = self.web3.eth.contract(
+        token_contract = self.web3.eth.contract(
             address=token_address,
             abi=CONTRACT_MANAGER.get_contract_abi(CONTRACT_HUMAN_STANDARD_TOKEN),
         )
-        token_infos = TokenInfo(
-            token_proxy.functions.name().call(),
-            token_proxy.functions.symbol().call(),
-            token_proxy.functions.decimals().call()
-        )
+        token_infos = get_token_info(token_contract)
 
         token_network = TokenNetwork(token_network_address, token_infos)
         self.token_networks[token_network_address] = token_network

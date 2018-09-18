@@ -15,32 +15,7 @@ def _state_to_str(state: ChannelView.State) -> str:
 
 
 def token_network_to_dict(token_network: TokenNetwork) -> Dict:
-    """ Return a JSON serialized version of the token network.
-
-    {
-        "token_address": "0xsomething",
-        "num_nodes": 3,
-        "num_channels": 4,
-        "nodes": [
-            "0xalbert",
-            "0xberta",
-            "0xceasar",
-        ],
-        "channels": [
-            {
-                "channel_identifier": "0xchannel",
-                "status": "open",
-                "participant1": "0xalbert",
-                "participant2": "0xceasar",
-                "deposit1": 100,
-                "deposit2": 50,
-                "withdraw1": 20,
-                "withdraw2": 0,
-            },
-            ...
-        ],
-    }
-    """
+    """ Returns a JSON serialized version of the token network. """
     num_channels_opened = 0
     num_channels_closed = 0
     num_channels_settled = 0
@@ -80,8 +55,9 @@ def token_network_to_dict(token_network: TokenNetwork) -> Dict:
     participants_deduped = list(set(participants))
 
     return dict(
-        token_address=token_network.address,
-        token_info=dict(
+        address=token_network.address,
+        token=dict(
+            address=token_network.token_info.address,
             name=token_network.token_info.name,
             symbol=token_network.token_info.symbol,
             decimals=token_network.token_info.decimals,

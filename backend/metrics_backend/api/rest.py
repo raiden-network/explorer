@@ -16,16 +16,10 @@ class NetworkInfoResource(Resource):
         self.metrics_service = metrics_service
 
     def get(self):
-        result = dict(
-            num_networks=len(self.metrics_service.token_networks),
-        )
-
-        result.update(
-            {
-                network.address: token_network_to_dict(network)
-                for network in self.metrics_service.token_networks.values()
-            }
-        )
+        result = [
+            token_network_to_dict(network)
+            for network in self.metrics_service.token_networks.values()
+        ]
         return {'result': result}, 200
 
 
@@ -38,7 +32,7 @@ class NetworkInfoAPI:
         self.server_greenlet: Greenlet = None
 
         resources: List[Tuple[str, Resource, Dict]] = [
-            ('/info', NetworkInfoResource, {}),
+            ('/json', NetworkInfoResource, {}),
         ]
 
         for endpoint_url, resource, kwargs in resources:
