@@ -8,13 +8,14 @@ from web3 import Web3
 from eth_utils import is_checksum_address
 from raiden_libs.gevent_error_handler import register_error_handler
 from raiden_libs.types import Address
-from raiden_contracts.contract_manager import ContractManager
+from raiden_contracts.contract_manager import ContractManager, CONTRACT_MANAGER
 from raiden_contracts.constants import (
     ChannelEvent,
     CONTRACT_TOKEN_NETWORK,
+    CONTRACT_HUMAN_STANDARD_TOKEN,
     CONTRACT_TOKEN_NETWORK_REGISTRY,
 )
-from metrics_backend.model import TokenNetwork
+from metrics_backend.model import TokenNetwork, TokenInfo
 from metrics_backend.utils.blockchain_listener import (
     BlockchainListener,
     create_registry_event_topics,
@@ -203,17 +204,33 @@ class MetricsService(gevent.Greenlet):
 
         if not self.follows_token_network(token_network_address):
             log.info(f'Found token network for token {token_address} @ {token_network_address}')
-            self.create_token_network_for_address(token_network_address, event_block_number)
+            self.create_token_network_for_address(
+                token_network_address,
+                token_address,
+                event_block_number,
+            )
 
     def create_token_network_for_address(
         self,
         token_network_address: Address,
+        token_address: Address,
         block_number: int = 0,
     ):
-        token_network = TokenNetwork(token_network_address)
+        # get token infos
+        token_proxy = self.web3.eth.contract(
+            address=token_address,
+            abi=CONTRACT_MANAGER.get_contract_abi(CONTRACT_HUMAN_STANDARD_TOKEN),
+        )
+        token_infos = TokenInfo(
+            token_proxy.functions.name().call(),
+            token_proxy.functions.symbol().call(),
+            token_proxy.functions.decimals().call()
+        )
+
+        token_network = TokenNetwork(token_network_address, token_infos)
         self.token_networks[token_network_address] = token_network
 
-        log.info('Creating token network for %s', token_network_address)
+        log.info('Creating token network for %s, token=%r', token_network_address, token_infos)
         token_network_listener = BlockchainListener(
             web3=self.web3,
             contract_manager=self.contract_manager,

@@ -3,6 +3,7 @@ from typing import Dict, Tuple
 
 from networkx import DiGraph
 from eth_utils import is_checksum_address
+from dataclasses import dataclass
 from raiden_libs.types import Address, ChannelIdentifier
 
 from metrics_backend.model import ChannelView
@@ -11,13 +12,21 @@ from metrics_backend.model import ChannelView
 log = logging.getLogger(__name__)
 
 
+@dataclass
+class TokenInfo:
+    name: str
+    symbol: str
+    decimals: int
+
+
 class TokenNetwork:
     """ Manages a token network for pathfinding. """
 
-    def __init__(self, token_network_address: Address) -> None:
+    def __init__(self, token_network_address: Address, token_info: TokenInfo) -> None:
         """ Initializes a new TokenNetwork. """
 
         self.address = token_network_address
+        self.token_info = token_info
         self.channel_id_to_addresses: Dict[ChannelIdentifier, Tuple[Address, Address]] = dict()
         self.G = DiGraph()
 
