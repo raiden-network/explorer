@@ -130,9 +130,14 @@ export class NetMetricsService {
     return graph;
   }
 
+  private static toDecimal(amount: number, decimals: number) {
+    return amount / (10 ** decimals);
+  }
+
   private createTokenNetwork(network: NMNetwork): TokenNetwork {
 
     const channels = network.channels;
+    const decimals = network.token.decimals;
 
     const openedChannels = channels.filter(value => value.status === 'opened');
     const closedChannels = channels.filter(value => value.status === 'closed');
@@ -175,9 +180,9 @@ export class NetMetricsService {
         let participantDeposit: number;
 
         if (address === channel.participant1) {
-          participantDeposit = channel.deposit1;
+          participantDeposit = NetMetricsService.toDecimal(channel.deposit1, decimals);
         } else {
-          participantDeposit = channel.deposit2;
+          participantDeposit = NetMetricsService.toDecimal(channel.deposit2, decimals);
         }
 
         return accumulator + participantDeposit;
@@ -188,10 +193,23 @@ export class NetMetricsService {
 
     const topParticipants = participants.sort((a, b) => b.channels - a.channels).slice(0, 5);
 
-    const deposit = openedChannels.reduce((accumulator, channel) => accumulator + channel.deposit1 + channel.deposit2, 0);
+    const deposit = openedChannels.reduce((accumulator, channel) => {
+      const deposit1 = NetMetricsService.toDecimal(channel.deposit1, decimals);
+      const deposit2 = NetMetricsService.toDecimal(channel.deposit2, decimals);
+      return accumulator + deposit1 + deposit2;
+    }, 0);
     const channelAverage = deposit / openedChannels.length;
 
-    const topChannelsByDeposit = openedChannels.sort((a, b) => (b.deposit1 + b.deposit2) - (a.deposit1 + a.deposit2)).slice(0, 5);
+    const topChannelsByDeposit = openedChannels.sort((a, b) => {
+      const bDeposit1 = NetMetricsService.toDecimal(b.deposit1, decimals);
+      const bDeposit2 = NetMetricsService.toDecimal(b.deposit2, decimals);
+      const aDeposit1 = NetMetricsService.toDecimal(a.deposit1, decimals);
+      const aDeposit2 = NetMetricsService.toDecimal(a.deposit2, decimals);
+      return (bDeposit1 + bDeposit2) - (aDeposit1 + aDeposit2);
+    }).slice(0, 5).map(value => Object.assign(value, {
+      deposit1: NetMetricsService.toDecimal(value.deposit1, decimals),
+      deposit2: NetMetricsService.toDecimal(value.deposit2, decimals)
+    }));
 
     return {
       networkAddress: network.token.address,
