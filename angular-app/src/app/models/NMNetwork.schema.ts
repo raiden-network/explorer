@@ -2,8 +2,14 @@ export const schema = {
   type: 'object',
 
   properties: {
-
-    token_address: {'type': 'string'},
+    token: {
+      'type': 'object', properties: {
+        address: {'type': 'string'},
+        decimals: {'type': 'number'},
+        name: {'type': 'string'},
+        symbol: {'type': 'string'}
+      }
+    },
     num_channels_total: {'type': 'number'},
     num_channels_opened: {'type': 'number'},
     num_channels_closed: {'type': 'number'},
@@ -31,7 +37,7 @@ export const schema = {
   }, // properties
 
   required: [
-    'token_address',
+    'token',
     'num_channels_total',
     'num_channels_opened',
     'num_channels_closed',

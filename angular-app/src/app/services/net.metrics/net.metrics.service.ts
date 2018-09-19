@@ -50,20 +50,20 @@ export class NetMetricsService {
    */
   private getMetrics(): Observable<RaidenNetworkMetrics> {
     const metrics = this.http.get<NMAPIResponse>(this.nmConfig.defaultConfig.url).pipe(
-      flatMap(value => from(Object.values(value.result))),
-      skipWhile(value => typeof value === 'number'),
+      map(value => value.result),
       share()
     );
 
     const networkMetrics = metrics.pipe(
-      map((value: NMNetwork) => {
-        const valid = ajv.validate(schema, value);
-        if (!valid) {
-          throw new Error(`Malformed API data: ${this.ajvErrorsToString(ajv.errors)}`);
-        }
-        return this.createTokenNetwork(value);
+      map((networks: NMNetwork[]) => {
+        return networks.map(network => {
+          const valid = ajv.validate(schema, network);
+          if (!valid) {
+            throw new Error(`Malformed API data: ${this.ajvErrorsToString(ajv.errors)}`);
+          }
+          return this.createTokenNetwork(network);
+        });
       }),
-      toArray(),
       catchError(err => {
         let message: Message;
         if (err.name === 'HttpErrorResponse') {
@@ -83,35 +83,14 @@ export class NetMetricsService {
     );
 
     const networkGraph = metrics.pipe(
-      map((network: NMNetwork) => {
-        const graph: NetworkGraph = {nodes: [], links: []};
-
-        network.nodes.forEach(id => {
-          const openChannels = network.channels.filter(value => {
-            return (value.participant1 === id || value.participant2 === id) && value.status === 'opened';
-          }).length;
-          graph.nodes.push({
-            id,
-            openChannels,
-            tokenAddress: network.token_address
-          });
-        });
-
-        for (const channel of network.channels) {
-          graph.links.push({
-            sourceAddress: channel.participant1,
-            targetAddress: channel.participant2,
-            status: channel.status,
-            tokenAddress: network.token_address
-          });
-        }
-        return graph;
-      }),
-      reduce((acc: NetworkGraph, value: NetworkGraph) => {
-        acc.nodes.push(...value.nodes);
-        acc.links.push(...value.links);
-        return acc;
-      }, {nodes: [], links: []})
+      map((networks: NMNetwork[]) => {
+        return networks.map(network => this.createNetworkGraph(network))
+          .reduce((acc: NetworkGraph, value: NetworkGraph) => {
+            acc.nodes.push(...value.nodes);
+            acc.links.push(...value.links);
+            return acc;
+          }, {nodes: [], links: []});
+      })
     );
 
     return zip(networkMetrics, networkGraph)
@@ -124,6 +103,31 @@ export class NetMetricsService {
           networkGraph: graph
         };
       }));
+  }
+
+  private createNetworkGraph(network: NMNetwork) {
+    const graph: NetworkGraph = {nodes: [], links: []};
+
+    network.nodes.forEach(id => {
+      const openChannels = network.channels.filter(value => {
+        return (value.participant1 === id || value.participant2 === id) && value.status === 'opened';
+      }).length;
+      graph.nodes.push({
+        id,
+        openChannels,
+        tokenAddress: network.token.address
+      });
+    });
+
+    for (const channel of network.channels) {
+      graph.links.push({
+        sourceAddress: channel.participant1,
+        targetAddress: channel.participant2,
+        status: channel.status,
+        tokenAddress: network.token.address
+      });
+    }
+    return graph;
   }
 
   private createTokenNetwork(network: NMNetwork): TokenNetwork {
@@ -190,7 +194,7 @@ export class NetMetricsService {
     const topChannelsByDeposit = openedChannels.sort((a, b) => (b.deposit1 + b.deposit2) - (a.deposit1 + a.deposit2)).slice(0, 5);
 
     return {
-      networkAddress: network.token_address,
+      networkAddress: network.token.address,
       topParticipantsByChannels: topParticipants,
       openedChannels: openedChannels.length,
       closedChannels: closedChannels.length,
