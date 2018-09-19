@@ -212,7 +212,7 @@ export class NetMetricsService {
     }));
 
     return {
-      networkAddress: network.token.address,
+      token: network.token,
       topParticipantsByChannels: topParticipants,
       openedChannels: openedChannels.length,
       closedChannels: closedChannels.length,

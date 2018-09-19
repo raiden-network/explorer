@@ -1,4 +1,5 @@
 import { NetworkGraph } from './NetworkGraph';
+import { Token } from './NMNetwork';
 
 export interface Channel {
   readonly participant1: string;
@@ -13,7 +14,7 @@ export interface Participant {
 }
 
 export interface TokenNetwork {
-  readonly networkAddress: string;
+  readonly token: Token;
   readonly openedChannels: number;
   readonly closedChannels: number;
   readonly settledChannels: number;

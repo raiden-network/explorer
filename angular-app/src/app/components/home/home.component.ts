@@ -48,6 +48,6 @@ export class HomeComponent {
 
   //noinspection JSMethodCanBeStatic
   trackByFn(network: TokenNetwork) {
-    return network.networkAddress;
+    return network.token;
   }
 }

@@ -1,5 +1,9 @@
 <div class="information-container">
-  <div class="title">{{tokenNetwork.networkAddress}}</div>
+  <div class="title text-center">
+    <span *ngIf="tokenNetwork.token.symbol">[{{tokenNetwork.token.symbol}}]</span>
+    <span *ngIf="tokenNetwork.token.name">{{tokenNetwork.token.name}} - </span>
+    {{tokenNetwork.token.address}}
+  </div>
 </div>
 
 <div class="information-container">
