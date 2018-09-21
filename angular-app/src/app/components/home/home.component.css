@@ -2,43 +2,42 @@
   color: white;
   text-align: center;
   overflow: auto;
+  font-size: 2.2rem;
   font-weight: 500;
-  padding: 2.75% 0 0;
+  margin-top: 4rem;
 }
 
 .metrics-subtitle {
+  margin-top: 1rem;
   color: white;
   overflow: auto;
   font-weight: 400;
+  font-size: 1.1rem;
   padding: 0.5% 0 0;
   text-align: center;
 }
 
-.abstractinfodisp {
-  background-color: black;
-  overflow: auto;
-  padding: 2.5% 0 0;
+.metrics-totals {
+  font-size: 1.1rem;
   color: white;
 }
 
-.abstractinfodisp img {
+.metrics-totals img {
   float: inherit;
-  height: 70px;
+  height: 4em;
   padding-right: 0;
 }
 
-.abstractinfodisp a {
+.metrics-totals a {
   color: white;
   text-align: center;
-  padding: 14px 16px;
+  padding: 0.4rem 0.4rem;
   text-decoration: none;
-  font-size: 17px;
-  font-weight: 100;
-  display: inline-block;
-  float: top;
+  font-weight: 500;
+  height: 100%;
 }
 
-.abstractinfodisp .tooltiptext {
+.metrics-totals .tooltiptext {
   visibility: hidden;
   width: 120px;
   background-color: black;
@@ -62,7 +61,7 @@
   z-index: 10;
 }
 
-.abstractinfodisp a:hover .tooltiptext {
+.metrics-totals a:hover .tooltiptext {
   visibility: visible;
   background-color: dimgray;
   opacity: inherit;
@@ -87,7 +86,6 @@
 .networkpage {
   background-color: white;
   height: 100vh;
-  min-width: 960px;
   padding-top: 2.75%;
 }
 
@@ -148,9 +146,7 @@
 }
 
 .network-metrics {
-  margin-top: 1em;
-  display: flex;
-  justify-content: center;
+  margin-top: 2.5rem;
 }
 
 .category-title {
@@ -163,22 +159,23 @@
 }
 
 .link-button {
-  border: 1px solid #2191FB;
-  border-radius: 6px;
-  color: #2191FB !important;
-  width: 200px;
-  font-size: 14px !important;
-  padding: 7px;
+  border: 0.1rem solid #84DEEF;
+  border-radius: 0.1rem;
+  color: #84DEEF !important;
+  font-size: 0.8em !important;
+  font-weight: 400 !important;
+  padding: 0.1em;
 }
 
 .metric-description {
-  font-size: 1.1em;
+  font-size: 1.1rem;
   font-weight: 500;
   color: #bdbdbd;
+  text-align: center;
 }
 
 .metric-information {
-  font-size: 1.8em;
+  font-size: 1.8rem;
   font-weight: 400;
 }
 
@@ -191,30 +188,29 @@
 }
 
 .scroll-up {
-  background-color: white;
   height: auto;
 }
 
 .scroll-up-link {
   cursor: pointer;
-  border: 1px solid black;
   border-radius: 6px;
-  color: black;
   width: 200px;
   font-size: 14px;
   padding: 7px;
 }
 
-.metrics-title {
-  font-size: 35px;
-  font-weight: 100;
-  text-underline: none;
-  border: none;
+.scroll-up .black {
+  border: 1px solid black;
+  color: black;
+}
+
+.scroll-up .white {
+  border: 1px solid white;
+  color: white;
 }
 
 .graph-container {
-  height: 85vh;
-  width: 100vw;
+  height: 100vh;
 }
 
 .graph-subtitle {
@@ -238,4 +234,38 @@
 
 .warning-wrapper {
   padding-top: 3em;
+}
+
+.statistics-header {
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+}
+
+.network-totals {
+  margin-top: 2.5rem;
+}
+
+.information-buttons {
+  margin-top: 3rem;
+}
+
+
+@media screen and (max-width: 480px){
+  .metrics-totals img {
+    float: inherit;
+    height: 3em;
+    padding-right: 0;
+  }
+
+  .metric-description {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #bdbdbd;
+  }
+
+  .metric-information {
+    font-size: 1.4rem;
+    font-weight: 400;
+  }
+
 }

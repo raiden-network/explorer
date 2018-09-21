@@ -25,6 +25,10 @@ export class CarouselComponent implements AfterViewInit {
   private itemWidth: number;
   private currentSlide = 0;
 
+  public get width(): number {
+    return this.itemWidth;
+  }
+
   constructor(private builder: AnimationBuilder) {
   }
 
