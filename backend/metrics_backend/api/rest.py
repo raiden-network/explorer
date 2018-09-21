@@ -1,4 +1,5 @@
 from typing import Tuple, Dict, List
+from operator import attrgetter
 
 import gevent
 from flask import Flask
@@ -6,6 +7,7 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from gevent import Greenlet
 from gevent.pywsgi import WSGIServer
+from cachetools import TTLCache, cachedmethod
 
 from metrics_backend.metrics_service import MetricsService
 from metrics_backend.utils.serialisation import token_network_to_dict
@@ -14,7 +16,9 @@ from metrics_backend.utils.serialisation import token_network_to_dict
 class NetworkInfoResource(Resource):
     def __init__(self, metrics_service: MetricsService) -> None:
         self.metrics_service = metrics_service
+        self._cache = TTLCache(maxsize=1, ttl=10)
 
+    @cachedmethod(attrgetter('_cache'))
     def get(self):
         result = [
             token_network_to_dict(network)

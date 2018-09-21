@@ -44,7 +44,7 @@ def main(
     )
 
     logging.getLogger('web3').setLevel(logging.INFO)
-    logging.getLogger('urllib3.connectionpool').setLevel(logging.INFO)
+    logging.getLogger('urllib3.connectionpool').setLevel(logging.ERROR)
 
     log.info("Starting Raiden Metrics Server")
 
@@ -68,7 +68,8 @@ def main(
                 sync_start_block=3_800_000,
             )
 
-            gevent.spawn(write_topology_task, service)
+            # re-enable once deployment works
+            # gevent.spawn(write_topology_task, service)
 
             api = NetworkInfoAPI(service)
             api.run(port=DEFAULT_PORT)
