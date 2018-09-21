@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { TokenNetwork } from '../../models/TokenNetwork';
+import { Channel, Participant, TokenNetwork } from '../../models/TokenNetwork';
 import { ChannelData } from '../donut-chart/donut-chart.component';
 
 @Component({
@@ -42,5 +42,13 @@ export class NetworkInformationComponent implements OnInit {
       });
     }
     return chartData;
+  }
+
+  trackByFn(channel: Channel): string {
+    return channel.participant1 + channel.participant2;
+  }
+
+  trackByParticipant(participant: Participant): string {
+    return participant.address;
   }
 }

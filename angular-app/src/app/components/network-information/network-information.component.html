@@ -9,11 +9,11 @@
 <div class="information-container">
   <div class="information-column">
     <div class="information-group first">
-      <div class="item-row no-center">
-        <div class="item-column">
+      <div fxLayout="row" fxLayoutGap="2em">
+        <div fxLayout="column">
           <app-donut-chart [data]="chart(tokenNetwork)"></app-donut-chart>
         </div>
-        <div class="item-column">
+        <div fxLayout="column">
           <div class="metric-information">{{tokenNetwork.openedChannels}}</div>
           <div class="metric-description">Open Channels</div>
           <div class="metric-information">{{tokenNetwork.closedChannels}}</div>
@@ -25,19 +25,27 @@
     </div>
 
     <div class="information-group second">
-      <div class="title">Top channels by deposit</div>
+      <div class="title">TOP CHANNELS BY DEPOSIT</div>
 
-      <table cellpadding="4" *ngIf="tokenNetwork.topChannelsByDeposit.length > 0; else no_channels">
-        <tr>
-          <th>Participants</th>
-          <th>Channel Deposit</th>
-        </tr>
+      <div fxLayout="column"
+           fxLayoutGap="0.4em"
+        *ngIf="tokenNetwork.topChannelsByDeposit.length > 0; else no_channels">
+        <div fxLayout="row" class="table-title">
+          <div fxLayout="column" fxFlex="auto">PARTICIPANTS</div>
+          <div fxLayout="column" fxFlexAlign="right">DEPOSIT</div>
+        </div>
 
-        <tr *ngFor="let channel of tokenNetwork.topChannelsByDeposit">
-          <td>{{channel.participant1}}<br/>{{channel.participant2}}</td>
-          <td align="right">{{channel.deposit1 + channel.deposit2 | number}}</td>
-        </tr>
-      </table>
+        <div fxLayout="row"
+          *ngFor="let channel of tokenNetwork.topChannelsByDeposit; trackBy: trackByFn" fxLayoutGap="0.3em">
+          <div
+            fxFlex="1 1 auto"
+            fxLayout="column">{{channel.participant1}}<br/>{{channel.participant2}}</div>
+          <div
+            fxFlex="0 0 4em"
+            fxFlexAlign="center right"
+            fxLayout="column">{{channel.deposit1 + channel.deposit2 | number}}</div>
+        </div>
+      </div>
 
       <ng-template #no_channels>
         <div class="empty-text">
@@ -63,20 +71,24 @@
     </div>
 
     <div class="information-group second">
-      <div class="title">Top participants by channels</div>
-      <table cellpadding="8"
-             align="center"
-             *ngIf="tokenNetwork.topParticipantsByChannels.length > 0; else no_participants">
-        <tr>
-          <th>Participant</th>
-          <th>Channels</th>
-        </tr>
+      <div class="title">TOP PARTICIPANTS BY CHANNELS</div>
+      <div fxLayout="column"
+           fxLayoutGap="0.4em"
+        *ngIf="tokenNetwork.topParticipantsByChannels.length > 0; else no_participants">
+        <div fxLayout="row" class="table-title">
+          <div fxLayout="column" fxFlex="a">PARTICIPANT</div>
+          <div fxLayout="column" fxFlexAlign="right">CHANNELS</div>
+        </div>
 
-        <tr *ngFor="let participant of tokenNetwork.topParticipantsByChannels">
-          <td>{{participant.address}}</td>
-          <td align="right">{{participant.channels}}</td>
-        </tr>
-      </table>
+        <div fxLayout="row"
+          *ngFor="let participant of tokenNetwork.topParticipantsByChannels;trackBy: trackByParticipant">
+          <div fxLayout="column"
+               fxFlex="1 1 auto">{{participant.address}}</div>
+          <div fxLayout="column"
+               fxFlex="0 0 4em"
+               fxFlexAlign="center right">{{participant.channels}}</div>
+        </div>
+      </div>
 
       <ng-template #no_participants>
 

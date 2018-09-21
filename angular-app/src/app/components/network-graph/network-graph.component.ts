@@ -105,7 +105,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     });
   }
 
-
   private updateGraph() {
     this.updateCircleCalculation();
     this.drawGraph();
@@ -120,8 +119,21 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private initSvg() {
-    this.width = 960;
-    this.height = 800;
+    const availHeight = screen.availHeight;
+    const availWidth = screen.availWidth;
+
+    if (availWidth > 1000) {
+      this.width = 960;
+    } else {
+      this.width = availWidth - (availWidth * (4 / 100));
+    }
+
+    if (availHeight < 1000) {
+      this.height = availHeight - 100;
+    } else {
+      this.height = 900;
+    }
+
     this.svg = d3.select<SVGElement, NetworkGraph>(this.graph.nativeElement)
       .append('svg')
       .attr('width', this.width)
