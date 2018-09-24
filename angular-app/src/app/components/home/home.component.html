@@ -9,9 +9,9 @@
 
   <div *ngIf="(metrics$ | async) as metrics; else error">
     <div class="metrics-totals" [@flyInOut]="'in'" fxLayout="column">
-      <div fxLayout="row" fxLayoutAlign="center" class="network-totals">
+      <div fxLayout="row" fxLayoutAlign="center" class="network-totals" ngClass.xs="horizontal-padding">
 
-        <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" >
+        <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1">
           <div fxLayout="row" fxLayoutGap="0.8em">
             <div fxLayout="column" fxLayoutAlign="center center" fxFlex="4em">
               <img src="../../../assets/networks_icon.png">
@@ -19,10 +19,12 @@
             <div fxLayout="column" fxFlexAlign="space-evenly">
               <div fxLayout="row"
                    fxFlexAlign="center"
-                   class="metric-information">{{metrics.totalTokenNetworks}}</div>
+                   class="metric-information">{{metrics.totalTokenNetworks}}
+              </div>
               <div fxLayout="row"
                    fxFlexAlign="center"
-                   class="metric-description">Token Networks</div>
+                   class="metric-description">Token Networks
+              </div>
             </div>
           </div>
         </div>
@@ -35,10 +37,12 @@
             <div fxLayout="column" fxFlexAlign="space-evenly">
               <div fxLayout="row"
                    fxFlexAlign="center"
-                   class="metric-information">{{metrics.openChannels}}</div>
+                   class="metric-information">{{metrics.openChannels}}
+              </div>
               <div fxLayout="row"
                    fxFlexAlign="center"
-                   class="metric-description">Open Channels</div>
+                   class="metric-description">Open Channels
+              </div>
             </div>
           </div>
         </div>
@@ -51,10 +55,12 @@
             <div fxLayout="column" fxFlexAlign="space-evenly">
               <div fxLayout="row"
                    fxFlexAlign="center"
-                   class="metric-information">{{metrics.uniqueUsers}}</div>
+                   class="metric-information">{{metrics.uniqueUsers}}
+              </div>
               <div fxLayout="row"
                    fxFlexAlign="center"
-                   class="metric-description">Unique Users</div>
+                   class="metric-description">Unique Users
+              </div>
             </div>
           </div>
         </div>
@@ -63,55 +69,82 @@
 
       <div class="information-buttons"
            fxLayout="row"
+           fxLayout.lt-md="column"
            fxLayoutAlign="center"
-           fxLayoutGap="0.3em"
-           fxLayoutGap.gt-md="0.6em">
-        <div fxLayout="column" fxFlex="23" fxFlex.gt-md="15">
-          <a href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#tokens" class="link-button">
+           fxFlexAlign.lt-md="center"
+           fxLayoutGap="0.3rem">
+        <div fxLayout="column"
+             fxLayout.lt-md="row"
+             fxFlex="0 0 200px"
+             fxFlex.lt-md="0 0 auto">
+          <a mat-stroked-button
+             color="primary"
+             [ngStyle.lt-md]="{'width': '100%'}"
+             href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#tokens"
+             matTooltip="Learn how to register a token">
             Token registration tutorial
-            <span class="tooltiptext">Learn how to register a token</span></a>
+          </a>
         </div>
-        <div fxLayout="column" fxFlex="23" fxFlex.gt-md="15">
-          <a href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#channels" class="link-button">
+        <div fxLayout="column"
+             fxLayout.lt-md="row"
+             fxFlex="0 0 200px"
+             fxFlex.lt-md="0 0 auto">
+          <a mat-stroked-button
+             color="primary"
+             [ngStyle.lt-md]="{'width': '100%'}"
+             matTooltip="Learn how to open a channel"
+             href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#channels">
             Channel creation tutorial
-            <span class="tooltiptext">Learn how to open a channel</span>
           </a>
         </div>
-        <div fxLayout="column" fxFlex="23" fxFlex.gt-md="15">
-          <a href="http://raiden.network/" class="link-button">
+        <div fxLayout="column"
+             fxLayout.lt-md="row"
+             fxFlex="0 0 200px"
+             fxFlex.lt-md="0 0 auto">
+          <a mat-stroked-button
+             color="primary"
+             [ngStyle.lt-md]="{'width': '100%'}"
+             matTooltip="Get started with the Raiden Network"
+             href="http://raiden.network/">
             Get Started
-            <span class="tooltiptext">Get started with the Raiden Network</span>
           </a>
         </div>
-        <div fxLayout="column" fxFlex="23" fxFlex.gt-md="15">
-          <a (click)="scrollToA('network-graph')" class="link-button">
+        <div fxLayout="column"
+             fxLayout.lt-md="row"
+             fxFlex="0 0 200px"
+             fxFlex.lt-md="0 0 auto">
+          <a mat-stroked-button
+             matTooltip="Interactive visualization of the Raiden Network"
+             color="primary"
+             [ngStyle.lt-md]="{'width': '100%'}"
+             (click)="scrollToA('network-graph')">
             Visualize
-            <span class="tooltiptext">Interactive visualization of the Raiden Network</span>
           </a>
         </div>
       </div>
     </div>
 
     <div class="network-metrics" fxLayout="row" [@flyInOut]="'in'">
-      <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2em">
+      <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2rem">
         <button (click)="carousel.showPrev()" class="carousel-button">
           <img src="../../../assets/baseline-navigate_before-24px.svg">
         </button>
       </div>
 
       <carousel #carousel [showControls]="false"
-        fxLayout="column"
-        fxFlex="1 1 auto"
-        fxFlexAlign="center">
+                fxLayout="column"
+                fxFlex="1 1 100"
+                fxFlexAlign="center">
         <ng-container *ngFor="let tokenNetwork of metrics.tokenNetworks; trackBy: trackByFn">
-          <ng-container [style.width.px]="carousel.width" *carouselItem>
+          <ng-container *carouselItem>
             <app-network-information
-              class="item" [tokenNetwork]="tokenNetwork">
+              class="item"
+              [tokenNetwork]="tokenNetwork">
             </app-network-information>
           </ng-container>
         </ng-container>
       </carousel>
-      <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2em">
+      <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2rem">
         <button (click)="carousel.showNext()" class="carousel-button">
           <img src="../../../assets/baseline-navigate_next-24px.svg">
         </button>
@@ -122,19 +155,19 @@
 
   <ng-template #error>
     <div class="warning-wrapper" [@flyInOut]="'in'">
-      <div class="warning-div" *ngIf="(messages$ | async) as message">
-        <h2>{{message.title}}</h2>
-        <p>{{message.description}}</p>
+      <div class="warning-div" fxLayout="column" fxFlex="0 0 60"
+           *ngIf="(messages$ | async) as message">
+        <h2 fxLayout="row">{{message.title}}</h2>
+        <p fxLayout="row">{{message.description}}</p>
       </div>
     </div>
   </ng-template>
 
   <div class="scroll-up" align="center">
-    <p style="padding: 2%">
-      <a (click)="scrollToA('top')" class="scroll-up-link white">
-        Go to top
-      </a>
-    </p>
+    <a mat-stroked-button (click)="scrollToA('top')" class="white">
+      Go to top
+    </a>
+
   </div>
 
 </section>
@@ -147,9 +180,9 @@
     </div>
     <a fxLayout="row"
        fxLayoutAlign="center"
+       matTooltip="The graph below is draggable and zoomable. Mouse hover over nodes shows the node ID"
        class="graph-subtitle">
       A visualization of the current state of the Raiden network
-      <span class="tooltip">The graph below is draggable and zoomable. Mouse hover over nodes shows the node ID</span>
     </a>
 
     <app-network-graph
@@ -162,10 +195,8 @@
 
 <footer>
   <div class="networkpage scroll-up" align="center">
-    <p style="padding: 2%">
-      <a (click)="scrollToA('top')" class="scroll-up-link black">
-        Go to top
-      </a>
-    </p>
+    <a mat-stroked-button (click)="scrollToA('top')" class="black">
+      Go to top
+    </a>
   </div>
 </footer>

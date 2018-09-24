@@ -125,7 +125,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     if (availWidth > 1000) {
       this.width = 960;
     } else {
-      this.width = availWidth - (availWidth * (4 / 100));
+      this.width = availWidth - 60;
     }
 
     if (availHeight < 1000) {
