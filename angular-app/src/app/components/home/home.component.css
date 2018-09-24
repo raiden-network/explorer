@@ -17,60 +17,10 @@
   text-align: center;
 }
 
-.metrics-totals {
-  font-size: 1.1rem;
-  color: white;
-}
-
 .metrics-totals img {
   float: inherit;
   height: 4em;
   padding-right: 0;
-}
-
-.metrics-totals a {
-  color: white;
-  text-align: center;
-  padding: 0.4rem 0.4rem;
-  text-decoration: none;
-  font-weight: 500;
-  height: 100%;
-}
-
-.metrics-totals .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  opacity: 0;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  float: right;
-  font-family: 'Roboto', sans-serif;
-  font-size: 10px;
-  -webkit-transition: all 0.2s ease;
-  -moz-transition: all 0.2s ease;
-  -o-transition: all 0.2s ease;
-  -ms-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-  animation-delay: inherit;
-
-  /* Position the tooltip */
-  position: absolute;
-  z-index: 10;
-}
-
-.metrics-totals a:hover .tooltiptext {
-  visibility: visible;
-  background-color: dimgray;
-  opacity: inherit;
-  -webkit-transition: all 0.2s ease;
-  -moz-transition: all 0.2s ease;
-  -o-transition: all 0.2s ease;
-  -ms-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-  animation-delay: inherit;
 }
 
 .links line {
@@ -93,52 +43,15 @@
   color: black;
 }
 
-.networkpage .tooltip {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  opacity: 0;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  float: right;
-  font-family: 'Roboto', sans-serif;
-  font-size: 10px;
-  -webkit-transition: all 0.2s ease;
-  -moz-transition: all 0.2s ease;
-  -o-transition: all 0.2s ease;
-  -ms-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-  animation-delay: inherit;
-
-  /* Position the tooltip */
-  position: absolute;
-  z-index: 10;
-}
-
-.networkpage a:hover .tooltip {
-  visibility: visible;
-  background-color: dimgray;
-  opacity: inherit;
-  -webkit-transition: all 0.2s ease;
-  -moz-transition: all 0.2s ease;
-  -o-transition: all 0.2s ease;
-  -ms-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-  animation-delay: inherit;
-}
-
 .active-view {
   background-color: #1960A6 !important;
 }
 
 .warning-div {
   background: #ff7f00;
-  width: 60%;
   margin: auto;
   padding: 1rem 8rem;
-  border-radius: 0.5rem;
+  border-radius: 0.2rem;
 }
 
 .warning-div p {
@@ -156,15 +69,6 @@
 .statistics-section {
   height: 100%;
   min-height: 100vh;
-}
-
-.link-button {
-  border: 0.1rem solid #84DEEF;
-  border-radius: 0.1rem;
-  color: #84DEEF !important;
-  font-size: 0.8em !important;
-  font-weight: 400 !important;
-  padding: 0.1em;
 }
 
 .metric-description {
@@ -189,23 +93,14 @@
 
 .scroll-up {
   height: auto;
-}
-
-.scroll-up-link {
-  cursor: pointer;
-  border-radius: 6px;
-  width: 200px;
-  font-size: 14px;
-  padding: 7px;
+  padding: 1rem;
 }
 
 .scroll-up .black {
-  border: 1px solid black;
   color: black;
 }
 
 .scroll-up .white {
-  border: 1px solid white;
   color: white;
 }
 
@@ -243,10 +138,16 @@
 
 .network-totals {
   margin-top: 2.5rem;
+  color: white;
 }
 
 .information-buttons {
   margin-top: 3rem;
+}
+
+.horizontal-padding {
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 
