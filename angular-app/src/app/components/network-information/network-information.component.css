@@ -80,3 +80,12 @@
 .small {
   font-size: 0.86em;
 }
+
+.clickable-address {
+  color: white;
+  text-decoration: none;
+}
+
+.clickable-address:hover {
+  color: #e4e4e4;
+}

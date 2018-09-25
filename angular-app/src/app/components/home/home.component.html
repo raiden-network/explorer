@@ -15,7 +15,11 @@
 
   <div *ngIf="(metrics$ | async) as metrics; else error">
     <div class="metrics-totals" [@flyInOut]="'in'" fxLayout="column">
-      <div fxLayout="row" fxLayoutAlign="center" class="network-totals" ngClass.xs="horizontal-padding">
+      <div fxLayout="row"
+           fxLayoutAlign="center"
+           fxLayoutGap.gt-sm="30px"
+           class="network-totals"
+           ngClass.xs="horizontal-padding">
 
         <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1">
           <div fxLayout="row" fxLayoutGap="0.8em">
@@ -115,7 +119,7 @@
              matTooltip="Get started with the Raiden Network"
              href="http://raiden.network/"
              target="_blank">
-            Get Started
+            Learn more about Raiden
           </a>
         </div>
         <div fxLayout="column"
@@ -127,7 +131,7 @@
              color="primary"
              [ngStyle.lt-md]="{'width': '100%'}"
              (click)="scrollToA('network-graph')">
-            Visualize
+            Show Network Visualization
           </a>
         </div>
       </div>

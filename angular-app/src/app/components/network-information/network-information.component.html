@@ -3,7 +3,9 @@
     <div class="title text-center" fxLayout="column">
       <span *ngIf="tokenNetwork.token.symbol">[{{tokenNetwork.token.symbol}}]</span>
       <span *ngIf="tokenNetwork.token.name">{{tokenNetwork.token.name}}</span>
-      <span class="truncate">{{tokenNetwork.token.address}}</span>
+      <a href="{{etherscanUrl(tokenNetwork.token.address)}}"
+         target="_blank"
+         class="truncate clickable-address">{{tokenNetwork.token.address}}</a>
     </div>
   </div>
 
@@ -52,7 +54,13 @@
                *ngFor="let channel of tokenNetwork.topChannelsByDeposit; trackBy: trackByFn" fxLayoutGap="8px">
             <div fxFlex="1 1 auto"
                  class="truncate address small"
-                 fxLayout="column">{{channel.participant1}}<br/>{{channel.participant2}}
+                 fxLayout="column">
+              <a href="{{etherscanUrl(channel.participant1)}}"
+                 target="_blank"
+                 class="clickable-address">{{channel.participant1}}</a>
+              <a href="{{etherscanUrl(channel.participant2)}}"
+                 target="_blank"
+                 class="clickable-address">{{channel.participant2}}</a>
             </div>
             <div class="table-number"
                  fxFlex="0 0 4em"
@@ -100,7 +108,10 @@
                *ngFor="let participant of tokenNetwork.topParticipantsByChannels;trackBy: trackByParticipant">
             <div class="truncate address small"
                  fxLayout="column"
-                 fxFlex="1 1 auto">{{participant.address}}
+                 fxFlex="1 1 auto">
+              <a href="{{etherscanUrl(participant.address)}}"
+                 target="_blank"
+                 class="clickable-address">{{participant.address}}</a>
             </div>
             <div class="table-number"
                  fxLayout="column"
