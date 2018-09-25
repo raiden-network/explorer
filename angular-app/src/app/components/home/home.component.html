@@ -7,6 +7,12 @@
     </div>
   </div>
 
+  <div class="loading-container"
+       fxLayout="row"
+       fxLayoutAlign="center center" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
   <div *ngIf="(metrics$ | async) as metrics; else error">
     <div class="metrics-totals" [@flyInOut]="'in'" fxLayout="column">
       <div fxLayout="row" fxLayoutAlign="center" class="network-totals" ngClass.xs="horizontal-padding">
@@ -124,7 +130,7 @@
       </div>
     </div>
 
-    <div class="network-metrics" fxLayout="row" [@flyInOut]="'in'">
+    <div class="network-metrics" fxLayout="row" [@flyInOut]="'in'" fxLayoutAlign="center">
       <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2rem">
         <button (click)="carousel.showPrev()" class="carousel-button">
           <img src="../../../assets/baseline-navigate_before-24px.svg">
@@ -133,11 +139,12 @@
 
       <carousel #carousel [showControls]="false"
                 fxLayout="column"
-                fxFlex="1 1 100"
+                fxFlex.gt-sm="0 0 960px"
+                fxFlex.lt-sm="1 1 auto"
                 fxFlexAlign="center">
         <ng-container *ngFor="let tokenNetwork of metrics.tokenNetworks; trackBy: trackByFn">
           <ng-container *carouselItem>
-            <app-network-information
+            <app-network-information [style.width.px]="carousel.width"
               class="item"
               [tokenNetwork]="tokenNetwork">
             </app-network-information>
@@ -180,7 +187,7 @@
     </div>
     <a fxLayout="row"
        fxLayoutAlign="center"
-       matTooltip="The graph below is draggable and zoomable. Mouse hover over nodes shows the node ID"
+       matTooltip="Mouse hover over nodes shows the node ID"
        class="graph-subtitle">
       A visualization of the current state of the Raiden network
     </a>

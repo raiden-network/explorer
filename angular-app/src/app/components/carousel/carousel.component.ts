@@ -5,7 +5,7 @@ import {
   Directive,
   ElementRef,
   HostListener,
-  Input,
+  Input, OnInit,
   QueryList,
   ViewChild,
   ViewChildren
@@ -25,7 +25,7 @@ export class CarouselItemElementDirective {
   templateUrl: 'carousel.component.html',
   styleUrls: ['./carousel.component.css']
 })
-export class CarouselComponent implements AfterViewInit {
+export class CarouselComponent implements OnInit {
   @ContentChildren(CarouselItemDirective) items: QueryList<CarouselItemDirective>;
   @Input() timing = '250ms ease-in';
   @Input() showControls = true;
@@ -41,6 +41,10 @@ export class CarouselComponent implements AfterViewInit {
   }
 
   constructor(private builder: AnimationBuilder) {
+  }
+
+  ngOnInit() {
+    this.updateItemWidth();
   }
 
   showNext() {
@@ -78,31 +82,30 @@ export class CarouselComponent implements AfterViewInit {
     this.player.play();
   }
 
-  ngAfterViewInit() {
-    // For some reason only here I need to add setTimeout, in my local env it's working without this.
-    this.updateItemWidth();
-  }
-
   private updateItemWidth() {
     setTimeout(() => {
       const itemWidth = this.itemsElements.first.nativeElement.getBoundingClientRect().width;
-      const windowWidth = window.innerWidth;
 
-      if (windowWidth >= 960 && itemWidth <= 400) {
-        this.itemWidth = 814.8;
-      } else if (windowWidth - itemWidth < 74) {
-        this.itemWidth = itemWidth - 74;
-      } else {
-        this.itemWidth = itemWidth;
-      }
-
-      console.log(`item width ${this.itemWidth} iw: ${itemWidth} window ${windowWidth}`)
+      this.calculateWidth(itemWidth);
 
       this.carouselWrapperStyle = {
         width: `${this.itemWidth}px`
       };
-      this.goToCurrent()
+      this.goToCurrent();
     });
+  }
+
+  private calculateWidth(itemWidth = 0) {
+    const windowWidth = window.innerWidth;
+    if (windowWidth >= 960) {
+      this.itemWidth = 818;
+    } else if (windowWidth >= 412) {
+      this.itemWidth = 380;
+    } else if (windowWidth < 412 && windowWidth > 370) {
+      this.itemWidth = itemWidth - 32;
+    } else {
+      this.itemWidth = 320;
+    }
   }
 
   @HostListener('window:resize', ['$event'])

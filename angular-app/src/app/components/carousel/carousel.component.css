@@ -5,6 +5,11 @@ ul {
   width: 6000px;
 }
 
+ul li {
+  display: block;
+  float: left;
+}
+
 .carousel-wrapper {
   overflow: hidden;
 }

@@ -1,4 +1,4 @@
-<div>
+<div fxFlex.lt-md="1 1 100%">
   <div class="information-container token-info" fxLayout="row">
     <div class="title text-center" fxLayout="column">
       <span *ngIf="tokenNetwork.token.symbol">[{{tokenNetwork.token.symbol}}]</span>
@@ -10,15 +10,18 @@
   <div class="information-container"
        fxLayout="row"
        fxLayout.lt-md="column"
-       fxLayoutGap="0.3rem">
+       fxLayoutGap="8px">
     <div class="information-column"
          fxLayout="column"
          fxLayout.lt-md="row"
-         fxLayoutGap="0.3rem"
-         fxLayout.lt-sm="row"
+         fxLayoutGap="8px"
+         fxLayoutGap.lt-md="8px"
+         fxLayout.lt-md="row"
          fxFlex="0 0 405px"
          fxFlex.lt-md="0 0 200px">
-      <div class="information-group first" fxFlex.lt-md="1 1 auto" fxFlex="0 0 184px">
+      <div class="information-group first"
+           fxFlex.lt-md="1 1 auto"
+           fxFlex="0 0 184px">
         <div fxLayout="row" fxLayoutGap="2em">
           <div fxLayout="column">
             <app-donut-chart [data]="chart(tokenNetwork)"></app-donut-chart>
@@ -34,7 +37,7 @@
         </div>
       </div>
 
-      <div class="information-group second" fxShow.lt-md="false" fxFlex="0 0 270px">
+      <div class="information-group second" fxShow.lt-md="false" fxFlex="0 0 280px">
         <div class="title">TOP CHANNELS BY DEPOSIT</div>
 
         <div fxLayout="column"
@@ -46,7 +49,7 @@
           </div>
 
           <div fxLayout="row"
-               *ngFor="let channel of tokenNetwork.topChannelsByDeposit; trackBy: trackByFn" fxLayoutGap="0.3rem">
+               *ngFor="let channel of tokenNetwork.topChannelsByDeposit; trackBy: trackByFn" fxLayoutGap="8px">
             <div fxFlex="1 1 auto"
                  class="truncate address small"
                  fxLayout="column">{{channel.participant1}}<br/>{{channel.participant2}}
@@ -60,7 +63,7 @@
         </div>
 
         <ng-template #no_channels>
-          <div class="empty-text">
+          <div class="empty-text" fxLayoutAlign="center center">
             No channels found for this network.
           </div>
         </ng-template>
@@ -69,8 +72,9 @@
     <div class="information-column"
          fxLayout="column"
          fxLayout.lt-md="row"
-         fxLayoutGap="0.3rem"
-         fxLayout.lt-sm="row"
+         fxLayoutGap="8px"
+         fxLayoutGap.lt-md="0px"
+         fxLayout.lt-md="row"
          fxFlex="0 0 405px"
          fxFlex.lt-md="0 0 200px">
       <div class="information-group first" fxFlex.lt-md="1 1 auto" fxFlex="0 0 184px">
@@ -82,7 +86,7 @@
         <div fxLayout="row" class="metric-description">Deposit per channel</div>
       </div>
 
-      <div class="information-group second" fxShow.lt-md="false" fxFlex="0 0 270px">
+      <div class="information-group second" fxShow.lt-md="false" fxFlex="0 0 280px">
         <div class="title">TOP PARTICIPANTS BY CHANNELS</div>
         <div fxLayout="column"
              fxLayoutGap="0.4em"
@@ -108,7 +112,7 @@
 
         <ng-template #no_participants>
 
-          <div class="empty-text">
+          <div class="empty-text" fxLayoutAlign="center center">
             No participants for this network
           </div>
 
