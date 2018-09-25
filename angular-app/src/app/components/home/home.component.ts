@@ -5,7 +5,8 @@ import { RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { SharedService } from '../../services/net.metrics/shared.service';
 import { Message } from '../../services/net.metrics/message';
-import { finalize, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
+import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
 
 @Component({
   selector: 'app-home',
@@ -41,7 +42,15 @@ export class HomeComponent {
     return this._loading;
   }
 
-  constructor(private netMetricsService: NetMetricsService, private sharedService: SharedService) {
+  public get main(): boolean {
+    return this.config.main;
+  }
+
+  constructor(
+    private netMetricsService: NetMetricsService,
+    private sharedService: SharedService,
+    private config: NetMetricsConfig
+  ) {
     this.metrics$ = netMetricsService.metrics$.pipe(tap(() => this._loading = false));
     this.messages$ = sharedService.messages;
   }

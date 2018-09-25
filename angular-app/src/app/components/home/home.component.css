@@ -177,3 +177,8 @@
 #network-graph {
   margin-top: 3rem;
 }
+
+.testnet-label {
+  margin-left: 4px;
+  margin-right: 4px;
+}

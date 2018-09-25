@@ -24,6 +24,10 @@ export class NetMetricsConfig {
     return this._configuration;
   }
 
+  public get main(): boolean {
+    return this._configuration.network_type === 'main';
+  }
+
   constructor(private http: HttpClient) {
   }
 
