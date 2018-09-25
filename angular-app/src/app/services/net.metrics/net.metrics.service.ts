@@ -54,7 +54,7 @@ export class NetMetricsService {
    * Get data from server endpoint, then run setCurrentMetrics()
    */
   private getMetrics(): Observable<RaidenNetworkMetrics> {
-    const metrics = this.http.get<NMAPIResponse>(this.nmConfig.defaultConfig.url).pipe(
+    const metrics = this.http.get<NMAPIResponse>(this.nmConfig.configuration.backend_url).pipe(
       map(value => value.result),
       share()
     );

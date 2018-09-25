@@ -1,0 +1,6 @@
+{
+  "backend_url": "http://explorer.raiden.network:4567/json",
+  "http_timeout": 60000,
+  "etherscan_base_url": "https://etherscan.io/address/",
+  "network_type": "main"
+}

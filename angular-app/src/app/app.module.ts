@@ -18,11 +18,16 @@ import { DonutChartComponent } from './components/donut-chart/donut-chart.compon
 import { NetworkGraphComponent } from './components/network-graph/network-graph.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatButtonModule, MatProgressSpinnerModule, MatRippleModule, MatTooltipModule } from '@angular/material';
+import { environment } from '../environments/environment';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'home', component: HomeComponent}
 ];
+
+export function ConfigFactory(config: NetMetricsConfig) {
+  return () => config.load(environment.configurationFile);
+}
 
 @NgModule({
   declarations: [
@@ -58,10 +63,7 @@ const appRoutes: Routes = [
     NetMetricsConfig,
     {
       provide: APP_INITIALIZER,
-      useFactory: f => {
-        return () => {
-        };
-      },
+      useFactory: ConfigFactory,
       deps: [NetMetricsConfig],
       multi: true
     },

@@ -1,13 +1,39 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
-import { config } from '../../../assets/config';
+export interface Config {
+  backend_url: string;
+  http_timeout: number;
+  etherscan_base_url: string;
+  network_type: string;
+}
+
+const defaultConfiguration: Config = {
+  backend_url: 'http://explorer.raiden.network:4567/json',
+  http_timeout: 60000,
+  etherscan_base_url: 'https://ropsten.etherscan.io/address/',
+  network_type: 'test'
+};
 
 @Injectable()
 export class NetMetricsConfig {
 
-  public defaultConfig = config;
+  private _configuration: Config = defaultConfiguration;
 
-  constructor() {
+  public get configuration(): Config {
+    return this._configuration;
   }
 
+  constructor(private http: HttpClient) {
+  }
+
+  load(url: string): Promise<any> {
+    return new Promise((resolve) => {
+      this.http.get<Config>(url)
+        .subscribe((config) => {
+          this._configuration = Object.assign({}, defaultConfiguration, config);
+          resolve();
+        });
+    });
+  }
 }
