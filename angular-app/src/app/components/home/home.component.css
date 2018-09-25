@@ -84,7 +84,6 @@
 }
 
 .carousel-button {
-  height: 100%;
   color: white;
   border: transparent;
   background: transparent;
@@ -169,4 +168,8 @@
     font-weight: 400;
   }
 
+}
+
+.loading-container {
+  height: 70vh;
 }

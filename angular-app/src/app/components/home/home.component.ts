@@ -5,6 +5,7 @@ import { RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { SharedService } from '../../services/net.metrics/shared.service';
 import { Message } from '../../services/net.metrics/message';
+import { finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -32,12 +33,16 @@ import { Message } from '../../services/net.metrics/message';
 })
 export class HomeComponent {
 
-  refreshToggle: boolean;
   metrics$: Observable<RaidenNetworkMetrics>;
   messages$: Observable<Message>;
+  private _loading = true;
+
+  public get loading(): boolean {
+    return this._loading;
+  }
 
   constructor(private netMetricsService: NetMetricsService, private sharedService: SharedService) {
-    this.metrics$ = netMetricsService.metrics$;
+    this.metrics$ = netMetricsService.metrics$.pipe(tap(() => this._loading = false));
     this.messages$ = sharedService.messages;
   }
 

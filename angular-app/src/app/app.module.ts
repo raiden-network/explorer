@@ -17,7 +17,7 @@ import { CommonModule } from '@angular/common';
 import { DonutChartComponent } from './components/donut-chart/donut-chart.component';
 import { NetworkGraphComponent } from './components/network-graph/network-graph.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatButtonModule, MatRippleModule, MatTooltipModule } from '@angular/material';
+import { MatButtonModule, MatProgressSpinnerModule, MatRippleModule, MatTooltipModule } from '@angular/material';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -40,6 +40,7 @@ const appRoutes: Routes = [
     FlexLayoutModule,
     MatButtonModule,
     MatRippleModule,
+    MatProgressSpinnerModule,
     MatTooltipModule,
     BrowserModule,
     CommonModule,
