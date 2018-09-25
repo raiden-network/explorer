@@ -1,9 +1,11 @@
 <section class="statistics-section">
   <div fxLayout="row" fxLayoutAlign="center">
     <div [@flyInOut]="'in'" fxLayout="column" fxLayoutAlign="center center" class="statistics-header">
-      <div fxLayout="row" class="metrics-title">Network Metrics</div>
+      <div fxLayout="row" class="metrics-title">Raiden Explorer</div>
 
-      <div fxLayout="row" class="metrics-subtitle">Metrics for the Raiden network</div>
+      <div fxLayout="row" class="metrics-subtitle">
+        Metrics for the Raiden <span class="testnet-label" *ngIf="!main">testnet</span> network
+      </div>
     </div>
   </div>
 
