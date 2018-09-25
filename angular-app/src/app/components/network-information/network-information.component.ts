@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Channel, Participant, TokenNetwork } from '../../models/TokenNetwork';
 import { ChannelData } from '../donut-chart/donut-chart.component';
+import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
 
 @Component({
   selector: 'app-network-information',
@@ -12,12 +13,17 @@ export class NetworkInformationComponent implements OnInit {
   @Input() tokenNetwork: TokenNetwork;
   @Input() topChannels: boolean;
 
-  constructor() {
+  constructor(private config: NetMetricsConfig) {
+  }
+
+  public etherscanUrl(address: string): string {
+    return `${this.config.configuration.etherscan_base_url}${address}`;
   }
 
   ngOnInit() {
   }
 
+  //noinspection JSMethodCanBeStatic
   chart(tokenNetwork: TokenNetwork): ChannelData[] {
     const chartData: ChannelData[] = [];
 
@@ -44,10 +50,12 @@ export class NetworkInformationComponent implements OnInit {
     return chartData;
   }
 
+  //noinspection JSMethodCanBeStatic
   trackByFn(channel: Channel): string {
     return channel.participant1 + channel.participant2;
   }
 
+  //noinspection JSMethodCanBeStatic
   trackByParticipant(participant: Participant): string {
     return participant.address;
   }

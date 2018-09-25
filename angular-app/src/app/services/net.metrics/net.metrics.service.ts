@@ -59,7 +59,7 @@ export class NetMetricsService {
       share()
     );
 
-    const networkMetrics = metrics.pipe(
+    const networkMetrics: Observable<TokenNetwork[]> = metrics.pipe(
       map((networks: NMNetwork[]) => {
         return networks.map(network => {
           const valid = ajv.validate(schema, network);
@@ -100,13 +100,29 @@ export class NetMetricsService {
 
     return zip(networkMetrics, networkGraph)
       .pipe(map(([data, graph]) => {
-        return {
+        const uniqueUsers = data.map(value => value.uniqueParticipants)
+          .reduce((acc: string[], users: string[]) => {
+            acc.push(...users);
+            return acc;
+          }, [])
+          .filter(this.unique);
+
+        const totalOpenChannels = data.map(value1 => value1.openedChannels)
+          .reduce((acc, openChannels) => acc + openChannels);
+
+        const raidenMetrics: RaidenNetworkMetrics = {
           totalTokenNetworks: data.length,
-          openChannels: data.map(value1 => value1.openedChannels).reduce((acc, openChannels) => acc + openChannels),
-          uniqueUsers: data.map(networks => networks.participants).filter(this.unique).length,
-          tokenNetworks: data,
+          openChannels: totalOpenChannels,
+          uniqueUsers: uniqueUsers.length,
+          tokenNetworks: data.sort((a, b) => b.openedChannels - a.openedChannels),
           networkGraph: graph
         };
+
+        data.forEach(value => {
+          value.uniqueParticipants = undefined;
+        });
+
+        return raidenMetrics;
       }));
   }
 
@@ -222,7 +238,8 @@ export class NetMetricsService {
       participants: uniqueParticipants.length,
       topChannelsByDeposit: topChannelsByDeposit,
       averageDepositPerChannel: channelAverage || 0,
-      averageDepositPerParticipant: averagePerParticipant || 0
+      averageDepositPerParticipant: averagePerParticipant || 0,
+      uniqueParticipants: uniqueParticipants
     };
   }
 
