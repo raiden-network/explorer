@@ -140,7 +140,7 @@
     </div>
 
     <div class="network-metrics" fxLayout="row" [@flyInOut]="'in'" fxLayoutAlign="center">
-      <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2rem">
+      <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2rem" fxFlexAlign="center">
         <button (click)="carousel.showPrev()" class="carousel-button">
           <img src="../../../assets/baseline-navigate_before-24px.svg">
         </button>
@@ -160,7 +160,7 @@
           </ng-container>
         </ng-container>
       </carousel>
-      <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2rem">
+      <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2rem" fxFlexAlign="center">
         <button (click)="carousel.showNext()" class="carousel-button">
           <img src="../../../assets/baseline-navigate_next-24px.svg">
         </button>
