@@ -173,3 +173,7 @@
 .loading-container {
   height: 70vh;
 }
+
+#network-graph {
+  margin-top: 3rem;
+}

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChange, ViewChild } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, OnInit, SimpleChange, ViewChild } from '@angular/core';
 import { Link, NetworkGraph, Node } from '../../models/NetworkGraph';
 import * as d3 from 'd3';
 import { Simulation, SimulationLinkDatum, SimulationNodeDatum } from 'd3';
@@ -22,6 +22,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   @ViewChild('graph') graph;
   private width: number;
   private height: number;
+
+  private initialWidth: number;
+  private initialHeight: number;
 
   private svg: d3.Selection<any, NetworkGraph, any, any>;
   private link: any;
@@ -74,6 +77,35 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     this.drawLegend();
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    const availHeight = window.innerHeight;
+    const availWidth = window.innerWidth;
+
+    if (availWidth > 1000) {
+      this.width = 960;
+    } else {
+      this.width = availWidth - 60;
+    }
+
+    if (availHeight < 1000) {
+      this.height = availHeight - 100;
+    } else {
+      this.height = 900;
+    }
+
+    d3.select<SVGElement, NetworkGraph>(this.graph.nativeElement)
+      .select('svg')
+      .attr('width', this.width)
+      .attr('height', this.height);
+
+    this.svg.selectAll('.legend').remove().exit();
+    this.drawLegend();
+    const translation = `translate(${(this.width - this.initialWidth) / 2},${(this.height - this.initialHeight) / 2})`;
+    this.svg.selectAll('.nodes').attr('transform', translation);
+    this.svg.selectAll('.links').attr('transform', translation);
+  }
+
   private prepareGraphData() {
     this.graphData.nodes = [];
     this.graphData.links = [];
@@ -119,8 +151,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private initSvg() {
-    const availHeight = screen.availHeight;
-    const availWidth = screen.availWidth;
+    const availHeight = window.innerHeight;
+    const availWidth = window.innerWidth;
 
     if (availWidth > 1000) {
       this.width = 960;
@@ -133,6 +165,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     } else {
       this.height = 900;
     }
+
+    this.initialWidth = this.width;
+    this.initialHeight = this.height;
 
     this.svg = d3.select<SVGElement, NetworkGraph>(this.graph.nativeElement)
       .append('svg')

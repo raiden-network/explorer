@@ -22,6 +22,11 @@ const ajv = new Ajv({allErrors: true});
 export class NetMetricsService {
   readonly metrics$: Observable<RaidenNetworkMetrics>;
   private pollingSubject: BehaviorSubject<void> = new BehaviorSubject(null);
+
+  private static toDecimal(amount: number, decimals: number) {
+    return amount / (10 ** decimals);
+  }
+
   private unique = function (value, index, self) {
     return self.indexOf(value) === index;
   };
@@ -128,10 +133,6 @@ export class NetMetricsService {
       });
     }
     return graph;
-  }
-
-  private static toDecimal(amount: number, decimals: number) {
-    return amount / (10 ** decimals);
   }
 
   private createTokenNetwork(network: NMNetwork): TokenNetwork {
