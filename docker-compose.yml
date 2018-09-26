@@ -8,8 +8,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:explorer.raiden.network"
-      - "traefik.port=8888"
-      - "traefik.protocol=http"
+      - "traefik.port=3000"
 
   backend:
     image: backend
@@ -17,9 +16,8 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:explorer.raiden.network"
+      - "traefik.frontend.rule=Host:explorer.raiden.network; Path: /json"
       - "traefik.port=4567"
-      - "traefik.protocol=http"
 
   traefik:
     image: traefik:1.7
