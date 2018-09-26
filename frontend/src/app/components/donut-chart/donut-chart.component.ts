@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChange, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import * as d3 from 'd3';
 import * as d3Scale from 'd3-scale';
 import * as d3Shape from 'd3-shape';
 import { Arc, Pie } from 'd3';
+import * as deepEqual from 'deep-equal';
 
 export interface ChannelData {
   readonly status: string;
@@ -16,7 +17,7 @@ export interface ChannelData {
   templateUrl: './donut-chart.component.html',
   styleUrls: ['./donut-chart.component.css']
 })
-export class DonutChartComponent implements OnInit {
+export class DonutChartComponent implements OnInit, OnChanges  {
 
   @Input() data: ChannelData[];
   @ViewChild('chart') chart;
@@ -36,6 +37,24 @@ export class DonutChartComponent implements OnInit {
     this.initSvg();
     this.drawChart(this.data);
     setTimeout(() => this.drawLegend(), 1000);
+  }
+
+  ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
+    if (!changes.hasOwnProperty('data')) {
+      return;
+    }
+
+    const change = changes['data'];
+
+    if (change.isFirstChange()) {
+      return;
+    }
+
+    if (deepEqual(change.previousValue, change.currentValue)) {
+      return;
+    }
+    this.svg.selectAll('path').remove().exit();
+    this.drawChart(change.currentValue);
   }
 
   private initSvg() {
@@ -113,5 +132,4 @@ export class DonutChartComponent implements OnInit {
       .style('fill', '#fff')
       .style('font-size', '12px');
   }
-
 }
