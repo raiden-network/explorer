@@ -1,4 +1,4 @@
-# Status page
+# Raiden Explorer
 
 Requires NodeJS and npm.
 
