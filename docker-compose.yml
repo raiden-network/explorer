@@ -5,25 +5,21 @@ services:
     image: frontend
     build: ./frontend
     restart: always
-    ports:
-      - "8888:3000"
     labels:
       - "traefik.enable=true"
-      - "traefik.basic.frontend.rule=Host:explorer.raiden.network"
-      - "traefik.basic.port=8888"
-      - "traefik.basic.protocol=http"
+      - "traefik.frontend.rule=Host:explorer.raiden.network"
+      - "traefik.port=8888"
+      - "traefik.protocol=http"
 
   backend:
     image: backend
     build: ./backend
     restart: always
-    ports:
-      - 4567:4567
     labels:
       - "traefik.enable=true"
-      - "traefik.basic.frontend.rule=Host:explorer.raiden.network"
-      - "traefik.basic.port=4567"
-      - "traefik.basic.protocol=http"
+      - "traefik.frontend.rule=Host:explorer.raiden.network"
+      - "traefik.port=4567"
+      - "traefik.protocol=http"
 
   traefik:
     image: traefik:1.7
@@ -33,9 +29,8 @@ services:
       - 443:443
     volumes:
       - ./config/traefik:/etc/traefik
-      - ${DATA_DIR:-./data}/traefik:/data
+      - ./data/traefik:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --acme.email=${LETSENCRYPT_EMAIL}
     depends_on:
       - backend
       - frontend
