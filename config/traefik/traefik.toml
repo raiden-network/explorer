@@ -19,6 +19,7 @@ defaultEntryPoints = ["https","http"]
   exposedbydefault = false
 
 [acme]
+  email = "contact@raiden.network"
   storage = "/data/acme.json"
   entryPoint = "https"
   OnHostRule = true
