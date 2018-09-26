@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   ContentChildren,
   Directive,
@@ -10,7 +9,7 @@ import {
   ViewChild,
   ViewChildren
 } from '@angular/core';
-import { animate, AnimationBuilder, AnimationFactory, AnimationPlayer, style } from '@angular/animations';
+import { animate, AnimationBuilder, AnimationFactory, AnimationPlayer, AnimationStyleMetadata, style } from '@angular/animations';
 import { CarouselItemDirective } from '../../directives/carousel-item.directive';
 
 @Directive({
@@ -29,6 +28,7 @@ export class CarouselComponent implements OnInit {
   @ContentChildren(CarouselItemDirective) items: QueryList<CarouselItemDirective>;
   @Input() timing = '250ms ease-in';
   @Input() showControls = true;
+  @Input() slides: number;
   carouselWrapperStyle = {};
   @ViewChildren(CarouselItemElementDirective, {read: ElementRef}) private itemsElements: QueryList<ElementRef>;
   @ViewChild('carousel') private carousel: ElementRef;
@@ -40,6 +40,10 @@ export class CarouselComponent implements OnInit {
     return this.itemWidth;
   }
 
+  public get current(): number {
+    return this.currentSlide;
+  }
+
   constructor(private builder: AnimationBuilder) {
   }
 
@@ -48,12 +52,12 @@ export class CarouselComponent implements OnInit {
   }
 
   showNext() {
-    if (this.currentSlide + 1 === this.items.length) {
+    if (this.currentSlide + 1 === this.slides) {
       return;
     }
 
-    this.currentSlide = (this.currentSlide + 1) % this.items.length;
-    const offset = this.currentSlide * this.itemWidth;
+    this.currentSlide = (this.currentSlide + 1) % this.slides;
+    const offset = this.calculateOffset();
     const myAnimation: AnimationFactory = this.buildAnimation(offset);
     this.player = myAnimation.create(this.carousel.nativeElement);
     this.player.play();
@@ -64,29 +68,38 @@ export class CarouselComponent implements OnInit {
       return;
     }
 
-    this.currentSlide = ((this.currentSlide - 1) + this.items.length) % this.items.length;
-    const offset = this.currentSlide * this.itemWidth;
+    this.currentSlide = ((this.currentSlide - 1) + this.slides) % this.slides;
+    const offset = this.calculateOffset();
 
-    const myAnimation: AnimationFactory = this.buildAnimation(offset);
+    const myAnimation: AnimationFactory = this.buildAnimation(offset, false);
     this.player = myAnimation.create(this.carousel.nativeElement);
     this.player.play();
   }
 
 
   private goToCurrent() {
-    this.currentSlide = (this.currentSlide + this.items.length) % this.items.length;
-    const offset = this.currentSlide * this.itemWidth;
+    this.currentSlide = (this.currentSlide + this.slides) % this.slides;
+    const offset = this.calculateOffset();
 
     const myAnimation: AnimationFactory = this.buildAnimation(offset);
     this.player = myAnimation.create(this.carousel.nativeElement);
     this.player.play();
   }
 
+  private calculateOffset() {
+    let offset: number;
+    if (this.currentSlide === 0) {
+      offset = 0;
+    } else {
+      offset = this.itemWidth;
+    }
+    return offset;
+  }
+
   private updateItemWidth() {
     setTimeout(() => {
-      const itemWidth = this.itemsElements.first.nativeElement.getBoundingClientRect().width;
 
-      this.calculateWidth(itemWidth);
+      this.calculateWidth();
 
       this.carouselWrapperStyle = {
         width: `${this.itemWidth}px`
@@ -95,16 +108,20 @@ export class CarouselComponent implements OnInit {
     });
   }
 
-  private calculateWidth(itemWidth = 0) {
-    const windowWidth = window.innerWidth;
-    if (windowWidth >= 960) {
-      this.itemWidth = 818;
-    } else if (windowWidth >= 412) {
-      this.itemWidth = 380;
-    } else if (windowWidth < 412 && windowWidth > 370) {
-      this.itemWidth = itemWidth - 32;
+  private calculateWidth() {
+    let availableWidth: number;
+
+    if (window.innerWidth > screen.width) {
+      availableWidth = screen.width;
     } else {
-      this.itemWidth = 320;
+      availableWidth = window.innerWidth;
+    }
+    if (availableWidth >= 960) {
+      this.itemWidth = 818;
+    } else if (availableWidth >= 444) {
+      this.itemWidth = 380;
+    } else {
+      this.itemWidth = availableWidth - 64;
     }
   }
 
@@ -113,9 +130,31 @@ export class CarouselComponent implements OnInit {
     this.updateItemWidth();
   }
 
-  private buildAnimation(offset) {
-    return this.builder.build([
-      animate(this.timing, style({transform: `translateX(-${offset}px)`}))
-    ]);
+  private buildAnimation(offset: number, next: boolean = true) {
+    const animateMetadata = animate(this.timing, style({
+      transform: `translateX(-${offset}px)`
+    }));
+
+    const meta = [
+      animateMetadata
+    ];
+
+    if (offset !== 0) {
+      let currentElementFutureOffset: number;
+      if (!next) {
+        currentElementFutureOffset = (offset * 2);
+      } else {
+        currentElementFutureOffset = 0;
+      }
+      const styles: AnimationStyleMetadata = style({
+        transform: `translateX(-${currentElementFutureOffset}px)`
+      });
+
+      const animateMetadataPre = animate(0, styles);
+      meta.push(animateMetadataPre);
+      meta.reverse();
+    }
+
+    return this.builder.build(meta);
   }
 }
