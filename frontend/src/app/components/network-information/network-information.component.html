@@ -2,7 +2,7 @@
   <div class="information-container token-info" fxLayout="row">
     <div class="title text-center" fxLayout="column">
       <span *ngIf="tokenNetwork.token.symbol">[{{tokenNetwork.token.symbol}}]</span>
-      <span *ngIf="tokenNetwork.token.name">{{tokenNetwork.token.name}}</span>
+      <span class="truncate" *ngIf="tokenNetwork.token.name">{{tokenNetwork.token.name}}</span>
       <a href="{{etherscanUrl(tokenNetwork.token.address)}}"
          target="_blank"
          class="truncate clickable-address">{{tokenNetwork.token.address}}</a>

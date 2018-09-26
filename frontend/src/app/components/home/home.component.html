@@ -84,6 +84,7 @@
            fxLayout.lt-md="column"
            fxLayoutAlign="center"
            fxFlexAlign.lt-md="center"
+           [ngStyle.xs]="{'padding': '0 16px'}"
            fxLayoutGap="0.3rem">
         <div fxLayout="column"
              fxLayout.lt-md="row"
@@ -146,12 +147,14 @@
         </button>
       </div>
 
-      <carousel #carousel [showControls]="false"
+      <carousel #carousel
+                [showControls]="false"
+                [slides]="metrics.tokenNetworks.length"
                 fxLayout="column"
                 fxFlex.gt-sm="0 0 960px"
                 fxFlex.lt-sm="1 1 auto"
                 fxFlexAlign="center">
-        <ng-container *ngFor="let tokenNetwork of metrics.tokenNetworks; trackBy: trackByFn">
+        <ng-container *ngFor="let tokenNetwork of getVisible(metrics.tokenNetworks, carousel.current); trackBy: trackByFn">
           <ng-container *carouselItem>
             <app-network-information [style.width.px]="carousel.width"
               class="item"

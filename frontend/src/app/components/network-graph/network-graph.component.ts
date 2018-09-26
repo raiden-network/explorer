@@ -79,8 +79,13 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-    const availHeight = window.innerHeight;
-    const availWidth = window.innerWidth;
+    let availWidth: number;
+
+    if (window.innerWidth > screen.width) {
+      availWidth = screen.width;
+    } else {
+      availWidth = window.innerWidth;
+    }
 
     if (availWidth > 1000) {
       this.width = 960;
@@ -88,11 +93,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       this.width = availWidth - 60;
     }
 
-    if (availHeight < 1000) {
-      this.height = availHeight - 100;
-    } else {
-      this.height = 900;
-    }
+    this.height = screen.height - 200;
 
     d3.select<SVGElement, NetworkGraph>(this.graph.nativeElement)
       .select('svg')

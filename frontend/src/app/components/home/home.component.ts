@@ -64,4 +64,23 @@ export class HomeComponent {
   trackByFn(network: TokenNetwork) {
     return network.token;
   }
+
+  //noinspection JSMethodCanBeStatic
+  getVisible(tokenNetworks: TokenNetwork[], current: number) {
+    let start: number;
+    let end: number;
+    if (current > 0) {
+      start = current - 1;
+    } else {
+      start = 0;
+    }
+
+    if (current === tokenNetworks.length) {
+      end = current;
+    } else {
+      end = current + 2;
+    }
+
+    return tokenNetworks.slice(start, end);
+  }
 }
