@@ -277,7 +277,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .enter()
       .append('g')
       .classed('legend', true)
-      .attr('transform', (d, i) => `translate(${this.width - 100},${this.height - (i * legendHeight) - 28})`);
+      .attr('transform', (d, i) => `translate(${this.width - 100},${(i * legendHeight) + 20})`);
 
     legend.append('rect')
       .attr('width', legendRectSize)
