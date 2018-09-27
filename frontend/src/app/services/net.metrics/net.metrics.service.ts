@@ -1,4 +1,4 @@
-import { catchError, flatMap, map, reduce, share, skipWhile, switchMap, tap, toArray } from 'rxjs/operators';
+import { catchError, map, share, switchMap, tap } from 'rxjs/operators';
 import { NetMetricsConfig } from './net.metrics.config';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -6,7 +6,7 @@ import { NMAPIResponse } from '../../models/NMAPIResponse';
 import { NMChannel, NMNetwork } from '../../models/NMNetwork';
 import * as NMNetworkSchema from '../../models/NMNetwork.schema';
 import { NetworkGraph } from '../../models/NetworkGraph';
-import { BehaviorSubject, from, Observable, of, zip } from 'rxjs';
+import { BehaviorSubject, Observable, of, zip } from 'rxjs';
 import { Participant, RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { SharedService } from './shared.service';
 import { Message } from './message';
@@ -50,6 +50,8 @@ export class NetMetricsService {
     );
   }
 
+  private _nonScenarionTokens = value => !value.token.name.toLocaleLowerCase().startsWith('scenario test token');
+
   /**
    * Get data from server endpoint, then run setCurrentMetrics()
    */
@@ -61,7 +63,7 @@ export class NetMetricsService {
 
     const networkMetrics: Observable<TokenNetwork[]> = metrics.pipe(
       map((networks: NMNetwork[]) => {
-        return networks.map(network => {
+        return networks.filter(this._nonScenarionTokens).map(network => {
           const valid = ajv.validate(schema, network);
           if (!valid) {
             throw new Error(`Malformed API data: ${this.ajvErrorsToString(ajv.errors)}`);
@@ -89,7 +91,7 @@ export class NetMetricsService {
 
     const networkGraph = metrics.pipe(
       map((networks: NMNetwork[]) => {
-        return networks.map(network => this.createNetworkGraph(network))
+        return networks.filter(this._nonScenarionTokens).map(network => this.createNetworkGraph(network))
           .reduce((acc: NetworkGraph, value: NetworkGraph) => {
             acc.nodes.push(...value.nodes);
             acc.links.push(...value.links);
@@ -136,7 +138,7 @@ export class NetMetricsService {
 
       const openChannels = getChannels(id, 'opened').length;
       const closedChannels = getChannels(id, 'closed').length;
-      const settledChannels = getChannels(id, 'settled').length
+      const settledChannels = getChannels(id, 'settled').length;
       graph.nodes.push({
         id,
         openChannels,
