@@ -17,6 +17,11 @@ interface SimulationLink extends SimulationLinkDatum<SimulationNode>, Link {
   styleUrls: ['./network-graph.component.css']
 })
 export class NetworkGraphComponent implements OnInit, OnChanges {
+  private static NORMAL_COLOR = '#1A237E';
+  private static HIGHLIGHT_COLOR = '#2E41FF';
+  private static SELECTED_COLOR = '#00b409';
+
+  private static NODE_OPACITY = 0.3;
 
   @Input() data: NetworkGraph;
   @ViewChild('graph') graph;
@@ -38,6 +43,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private initialized = false;
 
   private graphData: { nodes: SimulationNode[], links: SimulationLink[] } = {nodes: [], links: []};
+
 
   constructor() {
   }
@@ -175,16 +181,14 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('width', this.width)
       .attr('height', this.height);
 
+    this.svg.on('click', () => this.clearSelection());
 
     this.link = this.svg.append('g')
       .attr('class', 'links')
-      .attr('stroke-width', '2')
-      .attr('stroke-opacity', 0.6)
       .selectAll('.link');
 
     this.node = this.svg.append('g')
       .attr('class', 'nodes')
-      .attr('fill', '#1A237E')
       .attr('stroke-width', '1')
       .attr('stroke', '#fff')
       .selectAll('.node');
@@ -192,7 +196,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     this.color = d3Scale.scaleOrdinal()
       .domain(['opened', 'closed', 'settled'])
       .range(['#089000', '#E50000', '#8e24aa']);
-
   }
 
   private drawGraph() {
@@ -210,6 +213,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .enter()
       .append('line')
       .attr('class', 'link')
+      .attr('stroke-opacity', 0.4)
+      .attr('stroke-width', '2')
       .attr('stroke', datum => this.color(datum.status))
       .merge(links);
 
@@ -221,6 +226,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .enter()
       .append('circle')
       .attr('class', 'node')
+      .attr('fill', NetworkGraphComponent.NORMAL_COLOR)
       .attr('r', datum => this.circleSize(datum.openChannels))
       .call(d3.drag<any, any, any>()
         .on('start', datum => this.dragstarted(datum, this.simulation))
@@ -229,7 +235,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .merge(nodes);
 
     node.append('title').text(d => d.id);
-
+    node.on('click', datum => {
+      d3.event.stopPropagation();
+      return this.selectNode(datum);
+    });
 
     this.simulation.nodes(this.graphData.nodes).on('tick', ticked);
 
@@ -282,6 +291,85 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .text((d: string) => d)
       .style('fill', '#000')
       .style('font-size', '12px');
+  }
+
+  private clearSelection() {
+    this.svg.selectAll('.node')
+      .attr('fill', NetworkGraphComponent.NORMAL_COLOR)
+      .attr('opacity', 1);
+    this.svg.selectAll('.link')
+      .attr('stroke-opacity', NetworkGraphComponent.NODE_OPACITY)
+      .attr('z-index', 1);
+  }
+
+  private selectNode(selectedNode: Node) {
+    const neighbors: Node[] = this.getNeighbors(selectedNode);
+    this.svg.selectAll('.node')
+      .attr('fill', (node: Node) => this.ifNodeElse(selectedNode, node, neighbors, [
+        NetworkGraphComponent.SELECTED_COLOR,
+        NetworkGraphComponent.HIGHLIGHT_COLOR,
+        NetworkGraphComponent.NORMAL_COLOR
+      ]))
+      .attr('opacity', (node: Node) => {
+        return this.ifNodeElse(selectedNode, node, neighbors, [
+          1,
+          1,
+          0.6
+        ]);
+      });
+    this.svg.selectAll('.link')
+      .attr('stroke-opacity', (link: Link) => this.ifNeighborElse(selectedNode, link, [
+        2, NetworkGraphComponent.NODE_OPACITY
+      ]))
+      .attr('z-index', (link: Link) => this.ifNeighborElse(selectedNode, link, [10, 1]))
+      .attr('stroke-width', (link: Link) => this.ifNeighborElse(selectedNode, link, [3, 2]));
+  }
+
+  private getNeighbors(node: Node): Node[] {
+    return this.graphData.links
+      .reduce((neighbors, link) => {
+        if (link.targetAddress === node.id && link.tokenAddress === node.tokenAddress) {
+          neighbors.push(link.source);
+        } else if (link.sourceAddress === node.id && link.tokenAddress === node.tokenAddress) {
+          neighbors.push(link.target);
+        }
+        return neighbors;
+      }, []);
+  }
+
+  // noinspection JSMethodCanBeStatic
+  private isNeighbor(node: Node, link: Link): boolean {
+    const sameNetwork = node.tokenAddress === link.tokenAddress;
+    const sourceMatches = sameNetwork && node.id === link.sourceAddress;
+    const targetMatches = sameNetwork && node.id === link.targetAddress;
+    return sourceMatches || targetMatches;
+  }
+
+  private ifNeighborElse<T>(node: Node, link: Link, tuple: [T, T]): T {
+    if (this.isNeighbor(node, link)) {
+      return tuple[0];
+    } else {
+      return tuple[1];
+    }
+  }
+
+  private ifNodeElse<T>(selectedNode: Node, node: Node, neighbors: Node[], states: [T, T, T]): T {
+    if (node === selectedNode) {
+      return states[0];
+    } else if (this.nodeInNeighbors(node, neighbors)) {
+      return states[1];
+    } else {
+      return states[2];
+    }
+  }
+
+  private nodeInNeighbors(node: Node, neighbors: Node[]) {
+    return neighbors.find(current => this.isSameNode(node, current));
+  }
+
+  // noinspection JSMethodCanBeStatic
+  private isSameNode(node1: Node, node2: Node): boolean {
+    return node1.tokenAddress === node2.tokenAddress && node1.id === node2.id;
   }
 
   //noinspection JSMethodCanBeStatic
