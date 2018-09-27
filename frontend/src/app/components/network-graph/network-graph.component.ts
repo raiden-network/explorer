@@ -121,6 +121,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       const node: SimulationNode = {
         id: value.id,
         openChannels: value.openChannels,
+        closedChannels: value.closedChannels,
+        settledChannels: value.settledChannels,
         tokenAddress: value.tokenAddress
       };
 
@@ -234,7 +236,13 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
         .on('end', datum => this.dragended(datum, this.simulation)))
       .merge(nodes);
 
-    node.append('title').text(d => d.id);
+    const tooltip = (d: Node) => d.id + '\n\n' +
+      'Token: ' + d.tokenAddress + '\n\n' +
+      'Open Channels: ' + d.openChannels + '\n' +
+      'Closed Channels: ' + d.closedChannels + '\n' +
+      'Settle Channels: ' + d.settledChannels;
+
+    node.append('title').text(tooltip);
     node.on('click', datum => {
       d3.event.stopPropagation();
       return this.selectNode(datum);
