@@ -8,6 +8,8 @@ export interface Link {
 export interface Node {
   readonly id: string;
   readonly openChannels: number;
+  readonly closedChannels: number;
+  readonly settledChannels: number;
   readonly tokenAddress: string;
 }
 

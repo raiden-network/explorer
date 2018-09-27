@@ -128,14 +128,20 @@ export class NetMetricsService {
 
   private createNetworkGraph(network: NMNetwork) {
     const graph: NetworkGraph = {nodes: [], links: []};
+    const getChannels = (id: string, status: string) => network.channels.filter((value: NMChannel) => {
+      return (value.participant1 === id || value.participant2 === id) && value.status === status;
+    });
 
     network.nodes.forEach(id => {
-      const openChannels = network.channels.filter(value => {
-        return (value.participant1 === id || value.participant2 === id) && value.status === 'opened';
-      }).length;
+
+      const openChannels = getChannels(id, 'opened').length;
+      const closedChannels = getChannels(id, 'closed').length;
+      const settledChannels = getChannels(id, 'settled').length
       graph.nodes.push({
         id,
         openChannels,
+        closedChannels,
+        settledChannels,
         tokenAddress: network.token.address
       });
     });
