@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import { Simulation, SimulationLinkDatum, SimulationNodeDatum } from 'd3';
 import * as d3Scale from 'd3-scale';
 import * as deepEqual from 'deep-equal';
+import { jab } from 'd3-cam02';
 
 interface SimulationNode extends SimulationNodeDatum, Node {
 }
@@ -17,7 +18,6 @@ interface SimulationLink extends SimulationLinkDatum<SimulationNode>, Link {
   styleUrls: ['./network-graph.component.css']
 })
 export class NetworkGraphComponent implements OnInit, OnChanges {
-  private static NORMAL_COLOR = '#1A237E';
   private static HIGHLIGHT_COLOR = '#2E41FF';
   private static SELECTED_COLOR = '#00b409';
 
@@ -44,6 +44,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   private graphData: { nodes: SimulationNode[], links: SimulationLink[] } = {nodes: [], links: []};
 
+  private tokenNetworks: string[];
+
+  private nodeColor: d3.ScaleOrdinal<string, any>;
 
   constructor() {
   }
@@ -201,6 +204,11 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private drawGraph() {
+    this.tokenNetworks = d3.set(this.graphData.nodes.map(value => value.tokenAddress)).values();
+    this.nodeColor = d3Scale.scaleOrdinal()
+      .domain(this.tokenNetworks)
+      .range(this.generateColors(this.tokenNetworks.length));
+
     this.simulation = d3.forceSimulation<SimulationNode, SimulationLink>()
       .force('link', d3.forceLink().id((node1: SimulationNode) => node1.id + node1.tokenAddress))
       .force('charge', d3.forceManyBody().distanceMax(180))
@@ -228,7 +236,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .enter()
       .append('circle')
       .attr('class', 'node')
-      .attr('fill', NetworkGraphComponent.NORMAL_COLOR)
+      .attr('fill', datum => this.nodeColor(datum.tokenAddress))
       .attr('r', datum => this.circleSize(datum.openChannels))
       .call(d3.drag<any, any, any>()
         .on('start', datum => this.dragstarted(datum, this.simulation))
@@ -303,7 +311,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   private clearSelection() {
     this.svg.selectAll('.node')
-      .attr('fill', NetworkGraphComponent.NORMAL_COLOR)
+      .attr('fill', (datum: Node) => this.nodeColor(datum.tokenAddress))
       .attr('opacity', 1);
     this.svg.selectAll('.link')
       .attr('stroke-opacity', NetworkGraphComponent.NODE_OPACITY)
@@ -316,7 +324,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('fill', (node: Node) => this.ifNodeElse(selectedNode, node, neighbors, [
         NetworkGraphComponent.SELECTED_COLOR,
         NetworkGraphComponent.HIGHLIGHT_COLOR,
-        NetworkGraphComponent.NORMAL_COLOR
+        this.nodeColor(node.tokenAddress)
       ]))
       .attr('opacity', (node: Node) => {
         return this.ifNodeElse(selectedNode, node, neighbors, [
@@ -402,5 +410,36 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     }
     node.fx = null;
     node.fy = null;
+  }
+
+  private generateColors(number: number): string[] {
+    const transform = (x, os, oe, ns, ne) => (((x - os) * (ne - ns)) / (oe - os)) + ns;
+    const colors: string[] = [];
+
+    for (let i = 0; i < number; i++) {
+      const transform1 = Math.round(transform(i, 0, number, 10, 90));
+      const color = this.findColor(transform1);
+      colors.push(color);
+    }
+    return colors;
+  }
+
+  private findColor(j: number) {
+    for (let b = -40; b < 40; b++) {
+      for (let a = -40; a < 40; a++) {
+        const ja = jab(j, a, b);
+        const rgb = ja.rgb();
+        if (rgb.displayable()) {
+          return `#${this.formatHex(rgb.r)}${this.formatHex(rgb.g)}${this.formatHex(rgb.b)}`;
+        }
+      }
+    }
+
+    return '#2637d6';
+  }
+
+  // noinspection JSMethodCanBeStatic
+  private formatHex(v: number) {
+    return ('00' + Math.round(v).toString(16)).substr(-2);
   }
 }
