@@ -20,8 +20,17 @@ interface SimulationLink extends SimulationLinkDatum<SimulationNode>, Link {
 export class NetworkGraphComponent implements OnInit, OnChanges {
   private static HIGHLIGHT_COLOR = '#2E41FF';
   private static SELECTED_COLOR = '#00b409';
+  private static DEFAULT_COLOR = '#2637d6';
 
-  private static NODE_OPACITY = 0.3;
+  private static OPEN_CHANNEL_COLOR = '#089000';
+  private static CLOSED_CHANNEL_COLOR = '#E50000';
+  private static SETTLED_CHANNEL_COLOR = '#8e24aa';
+
+  private static DEFAULT_NODE_STROKE_OPACITY = 0.3;
+  private static SELECTED_NODE_STROKE_OPACITY = 2;
+  private static NODE_SELECTED_OPACITY = 1;
+  private static NODE_HIGHLIGHT_OPACITY = 1;
+  private static NODE_DEFAULT_OPACITY = 0.6;
 
   @Input() data: NetworkGraph;
   @ViewChild('graph') graph;
@@ -200,7 +209,11 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
     this.color = d3Scale.scaleOrdinal()
       .domain(['opened', 'closed', 'settled'])
-      .range(['#089000', '#E50000', '#8e24aa']);
+      .range([
+        NetworkGraphComponent.OPEN_CHANNEL_COLOR,
+        NetworkGraphComponent.CLOSED_CHANNEL_COLOR,
+        NetworkGraphComponent.SETTLED_CHANNEL_COLOR
+      ]);
   }
 
   private drawGraph() {
@@ -248,7 +261,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       'Token: ' + d.tokenAddress + '\n\n' +
       'Open Channels: ' + d.openChannels + '\n' +
       'Closed Channels: ' + d.closedChannels + '\n' +
-      'Settle Channels: ' + d.settledChannels;
+      'Settled Channels: ' + d.settledChannels;
 
     node.append('title').text(tooltip);
     node.on('click', datum => {
@@ -314,7 +327,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('fill', (datum: Node) => this.nodeColor(datum.tokenAddress))
       .attr('opacity', 1);
     this.svg.selectAll('.link')
-      .attr('stroke-opacity', NetworkGraphComponent.NODE_OPACITY)
+      .attr('stroke-opacity', NetworkGraphComponent.DEFAULT_NODE_STROKE_OPACITY)
       .attr('z-index', 1);
   }
 
@@ -328,14 +341,15 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       ]))
       .attr('opacity', (node: Node) => {
         return this.ifNodeElse(selectedNode, node, neighbors, [
-          1,
-          1,
-          0.6
+          NetworkGraphComponent.NODE_SELECTED_OPACITY,
+          NetworkGraphComponent.NODE_HIGHLIGHT_OPACITY,
+          NetworkGraphComponent.NODE_DEFAULT_OPACITY
         ]);
       });
     this.svg.selectAll('.link')
       .attr('stroke-opacity', (link: Link) => this.ifNeighborElse(selectedNode, link, [
-        2, NetworkGraphComponent.NODE_OPACITY
+        NetworkGraphComponent.SELECTED_NODE_STROKE_OPACITY,
+        NetworkGraphComponent.DEFAULT_NODE_STROKE_OPACITY
       ]))
       .attr('z-index', (link: Link) => this.ifNeighborElse(selectedNode, link, [10, 1]))
       .attr('stroke-width', (link: Link) => this.ifNeighborElse(selectedNode, link, [3, 2]));
@@ -435,7 +449,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       }
     }
 
-    return '#2637d6';
+    return NetworkGraphComponent.DEFAULT_COLOR;
   }
 
   // noinspection JSMethodCanBeStatic
