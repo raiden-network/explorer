@@ -111,7 +111,13 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       this.width = availWidth - 60;
     }
 
-    this.height = screen.height - 200;
+    let availHeight = screen.height;
+
+    if (window.outerHeight < screen.height) {
+      availHeight = window.outerHeight;
+    }
+
+    this.height = availHeight - 200;
 
     d3.select<SVGElement, NetworkGraph>(this.graph.nativeElement)
       .select('svg')
