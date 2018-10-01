@@ -44,7 +44,7 @@ export class NetMetricsService {
       tap(() => {
         timeout = setTimeout(() => {
           this.pollingSubject.next(null);
-        }, 5000);
+        }, this.nmConfig.configuration.poll_interval);
       }),
       share()
     );
