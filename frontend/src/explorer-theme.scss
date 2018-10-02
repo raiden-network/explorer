@@ -22,3 +22,17 @@ $explorer-app-theme: mat-dark-theme($explorer-app-primary, $explorer-app-accent,
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($explorer-app-theme);
+
+
+.light-theme {
+  $explorer-light-app-primary: mat-palette($mat-blue);
+  $explorer-light-app-accent:  mat-palette($mat-blue, A200, A100, A400);
+
+  // The warn palette is optional (defaults to red).
+  $explorer-light-app-warn:    mat-palette($mat-red);
+
+  // Create the theme object (a Sass map containing all of the palettes).
+  $explorer-light-app-theme: mat-light-theme($explorer-light-app-primary, $explorer-light-app-accent, $explorer-light-app-warn);
+
+  @include angular-material-theme($explorer-light-app-theme);
+}

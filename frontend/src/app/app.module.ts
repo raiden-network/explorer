@@ -17,7 +17,13 @@ import { CommonModule } from '@angular/common';
 import { DonutChartComponent } from './components/donut-chart/donut-chart.component';
 import { NetworkGraphComponent } from './components/network-graph/network-graph.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatButtonModule, MatProgressSpinnerModule, MatRippleModule, MatTooltipModule } from '@angular/material';
+import {
+  MatButtonModule,
+  MatProgressSpinnerModule,
+  MatRippleModule,
+  MatSlideToggleModule,
+  MatTooltipModule
+} from '@angular/material';
 import { environment } from '../environments/environment';
 
 const appRoutes: Routes = [
@@ -43,6 +49,7 @@ export function ConfigFactory(config: NetMetricsConfig) {
   imports: [
     RouterModule.forRoot(appRoutes),
     FlexLayoutModule,
+    MatSlideToggleModule,
     MatButtonModule,
     MatRippleModule,
     MatProgressSpinnerModule,
