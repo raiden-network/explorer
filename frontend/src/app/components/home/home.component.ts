@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { NetMetricsService } from '../../services/net.metrics/net.metrics.service';
 import { Observable } from 'rxjs';
 import { RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
@@ -32,19 +32,11 @@ import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config'
     ])
   ]
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
   metrics$: Observable<RaidenNetworkMetrics>;
   messages$: Observable<Message>;
-  private _loading = true;
-
-  public get loading(): boolean {
-    return this._loading;
-  }
-
-  public get main(): boolean {
-    return this.config.main;
-  }
+  private _scrollPosition = 0;
 
   constructor(
     private netMetricsService: NetMetricsService,
@@ -55,9 +47,58 @@ export class HomeComponent {
     this.messages$ = sharedService.messages;
   }
 
+  private _loading = true;
+
+  public get loading(): boolean {
+    return this._loading;
+  }
+
+  private _graphVisible = false;
+
+  public get graphVisible(): boolean {
+    return this._graphVisible;
+  }
+
+  private _displayDots = false;
+
+  public get displayDots(): boolean {
+    return this._displayDots;
+  }
+
+  public get main(): boolean {
+    return this.config.main;
+  }
+
+  ngOnInit() {
+    this.checkIfShouldShowDots();
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onListenerTriggered(event: UIEvent): void {
+    const element = document.querySelector('.graph-container');
+    const bounds = element.getBoundingClientRect();
+
+    let offset = 0.1 * bounds.top;
+    if ((document.body.getBoundingClientRect()).top > this._scrollPosition) {
+      offset *= -1;
+    } else {
+      offset *= 1;
+    }
+
+    // saves the new position for iteration.
+    this._scrollPosition = (document.body.getBoundingClientRect()).top;
+
+    this._graphVisible = (window.scrollY - bounds.top) - offset > 0;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkIfShouldShowDots();
+  }
+
   // noinspection JSMethodCanBeStatic
   public scrollToA(loc: string) {
-    document.getElementById(loc).scrollIntoView();
+    document.getElementById(loc).scrollIntoView({behavior: 'smooth'});
   }
 
   //noinspection JSMethodCanBeStatic
@@ -82,5 +123,14 @@ export class HomeComponent {
     }
 
     return tokenNetworks.slice(start, end);
+  }
+
+  private checkIfShouldShowDots() {
+    let height = window.innerHeight;
+    if (screen.height < height) {
+      height = screen.height;
+    }
+
+    this._displayDots = height >= 960;
   }
 }
