@@ -39,25 +39,30 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   private initialWidth: number;
   private initialHeight: number;
-
   private svg: d3.Selection<any, NetworkGraph, any, any>;
   private link: any;
   private node: any;
-
   private color: d3.ScaleOrdinal<string, any>;
-
   private simulation: Simulation<SimulationNode, SimulationLink>;
-
   private circleSize: (value: number) => number;
   private initialized = false;
-
   private graphData: { nodes: SimulationNode[], links: SimulationLink[] } = {nodes: [], links: []};
-
   private tokenNetworks: string[];
-
   private nodeColor: d3.ScaleOrdinal<string, any>;
 
   constructor() {
+  }
+
+  private _showAllChannels = false;
+
+  public get showAllChannels(): boolean {
+    return this._showAllChannels;
+  }
+
+  public set showAllChannels(value: boolean) {
+    this.initialized = false;
+    this._showAllChannels = value;
+    this.filterChanged();
   }
 
   private static nodeCompare() {
@@ -131,11 +136,21 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     this.svg.selectAll('.links').attr('transform', translation);
   }
 
+  private filterChanged() {
+    this.prepareGraphData();
+    this.updateGraph();
+  }
+
   private prepareGraphData() {
     this.graphData.nodes = [];
     this.graphData.links = [];
 
-    this.data.nodes.forEach(value => {
+    let nodes = this.data.nodes;
+    if (!this._showAllChannels) {
+      nodes = nodes.filter(value => value.openChannels > 0);
+    }
+
+    nodes.forEach(value => {
       const node: SimulationNode = {
         id: value.id,
         openChannels: value.openChannels,
@@ -147,7 +162,13 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       this.graphData.nodes.push(node);
     });
 
-    this.data.links.forEach(value => {
+    let links = this.data.links;
+
+    if (!this._showAllChannels) {
+      links = links.filter(value => value.status === 'opened');
+    }
+
+    links.forEach(value => {
       const matchSource = simNode => simNode.id === value.sourceAddress && simNode.tokenAddress === value.tokenAddress;
       const matchTarget = simNode => simNode.id === value.targetAddress && simNode.tokenAddress === value.tokenAddress;
 

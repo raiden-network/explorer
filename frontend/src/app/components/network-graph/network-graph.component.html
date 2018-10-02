@@ -1,1 +1,14 @@
-<div #graph class="graph-container"></div>
+<div fxLayout="column">
+  <div fxLayout="row" #graph class="graph-container"></div>
+  <div fxLayout="row" fxLayoutAlign="end" fxFlex="0 0 auto">
+    <mat-slide-toggle
+      class="light-theme"
+      color="accent"
+      matTooltip="The graph will display only connected channels when this switch is off."
+      (change)="showAllChannels = $event.checked"
+      [checked]="showAllChannels">
+      Show all channels
+    </mat-slide-toggle>
+  </div>
+</div>
+
