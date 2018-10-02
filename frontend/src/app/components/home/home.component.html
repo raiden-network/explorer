@@ -144,8 +144,10 @@
       </div>
 
       <div class="network-metrics" fxLayout="row" [@flyInOut]="'in'" fxLayoutAlign="center">
-        <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2rem" fxFlexAlign="center">
-          <button (click)="carousel.showPrev()" class="carousel-button">
+        <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1"
+             fxFlex="0 0 40px"
+             fxFlexAlign="center">
+          <button (click)="carousel.showPrev()" mat-mini-fab color="primary">
             <img src="../../../assets/baseline-navigate_before-24px.svg">
           </button>
         </div>
@@ -154,7 +156,7 @@
                   [showControls]="false"
                   [slides]="metrics.tokenNetworks.length"
                   fxLayout="column"
-                  fxFlex.gt-sm="0 0 960px"
+                  fxFlex.gt-sm="0 0 900px"
                   fxFlex.lt-sm="1 1 auto"
                   fxFlexAlign="center">
           <ng-container
@@ -167,8 +169,10 @@
             </ng-container>
           </ng-container>
         </carousel>
-        <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1" fxFlex="0 0 2rem" fxFlexAlign="center">
-          <button (click)="carousel.showNext()" class="carousel-button">
+        <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1"
+             fxFlex="0 0 40px"
+             fxFlexAlign="center">
+          <button (click)="carousel.showNext()" mat-mini-fab color="primary">
             <img src="../../../assets/baseline-navigate_next-24px.svg">
           </button>
         </div>
