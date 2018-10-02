@@ -149,8 +149,7 @@
   padding-right: 8px;
 }
 
-
-@media screen and (max-width: 480px){
+@media screen and (max-width: 480px) {
   .metrics-totals img {
     float: inherit;
     height: 3em;
@@ -181,4 +180,90 @@
 .testnet-label {
   margin-left: 4px;
   margin-right: 4px;
+}
+
+.dotstyle ul {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  cursor: default;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.dotstyle li {
+  position: relative;
+  display: block;
+
+  /* Individual styles and effects */
+  margin: 11px 0;
+  width: 11px;
+  height: 11px;
+  cursor: pointer;
+}
+
+.dotstyle li a {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border-radius: 50%;
+  text-indent: -999em; /* make the text accessible to screen readers */
+  cursor: pointer;
+  position: absolute;
+}
+
+.dotstyle.dotstyle-white li a {
+  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dotstyle.dotstyle-black li a {
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dotstyle li a:focus {
+  outline: none;
+}
+
+/* Fill in */
+
+.dotstyle-fillin li a {
+  background-color: transparent;
+  -webkit-transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease;
+}
+
+.dotstyle-fillin.dotstyle-white li a {
+  box-shadow: inset 0 0 0 2px white;
+}
+
+.dotstyle-fillin.dotstyle-black li a {
+  box-shadow: inset 0 0 0 2px black;
+}
+
+.dotstyle-fillin.dotstyle-white li a:hover,
+.dotstyle-fillin.dotstyle-white li a:focus {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6)
+}
+
+.dotstyle-fillin.dotstyle-black li a:hover,
+.dotstyle-fillin.dotstyle-black li a:focus {
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.6)
+}
+
+.dotstyle-fillin.dotstyle-white li.current a {
+  box-shadow: inset 0 0 0 8px white;
+}
+
+.dotstyle-fillin.dotstyle-black li.current a {
+  box-shadow: inset 0 0 0 8px black;
 }
