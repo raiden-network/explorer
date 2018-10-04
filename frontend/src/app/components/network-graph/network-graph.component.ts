@@ -164,7 +164,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
         openChannels: value.openChannels,
         closedChannels: value.closedChannels,
         settledChannels: value.settledChannels,
-        tokenAddress: value.tokenAddress
+        tokenAddress: value.tokenAddress,
+        tokenName: value.tokenName,
+        tokenSymbol: value.tokenSymbol
       };
 
       this.graphData.nodes.push(node);
@@ -485,14 +487,30 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
 
   private nodeInfo(d: Node): string[] {
-    return [
+    let strings: string[];
+    strings = [
       d.id,
       '',
-      `Token: ${d.tokenAddress}`,
+      `Token`,
+      `Address: ${d.tokenAddress}`
+    ];
+
+    if (d.tokenSymbol) {
+      strings.push(`Symbol: ${d.tokenSymbol}`);
+    }
+
+    if (d.tokenName) {
+      strings.push(`Name: ${d.tokenName}`);
+    }
+
+    strings.push(
+      '',
       `Open Channels: ${d.openChannels}`,
       `Closed Channels: ${d.closedChannels}`,
       `Settled Channels: ${d.settledChannels}`
-    ];
+    );
+
+    return strings;
   }
 
   private clearSelection() {
