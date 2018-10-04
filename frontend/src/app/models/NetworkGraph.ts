@@ -3,6 +3,7 @@ export interface Link {
   readonly targetAddress: string;
   readonly status: string;
   readonly tokenAddress: string;
+  readonly capacity: number;
 }
 
 export interface Node {

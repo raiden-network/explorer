@@ -178,7 +178,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
         sourceAddress: value.sourceAddress,
         targetAddress: value.targetAddress,
         status: value.status,
-        tokenAddress: value.tokenAddress,
+        capacity: value.capacity,
+        tokenAddress: value.tokenAddress
       };
 
       this.graphData.links.push(link);
@@ -268,6 +269,16 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('stroke', datum => this.color(datum.status))
       .merge(links);
 
+    const channelTooltip = (channelLink: Link) => `Channel capacity: ${channelLink.capacity} tokens`;
+    link.append('title')
+      .text(channelTooltip);
+
+    link.on('click', (datum: SimulationLink) => {
+      d3.event.stopPropagation();
+      this.drawLinkInformation(datum);
+    });
+
+
     const nodes = this.node.data(this.graphData.nodes, NetworkGraphComponent.nodeCompare());
 
     this.svg.selectAll('.node').remove().exit();
@@ -349,6 +360,121 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .style('font-size', '12px');
   }
 
+  private drawLinkInformation(datum: SimulationLink) {
+    this.highlightLink(datum);
+    const x1 = (datum.source as SimulationNodeDatum).x || 0;
+    const x2 = (datum.target as SimulationNodeDatum).x || 0;
+    const y1 = (datum.source as SimulationNodeDatum).y || 0;
+    const y2 = (datum.target as SimulationNodeDatum).y || 0;
+
+    const data = [
+      `Source: ${datum.sourceAddress}`,
+      `Target: ${datum.targetAddress}`,
+      `Channel capacity: ${datum.capacity} tokens`
+    ];
+
+    const boxHeight = data.length * 15 + 10;
+    const boxWidth = 320;
+    const boxMargin = 20;
+
+    const boxX = this.getBoxX(x1, x2, boxWidth);
+    const boxY = this.getBoxY(y1, y2, boxMargin, boxHeight);
+
+    this.drawInformationBox(boxX, boxY, boxWidth, boxHeight, data);
+  }
+
+  private drawInformationBox(boxX: number, boxY: number, boxWidth: number, boxHeight: number, data: string[]) {
+    this.svg.selectAll('.info').remove().exit();
+
+    const info = this.svg
+      .append('g')
+      .classed('info', true)
+      .on('click', () => {
+        d3.event.stopPropagation();
+      });
+
+    const translation = `translate(${boxX},${boxY})`;
+    info.attr('transform', translation);
+
+
+    info.append('rect')
+      .attr('width', `${boxWidth}px`)
+      .attr('height', `${boxHeight}px`)
+      .style('fill', '#fff')
+      .style('stroke', '#000')
+      .style('stroke-width', '1px');
+
+    const appendText = (text, index) => info
+      .append('text')
+      .attr('x', 10)
+      .attr('y', 15 + (index * 15))
+      .text(text)
+      .style('fill', '#000')
+      .style('font-size', '11px');
+
+    for (let i = 0; i < data.length; i++) {
+      appendText(data[i], i);
+    }
+  }
+
+  private highlightLink(datum: SimulationLink) {
+    this.svg.selectAll('.link')
+      .attr('stroke-opacity', (link: Link) => {
+        if (link === datum) {
+          return NetworkGraphComponent.SELECTED_NODE_STROKE_OPACITY;
+        } else {
+          return NetworkGraphComponent.DEFAULT_NODE_STROKE_OPACITY;
+        }
+      })
+      .attr('z-index', (link: Link) => {
+        if (link === datum) {
+          return 10;
+        } else {
+          return 1;
+        }
+      })
+      .attr('stroke-width', (link: Link) => {
+        if (link === datum) {
+          return 3;
+        } else {
+          return 2;
+        }
+      });
+  }
+
+  private getBoxX(x1: number, x2: number, boxWidth: number) {
+    const maxX = Math.max(x1, x2);
+    const minX = Math.min(x1, x2);
+
+    let boxX = (minX + ((maxX - minX) / 2)) - boxWidth / 2;
+
+    const boxEnd = boxX + boxWidth;
+    const boxStart = boxX - boxWidth;
+
+    if (boxEnd > this.width) {
+      boxX = boxX - (boxEnd - this.width);
+    } else if (boxStart < 0) {
+      const calcStart = (this.width / 2) + boxStart;
+      boxX = calcStart > 0 ? calcStart : 20;
+    }
+
+    return boxX;
+  }
+
+  private getBoxY(y1: number, y2: number, boxMargin: number, boxHeight: number) {
+    const smY = Math.min(y1, y2);
+    const mxY = Math.max(y1, y2);
+
+    const heightBelow = this.height - mxY;
+    let boxY;
+    if (heightBelow > smY) {
+      boxY = mxY + boxMargin;
+    } else {
+      boxY = smY - boxMargin - boxHeight;
+    }
+    return boxY;
+  }
+
   private clearSelection() {
     this.svg.selectAll('.node')
       .attr('fill', (datum: Node) => this.nodeColor(datum.tokenAddress))
@@ -356,6 +482,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     this.svg.selectAll('.link')
       .attr('stroke-opacity', NetworkGraphComponent.DEFAULT_NODE_STROKE_OPACITY)
       .attr('z-index', 1);
+
+    this.svg.selectAll('.info').remove().exit();
   }
 
   private selectNode(selectedNode: Node) {
