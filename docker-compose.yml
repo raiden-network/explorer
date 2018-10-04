@@ -3,7 +3,8 @@ version: '3'
 services:
   frontend:
     image: frontend
-    build: ./frontend
+    build:
+      context: ./frontend
     restart: always
     labels:
       - "traefik.enable=true"
@@ -12,8 +13,13 @@ services:
 
   backend:
     image: backend
-    build: ./backend
+    build:
+      context: ./backend
     restart: always
+    environment:
+      - EXPLORER_ETH_RPC=http://geth.ropsten.ethnodes.brainbot.com:8545
+      - EXPLORER_REGISTRY_ADDRESS=0xf2a175A52Bd3c815eD7500c765bA19652AB89B30
+      - EXPLORER_START_BLOCK=3800000
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:explorer.raiden.network; Path: /json"

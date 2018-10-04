@@ -71,7 +71,10 @@ class MetricsService(gevent.Greenlet):
             sync_start_block=sync_start_block,
             required_confirmations=self.required_confirmations,
         )
-        log.info(f'Listening to token network registry @ {registry_address}')
+        log.info(
+            f'Listening to token network registry @ {registry_address} '
+            f'from block {sync_start_block}'
+        )
         self._setup_token_networks()
 
     def _setup_token_networks(self):
