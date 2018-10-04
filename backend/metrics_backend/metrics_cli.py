@@ -10,6 +10,7 @@ import json
 
 import click
 import gevent
+from eth_utils import is_checksum_address
 from web3 import HTTPProvider, Web3
 from requests.exceptions import ConnectionError
 from raiden_libs.no_ssl_patch import no_ssl_verification
@@ -35,8 +36,21 @@ OUTPUT_PERIOD = 10  # seconds
     type=str,
     help='Ethereum node RPC URI'
 )
+@click.option(
+    '--registry-address',
+    type=str,
+    help='Address of the token network registry'
+)
+@click.option(
+    '--start-block',
+    default=0,
+    type=int,
+    help='Block to start syncing at'
+)
 def main(
     eth_rpc,
+    registry_address,
+    start_block,
 ):
     # setup logging
     logging.basicConfig(
@@ -47,6 +61,13 @@ def main(
 
     logging.getLogger('web3').setLevel(logging.INFO)
     logging.getLogger('urllib3.connectionpool').setLevel(logging.ERROR)
+
+    if not is_checksum_address(registry_address):
+        log.error('Provided registry address is not valid:', registry_address)
+        sys.exit(1)
+    if start_block < 0:
+        log.error('Provided start block is not valid:', start_block)
+        sys.exit(1)
 
     log.info("Starting Raiden Metrics Server")
 
@@ -66,8 +87,8 @@ def main(
             service = MetricsService(
                 web3=web3,
                 contract_manager=CONTRACT_MANAGER,
-                registry_address=REGISTRY_ADDRESS,
-                sync_start_block=3_800_000,
+                registry_address=registry_address,
+                sync_start_block=start_block,
             )
 
             # re-enable once deployment works
@@ -115,4 +136,4 @@ def write_topology_task(pathfinding_service: MetricsService):
 
 
 if __name__ == "__main__":
-    sys.exit(main())  # pragma: no cover
+    main(auto_envvar_prefix='EXPLORER')
