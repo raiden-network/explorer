@@ -22,14 +22,13 @@ const ajv = new Ajv({allErrors: true});
 export class NetMetricsService {
   readonly metrics$: Observable<RaidenNetworkMetrics>;
   private pollingSubject: BehaviorSubject<void> = new BehaviorSubject(null);
-
   private static toDecimal(amount: number, decimals: number) {
     return amount / (10 ** decimals);
   }
-
   private unique = function (value, index, self) {
     return self.indexOf(value) === index;
   };
+  private _nonScenarioTokens = value => !value.token.name.toLocaleLowerCase().startsWith('scenario test token');
 
   public constructor(
     private http: HttpClient,
@@ -50,8 +49,6 @@ export class NetMetricsService {
     );
   }
 
-  private _nonScenarionTokens = value => !value.token.name.toLocaleLowerCase().startsWith('scenario test token');
-
   /**
    * Get data from server endpoint, then run setCurrentMetrics()
    */
@@ -63,7 +60,7 @@ export class NetMetricsService {
 
     const networkMetrics: Observable<TokenNetwork[]> = metrics.pipe(
       map((networks: NMNetwork[]) => {
-        return networks.filter(this._nonScenarionTokens).map(network => {
+        return networks.filter(this._nonScenarioTokens).map(network => {
           const valid = ajv.validate(schema, network);
           if (!valid) {
             throw new Error(`Malformed API data: ${this.ajvErrorsToString(ajv.errors)}`);
@@ -91,7 +88,7 @@ export class NetMetricsService {
 
     const networkGraph = metrics.pipe(
       map((networks: NMNetwork[]) => {
-        return networks.filter(this._nonScenarionTokens).map(network => this.createNetworkGraph(network))
+        return networks.filter(this._nonScenarioTokens).map(network => this.createNetworkGraph(network))
           .reduce((acc: NetworkGraph, value: NetworkGraph) => {
             acc.nodes.push(...value.nodes);
             acc.links.push(...value.links);
@@ -149,11 +146,15 @@ export class NetMetricsService {
     });
 
     for (const channel of network.channels) {
+      let capacity = channel.deposit1 + channel.deposit2;
+      capacity = NetMetricsService.toDecimal(capacity, network.token.decimals);
+
       graph.links.push({
         sourceAddress: channel.participant1,
         targetAddress: channel.participant2,
         status: channel.status,
-        tokenAddress: network.token.address
+        tokenAddress: network.token.address,
+        capacity: capacity
       });
     }
     return graph;
