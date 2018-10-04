@@ -12,6 +12,8 @@ export interface Node {
   readonly closedChannels: number;
   readonly settledChannels: number;
   readonly tokenAddress: string;
+  readonly tokenName: string;
+  readonly tokenSymbol: string;
 }
 
 export interface NetworkGraph {

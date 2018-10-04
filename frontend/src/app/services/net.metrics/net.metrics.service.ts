@@ -141,7 +141,9 @@ export class NetMetricsService {
         openChannels,
         closedChannels,
         settledChannels,
-        tokenAddress: network.token.address
+        tokenAddress: network.token.address,
+        tokenName: network.token.name,
+        tokenSymbol: network.token.symbol
       });
     });
 
