@@ -134,6 +134,14 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     const translation = `translate(${(this.width - this.initialWidth) / 2},${(this.height - this.initialHeight) / 2})`;
     this.svg.selectAll('.nodes').attr('transform', translation);
     this.svg.selectAll('.links').attr('transform', translation);
+    const info = this.svg.selectAll('.info');
+    if (info) {
+      const boxX = parseInt(info.attr('box-x'), 10);
+      const boxY = parseInt(info.attr('box-y'), 10);
+      const width = boxX + ((this.width - this.initialWidth) / 2);
+      const height = boxY + ((this.height - this.initialHeight) / 2);
+      info.attr('transform', `translate(${width},${height})`);
+    }
   }
 
   private filterChanged() {
@@ -269,15 +277,16 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('stroke', datum => this.color(datum.status))
       .merge(links);
 
-    const channelTooltip = (channelLink: Link) => `Channel capacity: ${channelLink.capacity} tokens`;
-    link.append('title')
-      .text(channelTooltip);
-
     link.on('click', (datum: SimulationLink) => {
       d3.event.stopPropagation();
       this.drawLinkInformation(datum);
     });
 
+    link.on('mouseover', (datum: SimulationLink) => {
+      d3.event.stopPropagation();
+      this.clearSelection();
+      this.drawLinkInformation(datum);
+    });
 
     const nodes = this.node.data(this.graphData.nodes, NetworkGraphComponent.nodeCompare());
 
@@ -295,15 +304,15 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
         .on('end', datum => this.dragended(datum, this.simulation)))
       .merge(nodes);
 
-    const tooltip = (d: Node) => d.id + '\n\n' +
-      'Token: ' + d.tokenAddress + '\n\n' +
-      'Open Channels: ' + d.openChannels + '\n' +
-      'Closed Channels: ' + d.closedChannels + '\n' +
-      'Settled Channels: ' + d.settledChannels;
-
-    node.append('title').text(tooltip);
     node.on('click', datum => {
       d3.event.stopPropagation();
+      this.clearSelection();
+      return this.selectNode(datum);
+    });
+
+    node.on('mouseover', (datum: SimulationNode) => {
+      d3.event.stopPropagation();
+      this.clearSelection();
       return this.selectNode(datum);
     });
 
@@ -394,7 +403,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       });
 
     const translation = `translate(${boxX},${boxY})`;
-    info.attr('transform', translation);
+    info.attr('transform', translation)
+      .attr('box-x', boxX)
+      .attr('box-y', boxY);
 
 
     info.append('rect')
@@ -442,20 +453,16 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       });
   }
 
-  private getBoxX(x1: number, x2: number, boxWidth: number) {
+  private getBoxX(x1: number, x2: number, boxWidth: number): number {
     const maxX = Math.max(x1, x2);
     const minX = Math.min(x1, x2);
 
-    let boxX = (minX + ((maxX - minX) / 2)) - boxWidth / 2;
-
-    const boxEnd = boxX + boxWidth;
-    const boxStart = boxX - boxWidth;
-
-    if (boxEnd > this.width) {
-      boxX = boxX - (boxEnd - this.width);
-    } else if (boxStart < 0) {
-      const calcStart = (this.width / 2) + boxStart;
-      boxX = calcStart > 0 ? calcStart : 20;
+    let boxX = (((maxX - minX) / 2) + minX) - (boxWidth / 2);
+    boxX += (this.width - this.initialWidth) / 2;
+    if (boxX < 0) {
+      boxX = 10;
+    } else if (boxX + boxWidth > this.width) {
+      boxX = boxX - Math.abs(boxX + boxWidth - this.width);
     }
 
     return boxX;
@@ -472,7 +479,20 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     } else {
       boxY = smY - boxMargin - boxHeight;
     }
-    return boxY;
+    const offset = this.height - this.initialHeight;
+    return boxY + (offset / 2);
+  }
+
+
+  private nodeInfo(d: Node): string[] {
+    return [
+      d.id,
+      '',
+      `Token: ${d.tokenAddress}`,
+      `Open Channels: ${d.openChannels}`,
+      `Closed Channels: ${d.closedChannels}`,
+      `Settled Channels: ${d.settledChannels}`
+    ];
   }
 
   private clearSelection() {
@@ -508,6 +528,22 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       ]))
       .attr('z-index', (link: Link) => this.ifNeighborElse(selectedNode, link, [10, 1]))
       .attr('stroke-width', (link: Link) => this.ifNeighborElse(selectedNode, link, [3, 2]));
+
+    const simNode = selectedNode as SimulationNodeDatum;
+    const info = this.nodeInfo(selectedNode);
+
+    const boxHeight = info.length * 15 + 10;
+    const boxWidth = 320;
+
+    const neighborY = (neighbors as SimulationNodeDatum[]).map(value => value.y).sort();
+
+    const boxX = this.getBoxX(simNode.x, simNode.x, boxWidth);
+
+    const minY = Math.min(simNode.y, neighborY[0]);
+    const maxY = Math.max(simNode.y, neighborY[neighborY.length - 1]);
+    const boxY = this.getBoxY(minY, maxY, 10, boxHeight);
+
+    this.drawInformationBox(boxX, boxY, boxWidth, boxHeight, info);
   }
 
   private getNeighbors(node: Node): Node[] {
