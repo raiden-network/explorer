@@ -62,6 +62,11 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   public set showAllChannels(value: boolean) {
     this.initialized = false;
     this._showAllChannels = value;
+    if (!value) {
+      this.svg.selectAll('.legend').remove().exit();
+    } else {
+      this.drawLegend();
+    }
     this.filterChanged();
   }
 
@@ -97,7 +102,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     this.prepareGraphData();
     this.initSvg();
     this.updateGraph();
-    this.drawLegend();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -145,6 +149,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private filterChanged() {
+    this.clearSelection();
     this.prepareGraphData();
     this.updateGraph();
   }
