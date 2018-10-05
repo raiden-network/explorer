@@ -90,3 +90,7 @@
 .clickable-address:hover {
   color: #e4e4e4;
 }
+
+.token-symbol {
+  font-size: 0.9rem;
+}
