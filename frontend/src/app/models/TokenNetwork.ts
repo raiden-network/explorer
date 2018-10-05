@@ -24,6 +24,7 @@ export interface TokenNetwork {
   readonly topParticipantsByChannels: Participant[];
   readonly averageDepositPerChannel: number;
   readonly averageDepositPerParticipant: number;
+  readonly totalNetworkDeposits: number;
   uniqueParticipants?: string[];
 }
 

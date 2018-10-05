@@ -22,9 +22,6 @@ const ajv = new Ajv({allErrors: true});
 export class NetMetricsService {
   readonly metrics$: Observable<RaidenNetworkMetrics>;
   private pollingSubject: BehaviorSubject<void> = new BehaviorSubject(null);
-  private static toDecimal(amount: number, decimals: number) {
-    return amount / (10 ** decimals);
-  }
   private unique = function (value, index, self) {
     return self.indexOf(value) === index;
   };
@@ -47,6 +44,10 @@ export class NetMetricsService {
       }),
       share()
     );
+  }
+
+  private static toDecimal(amount: number, decimals: number) {
+    return amount / (10 ** decimals);
   }
 
   /**
@@ -125,7 +126,7 @@ export class NetMetricsService {
       }));
   }
 
-  private createNetworkGraph(network: NMNetwork) {
+  private createNetworkGraph(network: NMNetwork): NetworkGraph {
     const graph: NetworkGraph = {nodes: [], links: []};
     const getChannels = (id: string, status: string) => network.channels.filter((value: NMChannel) => {
       return (value.participant1 === id || value.participant2 === id) && value.status === status;
@@ -228,16 +229,21 @@ export class NetMetricsService {
     }, 0);
     const channelAverage = deposit / openedChannels.length;
 
+    const totalNetworkDeposits = openedChannels.map(value => value.deposit1 + value.deposit2)
+      .reduce((accumulator, channelDeposit) => accumulator + channelDeposit, 0);
+
     const topChannelsByDeposit = openedChannels.sort((a, b) => {
       const bDeposit1 = NetMetricsService.toDecimal(b.deposit1, decimals);
       const bDeposit2 = NetMetricsService.toDecimal(b.deposit2, decimals);
       const aDeposit1 = NetMetricsService.toDecimal(a.deposit1, decimals);
       const aDeposit2 = NetMetricsService.toDecimal(a.deposit2, decimals);
       return (bDeposit1 + bDeposit2) - (aDeposit1 + aDeposit2);
-    }).slice(0, 5).map(value => Object.assign(value, {
-      deposit1: NetMetricsService.toDecimal(value.deposit1, decimals),
-      deposit2: NetMetricsService.toDecimal(value.deposit2, decimals)
-    }));
+    }).filter(value => (value.deposit1 + value.deposit2) > 0)
+      .slice(0, 5)
+      .map(value => Object.assign(value, {
+        deposit1: NetMetricsService.toDecimal(value.deposit1, decimals),
+        deposit2: NetMetricsService.toDecimal(value.deposit2, decimals)
+      }));
 
     return {
       token: network.token,
@@ -250,7 +256,8 @@ export class NetMetricsService {
       topChannelsByDeposit: topChannelsByDeposit,
       averageDepositPerChannel: channelAverage || 0,
       averageDepositPerParticipant: averagePerParticipant || 0,
-      uniqueParticipants: uniqueParticipants
+      uniqueParticipants: uniqueParticipants,
+      totalNetworkDeposits: NetMetricsService.toDecimal(totalNetworkDeposits, decimals)
     };
   }
 
