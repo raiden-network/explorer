@@ -25,6 +25,7 @@ import {
   MatTooltipModule
 } from '@angular/material';
 import { environment } from '../environments/environment';
+import { SmallNumberPipe } from './pipes/small-number.pipe';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -44,7 +45,8 @@ export function ConfigFactory(config: NetMetricsConfig) {
     CarouselItemDirective,
     CarouselItemElementDirective,
     DonutChartComponent,
-    NetworkGraphComponent
+    NetworkGraphComponent,
+    SmallNumberPipe
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

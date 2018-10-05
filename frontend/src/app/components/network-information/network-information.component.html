@@ -64,7 +64,7 @@
             <div class="table-number"
                  fxFlex="0 0 4em"
                  fxFlexAlign="center"
-                 fxLayout="column">{{channel.deposit1 + channel.deposit2 | number}}
+                 fxLayout="column">{{channel.deposit1 + channel.deposit2 | smallNumber}}
             </div>
           </div>
         </div>
@@ -86,11 +86,21 @@
          fxFlex.lt-md="0 0 225px">
       <div class="information-group first" fxFlex.lt-md="1 1 auto" fxFlex="0 0 225px">
         <div class="title">Network Averages</div>
-        <div fxLayout="row" class="metric-information">{{tokenNetwork.averageDepositPerParticipant | number}}</div>
-        <div fxLayout="row" class="metric-description">Avg. deposit per participant</div>
+        <div fxLayout="row">
+          <div fxLayout="column" fxFlex="1 1 50">
+            <div fxLayout="row" class="metric-information">{{tokenNetwork.averageDepositPerParticipant | smallNumber}}</div>
+            <div fxLayout="row" class="metric-description">Avg. deposit per participant</div>
+          </div>
+          <div fxLayout="column" fxFlex="1 1 50" fxLayoutAlign="start end">
+            <div fxLayout="row"
+                 matTooltip="The total number of tokens currently deposited on the token network."
+                 class="metric-information">{{tokenNetwork.totalNetworkDeposits | smallNumber}}</div>
+            <div fxLayout="row" class="metric-description truncate">Total Network Deposits</div>
+          </div>
+        </div>
         <div fxLayout="row" class="metric-information">{{tokenNetwork.channelsPerParticipant | number}}</div>
         <div fxLayout="row" class="metric-description">Avg. number of channels per participant</div>
-        <div fxLayout="row" class="metric-information">{{tokenNetwork.averageDepositPerChannel | number}}</div>
+        <div fxLayout="row" class="metric-information">{{tokenNetwork.averageDepositPerChannel | smallNumber}}</div>
         <div fxLayout="row" class="metric-description">Avg. deposit per channel</div>
       </div>
 
