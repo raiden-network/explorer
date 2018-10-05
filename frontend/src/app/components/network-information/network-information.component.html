@@ -88,19 +88,28 @@
         <div class="title">Network Averages</div>
         <div fxLayout="row">
           <div fxLayout="column" fxFlex="1 1 50">
-            <div fxLayout="row" class="metric-information">{{tokenNetwork.averageDepositPerParticipant | smallNumber}}</div>
+            <div fxLayout="row" class="metric-information">
+              {{tokenNetwork.averageDepositPerParticipant | smallNumber}}
+              <sup class="token-symbol">{{tokenNetwork.token.symbol}}</sup>
+            </div>
             <div fxLayout="row" class="metric-description">Avg. deposit per participant</div>
           </div>
           <div fxLayout="column" fxFlex="1 1 50" fxLayoutAlign="start end">
             <div fxLayout="row"
                  matTooltip="The total number of tokens currently deposited on the token network."
-                 class="metric-information">{{tokenNetwork.totalNetworkDeposits | smallNumber}}</div>
+                 class="metric-information">
+              {{tokenNetwork.totalNetworkDeposits | smallNumber}}
+              <sup class="token-symbol">{{tokenNetwork.token.symbol}}</sup>
+            </div>
             <div fxLayout="row" class="metric-description truncate">Total Network Deposits</div>
           </div>
         </div>
         <div fxLayout="row" class="metric-information">{{tokenNetwork.channelsPerParticipant | number}}</div>
         <div fxLayout="row" class="metric-description">Avg. number of channels per participant</div>
-        <div fxLayout="row" class="metric-information">{{tokenNetwork.averageDepositPerChannel | smallNumber}}</div>
+        <div fxLayout="row" class="metric-information">
+          {{tokenNetwork.averageDepositPerChannel | smallNumber}}
+          <sup class="token-symbol">{{tokenNetwork.token.symbol}}</sup>
+        </div>
         <div fxLayout="row" class="metric-description">Avg. deposit per channel</div>
       </div>
 
