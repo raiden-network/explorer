@@ -10,6 +10,7 @@ import { BehaviorSubject, Observable, of, zip } from 'rxjs';
 import { Participant, RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { SharedService } from './shared.service';
 import { Message } from './message';
+import { TokenUtils } from '../../utils/token.utils';
 
 declare let require: any;
 
@@ -44,10 +45,6 @@ export class NetMetricsService {
       }),
       share()
     );
-  }
-
-  private static toDecimal(amount: number, decimals: number) {
-    return amount / (10 ** decimals);
   }
 
   /**
@@ -150,7 +147,7 @@ export class NetMetricsService {
 
     for (const channel of network.channels) {
       let capacity = channel.deposit1 + channel.deposit2;
-      capacity = NetMetricsService.toDecimal(capacity, network.token.decimals);
+      capacity = TokenUtils.toDecimal(capacity, network.token.decimals);
 
       graph.links.push({
         sourceAddress: channel.participant1,
@@ -209,9 +206,9 @@ export class NetMetricsService {
         let participantDeposit: number;
 
         if (address === channel.participant1) {
-          participantDeposit = NetMetricsService.toDecimal(channel.deposit1, decimals);
+          participantDeposit = TokenUtils.toDecimal(channel.deposit1, decimals);
         } else {
-          participantDeposit = NetMetricsService.toDecimal(channel.deposit2, decimals);
+          participantDeposit = TokenUtils.toDecimal(channel.deposit2, decimals);
         }
 
         return accumulator + participantDeposit;
@@ -223,8 +220,8 @@ export class NetMetricsService {
     const topParticipants = participants.sort((a, b) => b.channels - a.channels).slice(0, 5);
 
     const deposit = openedChannels.reduce((accumulator, channel) => {
-      const deposit1 = NetMetricsService.toDecimal(channel.deposit1, decimals);
-      const deposit2 = NetMetricsService.toDecimal(channel.deposit2, decimals);
+      const deposit1 = TokenUtils.toDecimal(channel.deposit1, decimals);
+      const deposit2 = TokenUtils.toDecimal(channel.deposit2, decimals);
       return accumulator + deposit1 + deposit2;
     }, 0);
     const channelAverage = deposit / openedChannels.length;
@@ -233,16 +230,16 @@ export class NetMetricsService {
       .reduce((accumulator, channelDeposit) => accumulator + channelDeposit, 0);
 
     const topChannelsByDeposit = openedChannels.sort((a, b) => {
-      const bDeposit1 = NetMetricsService.toDecimal(b.deposit1, decimals);
-      const bDeposit2 = NetMetricsService.toDecimal(b.deposit2, decimals);
-      const aDeposit1 = NetMetricsService.toDecimal(a.deposit1, decimals);
-      const aDeposit2 = NetMetricsService.toDecimal(a.deposit2, decimals);
+      const bDeposit1 = TokenUtils.toDecimal(b.deposit1, decimals);
+      const bDeposit2 = TokenUtils.toDecimal(b.deposit2, decimals);
+      const aDeposit1 = TokenUtils.toDecimal(a.deposit1, decimals);
+      const aDeposit2 = TokenUtils.toDecimal(a.deposit2, decimals);
       return (bDeposit1 + bDeposit2) - (aDeposit1 + aDeposit2);
     }).filter(value => (value.deposit1 + value.deposit2) > 0)
       .slice(0, 5)
       .map(value => Object.assign(value, {
-        deposit1: NetMetricsService.toDecimal(value.deposit1, decimals),
-        deposit2: NetMetricsService.toDecimal(value.deposit2, decimals)
+        deposit1: TokenUtils.toDecimal(value.deposit1, decimals),
+        deposit2: TokenUtils.toDecimal(value.deposit2, decimals)
       }));
 
     return {
@@ -257,7 +254,7 @@ export class NetMetricsService {
       averageDepositPerChannel: channelAverage || 0,
       averageDepositPerParticipant: averagePerParticipant || 0,
       uniqueParticipants: uniqueParticipants,
-      totalNetworkDeposits: NetMetricsService.toDecimal(totalNetworkDeposits, decimals)
+      totalNetworkDeposits: TokenUtils.toDecimal(totalNetworkDeposits, decimals)
     };
   }
 
