@@ -106,27 +106,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-    let availWidth: number;
-
-    if (window.innerWidth > screen.width) {
-      availWidth = screen.width;
-    } else {
-      availWidth = window.innerWidth;
-    }
-
-    if (availWidth > 1000) {
-      this.width = 960;
-    } else {
-      this.width = availWidth - 60;
-    }
-
-    let availHeight = screen.height;
-
-    if (window.outerHeight < screen.height) {
-      availHeight = window.outerHeight;
-    }
-
-    this.height = availHeight - 200;
+    this.updateWidth();
+    this.updateHeight();
 
     d3.select<SVGElement, NetworkGraph>(this.graph.nativeElement)
       .select('svg')
@@ -145,6 +126,20 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       const width = boxX + ((this.width - this.initialWidth) / 2);
       const height = boxY + ((this.height - this.initialHeight) / 2);
       info.attr('transform', `translate(${width},${height})`);
+    }
+  }
+
+  private updateHeight() {
+    this.height = document.documentElement.clientHeight - 250;
+  }
+
+  private updateWidth() {
+    const availWidth = document.documentElement.clientWidth;
+
+    if (availWidth > 1000) {
+      this.width = 960;
+    } else {
+      this.width = availWidth - 60;
     }
   }
 
@@ -215,20 +210,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private initSvg() {
-    const availHeight = window.innerHeight;
-    const availWidth = window.innerWidth;
-
-    if (availWidth > 1000) {
-      this.width = 960;
-    } else {
-      this.width = availWidth - 60;
-    }
-
-    if (availHeight < 1000) {
-      this.height = availHeight - 100;
-    } else {
-      this.height = 900;
-    }
+    this.updateWidth();
+    this.updateHeight();
 
     this.initialWidth = this.width;
     this.initialHeight = this.height;
