@@ -1,8 +1,11 @@
 <div fxFlex.lt-md="1 1 100%">
   <div class="information-container token-info" fxLayout="row">
     <div class="title text-center" fxLayout="column">
-      <span *ngIf="tokenNetwork.token.symbol">[{{tokenNetwork.token.symbol}}]</span>
-      <span class="truncate" *ngIf="tokenNetwork.token.name">{{tokenNetwork.token.name}}</span>
+      <span>
+        <span *ngIf="tokenNetwork.token.symbol">[{{tokenNetwork.token.symbol}}]</span>
+        <span class="small-caps truncate" *ngIf="tokenNetwork.token.name">{{tokenNetwork.token.name}}</span>
+      </span>
+
       <a href="{{etherscanUrl(tokenNetwork.token.address)}}"
          target="_blank"
          class="truncate clickable-address">{{tokenNetwork.token.address}}</a>
@@ -22,7 +25,7 @@
          fxFlex="0 0 405px"
          fxFlex.lt-md="0 0 225px">
       <div class="information-group first" fxFlex.lt-md="1 1 auto" fxFlex="0 0 225px">
-        <div class="title">Channel Overview</div>
+        <div class="title small-caps">Channel Overview</div>
         <div fxLayout="row" fxLayoutGap="2em">
           <div fxLayout="column">
             <app-donut-chart [data]="chart(tokenNetwork)"></app-donut-chart>
@@ -39,7 +42,7 @@
       </div>
 
       <div class="information-group second" fxShow.lt-md="false" fxFlex="0 0 280px">
-        <div class="title">Top Channels By Deposit</div>
+        <div class="title small-caps">Top Channels By Deposit</div>
 
         <div fxLayout="column"
              fxLayoutGap="0.4em"
@@ -85,7 +88,7 @@
          fxFlex="0 0 405px"
          fxFlex.lt-md="0 0 225px">
       <div class="information-group first" fxFlex.lt-md="1 1 auto" fxFlex="0 0 225px">
-        <div class="title">Network Averages</div>
+        <div class="title small-caps">Network Averages</div>
         <div fxLayout="row">
           <div fxLayout="column" fxFlex="1 1 50">
             <div fxLayout="row" class="metric-information">
@@ -114,7 +117,7 @@
       </div>
 
       <div class="information-group second" fxShow.lt-md="false" fxFlex="0 0 280px">
-        <div class="title">Top Participants By Channels</div>
+        <div class="title small-caps">Top Participants By Channels</div>
         <div fxLayout="column"
              fxLayoutGap="0.4em"
              *ngIf="tokenNetwork.topParticipantsByChannels.length > 0; else no_participants">
