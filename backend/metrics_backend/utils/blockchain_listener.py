@@ -103,7 +103,7 @@ class BlockchainListener(gevent.Greenlet):
             *,  # require all following arguments to be keyword arguments
             required_confirmations: int = 4,
             sync_chunk_size: int = 100_000,
-            poll_interval: int = 2,
+            poll_interval: int = 15,
             sync_start_block: int = 0,
     ) -> None:
         """Creates a new BlockchainListener

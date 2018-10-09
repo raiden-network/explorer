@@ -1,7 +1,6 @@
 import logging
-from typing import Dict, Tuple
+from typing import Dict
 
-from networkx import DiGraph
 from eth_utils import is_checksum_address
 from dataclasses import dataclass
 from raiden_libs.types import Address, ChannelIdentifier
@@ -28,8 +27,7 @@ class TokenNetwork:
 
         self.address = token_network_address
         self.token_info = token_info
-        self.channel_id_to_addresses: Dict[ChannelIdentifier, Tuple[Address, Address]] = dict()
-        self.G = DiGraph()
+        self.channels: Dict[ChannelIdentifier, ChannelView] = dict()
 
     def handle_channel_opened_event(
         self,
@@ -37,20 +35,15 @@ class TokenNetwork:
         participant1: Address,
         participant2: Address,
     ):
-        """ Register the channel in the graph, add participents to graph if necessary.
+        """ Register a new channel.
 
-        Corresponds to the ChannelOpened event. Called by the contract event listener. """
+        Corresponds to the ChannelOpened event."""
 
         assert is_checksum_address(participant1)
         assert is_checksum_address(participant2)
 
-        self.channel_id_to_addresses[channel_identifier] = (participant1, participant2)
-
-        view1 = ChannelView(channel_identifier, participant1, participant2, deposit=0)
-        view2 = ChannelView(channel_identifier, participant2, participant1, deposit=0)
-
-        self.G.add_edge(participant1, participant2, view=view1)
-        self.G.add_edge(participant2, participant1, view=view2)
+        view = ChannelView(channel_identifier, participant1, participant2)
+        self.channels[channel_identifier] = view
 
     def handle_channel_new_deposit_event(
         self,
@@ -65,16 +58,7 @@ class TokenNetwork:
         assert is_checksum_address(receiver)
 
         try:
-            participant1, participant2 = self.channel_id_to_addresses[channel_identifier]
-
-            if receiver == participant1:
-                self.G[participant1][participant2]['view'].update_capacity(deposit=total_deposit)
-            elif receiver == participant2:
-                self.G[participant2][participant1]['view'].update_capacity(deposit=total_deposit)
-            else:
-                log.error(
-                    "Receiver in ChannelNewDeposit does not fit the internal channel"
-                )
+            self.channels[channel_identifier].update_deposit(receiver, total_deposit)
         except KeyError:
             log.error(
                 "Received ChannelNewDeposit event for unknown channel '{}'".format(
@@ -89,10 +73,7 @@ class TokenNetwork:
         Corresponds to the ChannelClosed event."""
 
         try:
-            participant1, participant2 = self.channel_id_to_addresses[channel_identifier]
-
-            self.G[participant1][participant2]['view'].update_state(ChannelView.State.CLOSED)
-            self.G[participant2][participant1]['view'].update_state(ChannelView.State.CLOSED)
+            self.channels[channel_identifier].update_state(ChannelView.State.CLOSED)
         except KeyError:
             log.error(
                 "Received ChannelClosed event for unknown channel '{}'".format(
@@ -106,13 +87,10 @@ class TokenNetwork:
         Corresponds to the ChannelSettled event."""
 
         try:
-            participant1, participant2 = self.channel_id_to_addresses[channel_identifier]
-
-            self.G[participant1][participant2]['view'].update_state(ChannelView.State.SETTLED)
-            self.G[participant2][participant1]['view'].update_state(ChannelView.State.SETTLED)
+            self.channels[channel_identifier].update_state(ChannelView.State.SETTLED)
         except KeyError:
             log.error(
-                "Received ChannelClosed event for unknown channel '{}'".format(
+                "Received ChannelSettle event for unknown channel '{}'".format(
                     channel_identifier
                 )
             )

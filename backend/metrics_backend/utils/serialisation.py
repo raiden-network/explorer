@@ -22,33 +22,25 @@ def token_network_to_dict(token_network: TokenNetwork) -> Dict:
 
     participants: List[str] = []
     channels = []
-    for channel_id in token_network.channel_id_to_addresses.keys():
-        ends = token_network.channel_id_to_addresses[channel_id]
-        participants.extend(ends)
-
-        p1, p2 = ends
-
-        try:
-            view1 = token_network.G[p1][p2]['view']
-            view2 = token_network.G[p2][p1]['view']
-        except Exception:
-            raise RuntimeError('Topology out of sync! %s, %s', p1, p2)
+    for channel_id, view in token_network.channels.items():
+        participants.append(view.participant1)
+        participants.append(view.participant2)
 
         channel = dict(
             channel_identifier=channel_id,
-            status=_state_to_str(view1.state),
-            participant1=ends[0],
-            participant2=ends[1],
-            deposit1=view1.deposit,
-            deposit2=view2.deposit,
+            status=_state_to_str(view.state),
+            participant1=view.participant1,
+            participant2=view.participant2,
+            deposit1=view.deposit_p1,
+            deposit2=view.deposit_p2,
         )
         channels.append(channel)
 
-        if view1.state == ChannelView.State.OPENED:
+        if view.state == ChannelView.State.OPENED:
             num_channels_opened += 1
-        elif view1.state == ChannelView.State.CLOSED:
+        elif view.state == ChannelView.State.CLOSED:
             num_channels_closed += 1
-        elif view1.state == ChannelView.State.SETTLED:
+        elif view.state == ChannelView.State.SETTLED:
             num_channels_settled += 1
 
     # sets are not json serializable, convert back to list
