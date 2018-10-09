@@ -7,6 +7,7 @@ export interface Config {
   poll_interval: number;
   etherscan_base_url: string;
   network_type: string;
+  echo_node_address: string;
 }
 
 const defaultConfiguration: Config = {
@@ -14,7 +15,8 @@ const defaultConfiguration: Config = {
   http_timeout: 60000,
   poll_interval: 10000,
   etherscan_base_url: 'https://ropsten.etherscan.io/address/',
-  network_type: 'test'
+  network_type: 'test',
+  echo_node_address: '0x02f4b6BC65561A792836212Ebc54434Db0Ab759a'
 };
 
 @Injectable()
