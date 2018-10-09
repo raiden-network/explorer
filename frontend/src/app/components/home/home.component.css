@@ -110,11 +110,13 @@
 
 .graph-subtitle {
   font-size: 17px;
+  text-align: center;
 }
 
 .graph-title {
   font-size: 35px;
   font-weight: 100;
+  text-align: center;
 }
 
 .refresh-button {
