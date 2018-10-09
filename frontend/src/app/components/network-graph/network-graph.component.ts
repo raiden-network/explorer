@@ -120,7 +120,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     this.svg.selectAll('.nodes').attr('transform', translation);
     this.svg.selectAll('.links').attr('transform', translation);
     const info = this.svg.selectAll('.info');
-    if (info) {
+    if (!info.empty()) {
       const boxX = parseInt(info.attr('box-x'), 10);
       const boxY = parseInt(info.attr('box-y'), 10);
       const width = boxX + ((this.width - this.initialWidth) / 2);
