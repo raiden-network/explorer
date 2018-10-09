@@ -115,7 +115,11 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('height', this.height);
 
     this.svg.selectAll('.legend').remove().exit();
-    this.drawLegend();
+
+    if (this._showAllChannels) {
+      this.drawLegend();
+    }
+
     const translation = `translate(${(this.width - this.initialWidth) / 2},${(this.height - this.initialHeight) / 2})`;
     this.svg.selectAll('.nodes').attr('transform', translation);
     this.svg.selectAll('.links').attr('transform', translation);
