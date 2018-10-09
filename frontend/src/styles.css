@@ -75,3 +75,7 @@ tr td {
   font-size: 0.9em;
   font-weight: 400;
 }
+
+.search-field .mat-form-field-infix {
+  width: 300px;
+}

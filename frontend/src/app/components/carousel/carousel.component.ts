@@ -3,9 +3,14 @@ import {
   ContentChildren,
   Directive,
   ElementRef,
+  EventEmitter,
   HostListener,
-  Input, OnInit,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
   QueryList,
+  SimpleChanges,
   ViewChild,
   ViewChildren
 } from '@angular/core';
@@ -24,11 +29,12 @@ export class CarouselItemElementDirective {
   templateUrl: 'carousel.component.html',
   styleUrls: ['./carousel.component.css']
 })
-export class CarouselComponent implements OnInit {
+export class CarouselComponent implements OnInit, OnChanges {
   @ContentChildren(CarouselItemDirective) items: QueryList<CarouselItemDirective>;
   @Input() timing = '250ms ease-in';
   @Input() showControls = true;
   @Input() slides: number;
+  @Output() pageChange: EventEmitter<number> = new EventEmitter();
   carouselWrapperStyle = {};
   @ViewChildren(CarouselItemElementDirective, {read: ElementRef}) private itemsElements: QueryList<ElementRef>;
   @ViewChild('carousel') private carousel: ElementRef;
@@ -36,15 +42,11 @@ export class CarouselComponent implements OnInit {
   private itemWidth: number;
   private currentSlide = 0;
 
+  constructor(private builder: AnimationBuilder) {
+  }
+
   public get width(): number {
     return this.itemWidth;
-  }
-
-  public get current(): number {
-    return this.currentSlide;
-  }
-
-  constructor(private builder: AnimationBuilder) {
   }
 
   ngOnInit() {
@@ -57,6 +59,7 @@ export class CarouselComponent implements OnInit {
     }
 
     this.currentSlide = (this.currentSlide + 1) % this.slides;
+    this.pageChange.emit(this.currentSlide);
     const offset = this.calculateOffset();
     const myAnimation: AnimationFactory = this.buildAnimation(offset);
     this.player = myAnimation.create(this.carousel.nativeElement);
@@ -69,6 +72,7 @@ export class CarouselComponent implements OnInit {
     }
 
     this.currentSlide = ((this.currentSlide - 1) + this.slides) % this.slides;
+    this.pageChange.emit(this.currentSlide);
     const offset = this.calculateOffset();
 
     const myAnimation: AnimationFactory = this.buildAnimation(offset, false);
@@ -76,6 +80,28 @@ export class CarouselComponent implements OnInit {
     this.player.play();
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.updateItemWidth();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes.hasOwnProperty('slides')) {
+      return;
+    }
+
+    const slidesUpdate = changes['slides'];
+    if (slidesUpdate.currentValue === 1) {
+      const styles: AnimationStyleMetadata = style({
+        transform: `translateX(0px)`
+      });
+
+      const animateMetadata = animate(0, styles);
+      const animation = this.builder.build(animateMetadata);
+      this.player = animation.create(this.carousel.nativeElement);
+      this.player.play();
+    }
+  }
 
   private goToCurrent() {
     this.currentSlide = (this.currentSlide + this.slides) % this.slides;
@@ -123,11 +149,6 @@ export class CarouselComponent implements OnInit {
     } else {
       this.itemWidth = availableWidth - 64;
     }
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    this.updateItemWidth();
   }
 
   private buildAnimation(offset: number, next: boolean = true) {

@@ -18,7 +18,10 @@ import { DonutChartComponent } from './components/donut-chart/donut-chart.compon
 import { NetworkGraphComponent } from './components/network-graph/network-graph.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {
+  MatAutocompleteModule,
   MatButtonModule,
+  MatFormFieldModule,
+  MatInputModule,
   MatProgressSpinnerModule,
   MatRippleModule,
   MatSlideToggleModule,
@@ -26,6 +29,7 @@ import {
 } from '@angular/material';
 import { environment } from '../environments/environment';
 import { SmallNumberPipe } from './pipes/small-number.pipe';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -56,6 +60,10 @@ export function ConfigFactory(config: NetMetricsConfig) {
     MatRippleModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
     BrowserModule,
     CommonModule,
     HttpClientModule,

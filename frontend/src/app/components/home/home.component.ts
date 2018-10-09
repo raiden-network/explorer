@@ -5,8 +5,10 @@ import { RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { SharedService } from '../../services/net.metrics/shared.service';
 import { Message } from '../../services/net.metrics/message';
-import { tap } from 'rxjs/operators';
+import { flatMap, map, startWith, tap } from 'rxjs/operators';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
+import { FormControl } from '@angular/forms';
+import { Token } from '../../models/NMNetwork';
 
 @Component({
   selector: 'app-home',
@@ -36,15 +38,48 @@ export class HomeComponent implements OnInit {
 
   metrics$: Observable<RaidenNetworkMetrics>;
   messages$: Observable<Message>;
+
+  readonly searchControl = new FormControl();
+
+  filteredOptions$: Observable<TokenNetwork[]>;
   private _scrollPosition = 0;
+  private _allNetworks: TokenNetwork[] = [];
 
   constructor(
     private netMetricsService: NetMetricsService,
     private sharedService: SharedService,
     private config: NetMetricsConfig
   ) {
-    this.metrics$ = netMetricsService.metrics$.pipe(tap(() => this._loading = false));
+    this.metrics$ = netMetricsService.metrics$.pipe(tap((metrics) => {
+      this._allNetworks = metrics.tokenNetworks;
+      this._loading = false;
+
+      if (this._visibleNetworks.length === 0) {
+        this.updateVisible(0);
+      }
+    }));
     this.messages$ = sharedService.messages;
+    this.filteredOptions$ = this.searchControl.valueChanges.pipe(
+      startWith(''),
+      tap(x => {
+        if (x === '') {
+          this.updateVisible(0);
+        }
+      }),
+      flatMap(value => this._filter(value))
+    );
+  }
+
+  private _visibleNetworks: TokenNetwork[] = [];
+
+  public get visibleNetworks(): TokenNetwork[] {
+    return this._visibleNetworks;
+  }
+
+  private _numberOfNetworks = 0;
+
+  public get numberOfNetworks(): number {
+    return this._numberOfNetworks;
   }
 
   private _loading = true;
@@ -74,7 +109,7 @@ export class HomeComponent implements OnInit {
   }
 
   @HostListener('window:scroll', ['$event'])
-  onListenerTriggered(event: UIEvent): void {
+  onListenerTriggered(): void {
     const element = document.querySelector('.graph-container');
     const bounds = element.getBoundingClientRect();
 
@@ -106,8 +141,49 @@ export class HomeComponent implements OnInit {
     return network.token;
   }
 
-  //noinspection JSMethodCanBeStatic
-  getVisible(tokenNetworks: TokenNetwork[], current: number) {
+  // noinspection JSMethodCanBeStatic
+  displayFn(network: TokenNetwork | null): string {
+    if (network === null || network === undefined) {
+      return '';
+    }
+    const token = network.token;
+    const tokenDisplay: string[] = [];
+
+    if (token.symbol) {
+      tokenDisplay.push(`[${token.symbol}]`);
+    }
+
+    if (token.name) {
+      tokenDisplay.push(token.name);
+    }
+
+    tokenDisplay.push(token.address);
+
+    return tokenDisplay.join(' ');
+  }
+
+  networkSelected(value?: TokenNetwork) {
+    if (value) {
+      const selectedToken = value.token;
+      const network = this._allNetworks.find(currentNetwork => currentNetwork.token.address === selectedToken.address);
+      if (network) {
+        this._numberOfNetworks = 1;
+        this._visibleNetworks = [network];
+      } else {
+      }
+    } else {
+      this.updateVisible(0);
+    }
+  }
+
+  clearFilter() {
+    this.searchControl.setValue(null);
+    this.updateVisible(0);
+  }
+
+  updateVisible(current: number) {
+    this._numberOfNetworks = this._allNetworks.length;
+
     let start: number;
     let end: number;
     if (current > 0) {
@@ -116,13 +192,13 @@ export class HomeComponent implements OnInit {
       start = 0;
     }
 
-    if (current === tokenNetworks.length) {
+    if (current === this._allNetworks.length) {
       end = current;
     } else {
       end = current + 2;
     }
 
-    return tokenNetworks.slice(start, end);
+    this._visibleNetworks = this._allNetworks.slice(start, end);
   }
 
   private checkIfShouldShowDots() {
@@ -132,5 +208,23 @@ export class HomeComponent implements OnInit {
     }
 
     this._displayDots = height >= 960;
+  }
+
+  private _filter(value?: string): Observable<TokenNetwork[]> {
+    const networks$ = this.metrics$.pipe(map(metrics => metrics.tokenNetworks));
+    if (!value || typeof value !== 'string') {
+      return networks$;
+    }
+
+    const keyword = value.toLowerCase();
+
+    function matches(token: Token): boolean {
+      const name = token.name.toLocaleLowerCase();
+      const symbol = token.symbol.toLocaleLowerCase();
+      const address = token.address.toLocaleLowerCase();
+      return name.startsWith(keyword) || symbol.startsWith(keyword) || address.startsWith(keyword);
+    }
+
+    return networks$.pipe(map(networks => networks.filter(network => matches(network.token))));
   }
 }
