@@ -1,4 +1,4 @@
-import { catchError, map, share, switchMap, tap } from 'rxjs/operators';
+import { catchError, delay, map, retryWhen, share, shareReplay, switchMap, take } from 'rxjs/operators';
 import { NetMetricsConfig } from './net.metrics.config';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -6,7 +6,7 @@ import { NMAPIResponse } from '../../models/NMAPIResponse';
 import { NMChannel, NMNetwork } from '../../models/NMNetwork';
 import * as NMNetworkSchema from '../../models/NMNetwork.schema';
 import { NetworkGraph } from '../../models/NetworkGraph';
-import { BehaviorSubject, Observable, of, zip } from 'rxjs';
+import { Observable, of, timer, zip } from 'rxjs';
 import { Participant, RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { SharedService } from './shared.service';
 import { Message } from './message';
@@ -22,7 +22,6 @@ const ajv = new Ajv({allErrors: true});
 @Injectable()
 export class NetMetricsService {
   readonly metrics$: Observable<RaidenNetworkMetrics>;
-  private pollingSubject: BehaviorSubject<void> = new BehaviorSubject(null);
   private unique = function (value, index, self) {
     return self.indexOf(value) === index;
   };
@@ -33,17 +32,11 @@ export class NetMetricsService {
     private nmConfig: NetMetricsConfig,
     private sharedService: SharedService
   ) {
-    let timeout: number;
+    const timer$ = timer(0, this.nmConfig.configuration.poll_interval);
 
-    this.metrics$ = this.pollingSubject.pipe(
-      tap(() => clearTimeout(timeout)),
+    this.metrics$ = timer$.pipe(
       switchMap(() => this.getMetrics()),
-      tap(() => {
-        timeout = setTimeout(() => {
-          this.pollingSubject.next(null);
-        }, this.nmConfig.configuration.poll_interval);
-      }),
-      share()
+      shareReplay(1)
     );
   }
 
@@ -51,10 +44,16 @@ export class NetMetricsService {
    * Get data from server endpoint, then run setCurrentMetrics()
    */
   private getMetrics(): Observable<RaidenNetworkMetrics> {
-    const metrics = this.http.get<NMAPIResponse>(this.nmConfig.configuration.backend_url).pipe(
-      map(value => value.result),
-      share()
-    );
+    const metrics = this.http.get<NMAPIResponse>(this.nmConfig.configuration.backend_url)
+      .pipe(
+        map(value => value.result),
+        retryWhen(errors => errors.pipe(
+          delay(this.nmConfig.configuration.poll_interval),
+          take(3)
+          )
+        ),
+        share()
+      );
 
     const networkMetrics: Observable<TokenNetwork[]> = metrics.pipe(
       map((networks: NMNetwork[]) => {

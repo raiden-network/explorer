@@ -69,6 +69,7 @@
 .statistics-section {
   height: 100%;
   min-height: 100vh;
+  color: white;
 }
 
 .metric-description {
@@ -267,3 +268,32 @@
 .dotstyle-fillin.dotstyle-black li.current a {
   box-shadow: inset 0 0 0 8px black;
 }
+
+.search-field {
+  margin-top: 20px;
+}
+
+.search-field img {
+  width: 16px;
+  height: 16px;
+}
+
+.blocky {
+  display: block;
+}
+
+.blocky :nth-child(2) {
+  margin-left: 5px;
+}
+
+.network-suggestion {
+  line-height: 20px !important;
+  height: 68px !important;
+}
+
+.search-icon {
+  padding: 0 4px;
+  vertical-align: middle;
+}
+
+
