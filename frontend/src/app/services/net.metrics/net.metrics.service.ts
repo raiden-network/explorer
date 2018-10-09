@@ -6,7 +6,7 @@ import { NMAPIResponse } from '../../models/NMAPIResponse';
 import { NMChannel, NMNetwork } from '../../models/NMNetwork';
 import * as NMNetworkSchema from '../../models/NMNetwork.schema';
 import { NetworkGraph } from '../../models/NetworkGraph';
-import { Observable, of, timer, zip } from 'rxjs';
+import { Observable, of, timer } from 'rxjs';
 import { Participant, RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { SharedService } from './shared.service';
 import { Message } from './message';
@@ -83,43 +83,30 @@ export class NetMetricsService {
       })
     );
 
-    const networkGraph = metrics.pipe(
-      map((networks: NMNetwork[]) => {
-        return networks.filter(this._nonScenarioTokens).map(network => this.createNetworkGraph(network))
-          .reduce((acc: NetworkGraph, value: NetworkGraph) => {
-            acc.nodes.push(...value.nodes);
-            acc.links.push(...value.links);
-            return acc;
-          }, {nodes: [], links: []});
-      })
-    );
+    return networkMetrics.pipe(map((data) => {
+      const uniqueAccounts = data.map(value => value.uniqueParticipants)
+        .reduce((acc: string[], users: string[]) => {
+          acc.push(...users);
+          return acc;
+        }, [])
+        .filter(this.unique);
 
-    return zip(networkMetrics, networkGraph)
-      .pipe(map(([data, graph]) => {
-        const uniqueUsers = data.map(value => value.uniqueParticipants)
-          .reduce((acc: string[], users: string[]) => {
-            acc.push(...users);
-            return acc;
-          }, [])
-          .filter(this.unique);
+      const totalOpenChannels = data.map(value1 => value1.openedChannels)
+        .reduce((acc, openChannels) => acc + openChannels);
 
-        const totalOpenChannels = data.map(value1 => value1.openedChannels)
-          .reduce((acc, openChannels) => acc + openChannels);
+      const raidenMetrics: RaidenNetworkMetrics = {
+        totalTokenNetworks: data.length,
+        openChannels: totalOpenChannels,
+        uniqueAccounts: uniqueAccounts.length,
+        tokenNetworks: data.sort((a, b) => b.openedChannels - a.openedChannels)
+      };
 
-        const raidenMetrics: RaidenNetworkMetrics = {
-          totalTokenNetworks: data.length,
-          openChannels: totalOpenChannels,
-          uniqueUsers: uniqueUsers.length,
-          tokenNetworks: data.sort((a, b) => b.openedChannels - a.openedChannels),
-          networkGraph: graph
-        };
+      data.forEach(value => {
+        value.uniqueParticipants = undefined;
+      });
 
-        data.forEach(value => {
-          value.uniqueParticipants = undefined;
-        });
-
-        return raidenMetrics;
-      }));
+      return raidenMetrics;
+    }));
   }
 
   private createNetworkGraph(network: NMNetwork): NetworkGraph {
@@ -160,6 +147,7 @@ export class NetMetricsService {
   }
 
   private createTokenNetwork(network: NMNetwork): TokenNetwork {
+    const graph = this.createNetworkGraph(network);
 
     const channels = network.channels;
     const decimals = network.token.decimals;
@@ -243,6 +231,7 @@ export class NetMetricsService {
 
     return {
       token: network.token,
+      graph: graph,
       topParticipantsByChannels: topParticipants,
       openedChannels: openedChannels.length,
       closedChannels: closedChannels.length,

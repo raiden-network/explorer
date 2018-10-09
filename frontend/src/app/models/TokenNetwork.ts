@@ -15,6 +15,7 @@ export interface Participant {
 
 export interface TokenNetwork {
   readonly token: Token;
+  readonly graph: NetworkGraph;
   readonly openedChannels: number;
   readonly closedChannels: number;
   readonly settledChannels: number;
@@ -31,7 +32,6 @@ export interface TokenNetwork {
 export interface RaidenNetworkMetrics {
   readonly totalTokenNetworks: number;
   readonly openChannels: number;
-  readonly uniqueUsers: number;
+  readonly uniqueAccounts: number;
   readonly tokenNetworks: TokenNetwork[];
-  readonly networkGraph: NetworkGraph;
 }

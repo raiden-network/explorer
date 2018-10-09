@@ -55,6 +55,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   private _showAllChannels = false;
 
+  // noinspection JSUnusedGlobalSymbols
   public get showAllChannels(): boolean {
     return this._showAllChannels;
   }
@@ -209,8 +210,23 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private updateCircleCalculation() {
     const nodes = this.graphData.nodes;
     nodes.sort((a, b) => a.openChannels - b.openChannels);
-    const oldRange = (nodes[nodes.length - 1].openChannels - 1);
-    this.circleSize = (value: number) => (((value - 1) * 3) / oldRange) + 5;
+    let oldRange: number;
+    if (nodes.length > 0) {
+      const openChannels = nodes[nodes.length - 1].openChannels;
+      oldRange = openChannels > 1 ? (openChannels - 1) : 1;
+    } else {
+      oldRange = 1;
+    }
+    this.circleSize = (value: number) => {
+      let size: number;
+
+      if (value === 0) {
+        size = 5;
+      } else {
+        size = (((value - 1) * 3) / oldRange) + 5;
+      }
+      return size;
+    };
   }
 
   private initSvg() {
@@ -247,7 +263,23 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private drawGraph() {
-    this.tokenNetworks = d3.set(this.graphData.nodes.map(value => value.tokenAddress)).values();
+    this.svg.selectAll('.no-network-data').remove().exit();
+
+    const simulationNodes = this.graphData.nodes;
+    if (simulationNodes.length === 0) {
+      this.svg.selectAll('.node').remove().exit();
+      this.svg.selectAll('.link').remove().exit();
+
+      this.svg.append('g')
+        .classed('no-network-data', true)
+        .attr('transform', `translate(${(this.width / 2) - 110},${this.height / 2})`)
+        .append('text')
+        .text('No channels to visualize!')
+        .style('fill', '#000')
+        .style('font-size', '20px');
+      return;
+    }
+    this.tokenNetworks = d3.set(simulationNodes.map(value => value.tokenAddress)).values();
     this.nodeColor = d3Scale.scaleOrdinal()
       .domain(this.tokenNetworks)
       .range(this.generateColors(this.tokenNetworks.length));
@@ -282,7 +314,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       this.drawLinkInformation(datum);
     });
 
-    const nodes = this.node.data(this.graphData.nodes, NetworkGraphComponent.nodeCompare());
+    const nodes = this.node.data(simulationNodes, NetworkGraphComponent.nodeCompare());
 
     this.svg.selectAll('.node').remove().exit();
 
@@ -310,7 +342,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       return this.selectNode(datum);
     });
 
-    this.simulation.nodes(this.graphData.nodes).on('tick', ticked);
+    this.simulation.nodes(simulationNodes).on('tick', ticked);
 
     // @ts-ignore
     this.simulation.force('link').links(this.graphData.links);

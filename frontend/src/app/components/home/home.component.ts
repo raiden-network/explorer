@@ -70,6 +70,12 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  private _currentNetwork?: TokenNetwork;
+
+  public get currentNetwork(): TokenNetwork | undefined {
+    return this._currentNetwork;
+  }
+
   private _visibleNetworks: TokenNetwork[] = [];
 
   public get visibleNetworks(): TokenNetwork[] {
@@ -136,6 +142,10 @@ export class HomeComponent implements OnInit {
     document.getElementById(loc).scrollIntoView({behavior: 'smooth'});
   }
 
+  public setCurrent(tokenNetwork: TokenNetwork) {
+    this._currentNetwork = tokenNetwork;
+  }
+
   //noinspection JSMethodCanBeStatic
   trackByFn(network: TokenNetwork) {
     return network.token;
@@ -168,6 +178,7 @@ export class HomeComponent implements OnInit {
       const network = this._allNetworks.find(currentNetwork => currentNetwork.token.address === selectedToken.address);
       if (network) {
         this._numberOfNetworks = 1;
+        this._currentNetwork = network;
         this._visibleNetworks = [network];
       } else {
       }
@@ -191,6 +202,8 @@ export class HomeComponent implements OnInit {
     } else {
       start = 0;
     }
+
+    this._currentNetwork = this._allNetworks[current];
 
     if (current === this._allNetworks.length) {
       end = current;

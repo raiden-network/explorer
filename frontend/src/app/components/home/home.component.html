@@ -70,7 +70,7 @@
               <div fxLayout="column" fxFlexAlign="space-evenly">
                 <div fxLayout="row"
                      fxFlexAlign="center"
-                     class="metric-information">{{metrics.uniqueUsers}}
+                     class="metric-information">{{metrics.uniqueAccounts}}
                 </div>
                 <div fxLayout="row"
                      fxFlexAlign="center"
@@ -197,7 +197,7 @@
                   [showControls]="false"
                   [slides]="numberOfNetworks"
                   fxLayout="column"
-                  (pageChange)="updateVisible($event)"
+                  (pageChange)="updateVisible($event);"
                   fxFlex.gt-sm="0 0 900px"
                   fxFlex.lt-sm="1 1 auto"
                   fxFlexAlign="center">
@@ -255,7 +255,7 @@
 
 </section>
 
-<section class="networkpage graph-container">
+<section class="networkpage graph-container" *ngIf="currentNetwork">
 
   <div fxLayoutAlign="center"
        fxLayout="column"
@@ -280,7 +280,7 @@
       id="network-graph"
       fxLayout="row"
       fxLayoutAlign="center"
-      [data]="metrics.networkGraph"></app-network-graph>
+      [data]="currentNetwork.graph"></app-network-graph>
   </div>
 
   <div class="dotstyle dotstyle-fillin dotstyle-black" *ngIf="displayDots"
