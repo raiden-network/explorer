@@ -5,6 +5,7 @@ import { Simulation, SimulationLinkDatum, SimulationNodeDatum } from 'd3';
 import * as d3Scale from 'd3-scale';
 import * as deepEqual from 'deep-equal';
 import { jab } from 'd3-cam02';
+import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
 
 interface SimulationNode extends SimulationNodeDatum, Node {
 }
@@ -50,7 +51,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private tokenNetworks: string[];
   private nodeColor: d3.ScaleOrdinal<string, any>;
 
-  constructor() {
+  constructor(private config: NetMetricsConfig) {
   }
 
   private _showAllChannels = false;
@@ -509,15 +510,20 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     return boxY + (offset / 2);
   }
 
-
+  // noinspection JSMethodCanBeStatic
   private nodeInfo(d: Node): string[] {
-    let strings: string[];
-    strings = [
+    const strings: string[] = [];
+
+    if (d.id === this.config.configuration.echo_node_address) {
+      strings.push('Raiden Echo Node');
+    }
+
+    strings.push(
       d.id,
       '',
       `Token`,
       `Address: ${d.tokenAddress}`
-    ];
+    );
 
     if (d.tokenSymbol) {
       strings.push(`Symbol: ${d.tokenSymbol}`);
