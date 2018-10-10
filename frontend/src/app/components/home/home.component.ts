@@ -9,6 +9,7 @@ import { flatMap, map, startWith, tap } from 'rxjs/operators';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
 import { FormControl } from '@angular/forms';
 import { Token } from '../../models/NMNetwork';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-home',
@@ -48,7 +49,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private netMetricsService: NetMetricsService,
     private sharedService: SharedService,
-    private config: NetMetricsConfig
+    private config: NetMetricsConfig,
+    private overlayContainer: OverlayContainer
   ) {
     this.metrics$ = netMetricsService.metrics$.pipe(tap((metrics) => {
       this._allNetworks = metrics.tokenNetworks;
@@ -239,5 +241,13 @@ export class HomeComponent implements OnInit {
     }
 
     return networks$.pipe(map(networks => networks.filter(network => matches(network.token))));
+  }
+
+  onOpened() {
+    this.overlayContainer.getContainerElement().classList.add('dark-theme');
+  }
+
+  onClosed() {
+    this.overlayContainer.getContainerElement().classList.remove('dark-theme');
   }
 }

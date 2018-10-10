@@ -33,16 +33,6 @@
   stroke-width: 2px;
 }
 
-.networkpage {
-  background-color: white;
-  height: 100vh;
-  padding-top: 2.75%;
-}
-
-.networkpage a {
-  color: black;
-}
-
 .active-view {
   background-color: #1960A6 !important;
 }
@@ -70,6 +60,7 @@
   height: 100%;
   min-height: 100vh;
   color: white;
+  background-color: black;
 }
 
 .metric-description {
@@ -104,7 +95,8 @@
   color: white;
 }
 
-.graph-container {
+.network-section {
+  margin-top: 3rem;
   height: 100vh;
 }
 
@@ -271,15 +263,6 @@
   box-shadow: inset 0 0 0 8px black;
 }
 
-.search-field {
-  margin-top: 20px;
-}
-
-.search-field img {
-  width: 16px;
-  height: 16px;
-}
-
 .blocky {
   display: block;
 }
@@ -292,10 +275,4 @@
   line-height: 20px !important;
   height: 68px !important;
 }
-
-.search-icon {
-  padding: 0 4px;
-  vertical-align: middle;
-}
-
 

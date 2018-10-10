@@ -57,7 +57,6 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: black !important;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -78,4 +77,19 @@ tr td {
 
 .search-field .mat-form-field-infix {
   width: 300px;
+}
+
+.search-icon {
+  padding: 0 4px;
+  vertical-align: middle;
+}
+
+
+.search-field {
+  margin-top: 20px;
+}
+
+.search-field img {
+  width: 16px;
+  height: 16px;
 }

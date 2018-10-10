@@ -6,12 +6,34 @@ import * as d3Scale from 'd3-scale';
 import * as deepEqual from 'deep-equal';
 import { jab } from 'd3-cam02';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 interface SimulationNode extends SimulationNodeDatum, Node {
 }
 
 interface SimulationLink extends SimulationLinkDatum<SimulationNode>, Link {
 }
+
+enum ElementType {
+  NODE,
+  LINK
+}
+
+class FilterElement {
+  constructor(readonly type: ElementType, readonly  element: SimulationNode | SimulationLink) {
+  }
+
+  node(): SimulationNode {
+    return this.element as SimulationNode;
+  }
+
+  link(): SimulationLink {
+    return this.element as SimulationLink;
+  }
+}
+
 
 @Component({
   selector: 'app-network-graph',
@@ -35,9 +57,12 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   @Input() data: NetworkGraph;
   @ViewChild('graph') graph;
+
+  readonly filterControl: FormControl = new FormControl();
+  readonly filteredOptions$: Observable<FilterElement[]>;
+
   private width: number;
   private height: number;
-
   private initialWidth: number;
   private initialHeight: number;
   private svg: d3.Selection<any, NetworkGraph, any, any>;
@@ -52,6 +77,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private nodeColor: d3.ScaleOrdinal<string, any>;
 
   constructor(private config: NetMetricsConfig) {
+    this.filteredOptions$ = this.filterControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value))
+    );
   }
 
   private _showAllChannels = false;
@@ -78,6 +107,43 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   private static linkCompare() {
     return (datum: Link) => `${datum.sourceAddress}-${datum.targetAddress}-${datum.tokenAddress}`;
+  }
+
+  public clearFilter() {
+    this.filterControl.setValue(null);
+    this.clearSelection();
+  }
+
+  // noinspection JSMethodCanBeStatic
+  trackByFn(element: FilterElement): string {
+    let trackProperty = '';
+    if (element.type === ElementType.NODE) {
+      trackProperty = (element.element as SimulationNode).id;
+    } else if (element.type === ElementType.LINK) {
+      const link = (element.element as SimulationLink);
+      trackProperty = link.sourceAddress + link.targetAddress;
+    }
+    return trackProperty;
+  }
+
+  // noinspection JSMethodCanBeStatic
+  displayFn(element: FilterElement | null): string {
+    let displayText = '';
+    if (element) {
+      if (element.type === ElementType.NODE) {
+        displayText = (element.element as SimulationNode).id;
+      } else if (element.type === ElementType.LINK) {
+        const link = (element.element as SimulationLink);
+        displayText = `${link.sourceAddress} - ${link.targetAddress}`;
+      }
+    }
+
+    return displayText;
+  }
+
+  // noinspection JSMethodCanBeStatic
+  isNode(element: FilterElement): boolean {
+    return ElementType.NODE === element.type;
   }
 
   ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
@@ -133,6 +199,33 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       const height = boxY + ((this.height - this.initialHeight) / 2);
       info.attr('transform', `translate(${width},${height})`);
     }
+  }
+
+  elementSelected(value: FilterElement) {
+    if (value.type === ElementType.NODE) {
+      this.selectNode((value.element as SimulationNode));
+    } else if (value.type === ElementType.LINK) {
+      this.linkSelected((value.element as SimulationLink));
+    }
+  }
+
+  private _filter(value: string): FilterElement[] {
+    const nodeElements = this.graphData.nodes.map(node => new FilterElement(ElementType.NODE, node));
+    const linkElements = this.graphData.links.map(link => new FilterElement(ElementType.LINK, link));
+
+    const allElements: FilterElement[] = [];
+    allElements.push(...nodeElements);
+    allElements.push(...linkElements);
+    return allElements.filter(element => {
+      let match = false;
+      if (element.type === ElementType.NODE) {
+        match = (element.element as SimulationNode).id.startsWith(value);
+      } else if (element.type === ElementType.LINK) {
+        const link = (element.element as SimulationLink);
+        match = link.sourceAddress.startsWith(value) || link.targetAddress.startsWith(value);
+      }
+      return match;
+    });
   }
 
   private updateHeight() {
@@ -306,13 +399,13 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
     link.on('click', (datum: SimulationLink) => {
       d3.event.stopPropagation();
-      this.drawLinkInformation(datum);
+      this.linkSelected(datum);
     });
 
     link.on('mouseover', (datum: SimulationLink) => {
       d3.event.stopPropagation();
       this.clearSelection();
-      this.drawLinkInformation(datum);
+      this.linkSelected(datum);
     });
 
     const nodes = this.node.data(simulationNodes, NetworkGraphComponent.nodeCompare());
@@ -396,7 +489,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .style('font-size', '12px');
   }
 
-  private drawLinkInformation(datum: SimulationLink) {
+  private linkSelected(datum: SimulationLink) {
     this.highlightLink(datum);
     const x1 = (datum.source as SimulationNodeDatum).x || 0;
     const x2 = (datum.target as SimulationNodeDatum).x || 0;

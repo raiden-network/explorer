@@ -1,4 +1,4 @@
-<section class="statistics-section">
+<section class="statistics-section dark-theme">
 
   <div fxLayout="column" fxHide.lt-md="true" fxFlex="0 0 20px"></div>
   <div fxLayout="column" fxFlex="1 1 auto">
@@ -169,6 +169,8 @@
           </button>
           <mat-autocomplete #auto="matAutocomplete"
                             autoActiveFirstOption
+                            (opened)="onOpened()"
+                            (closed)="onClosed()"
                             (optionSelected)="networkSelected($event.option.value)"
                             [displayWith]="displayFn">
             <mat-option class="network-suggestion"
@@ -255,7 +257,7 @@
 
 </section>
 
-<section class="networkpage graph-container" *ngIf="currentNetwork">
+<section class="network-section" *ngIf="currentNetwork">
 
   <div fxLayoutAlign="center"
        fxLayout="column"
@@ -296,7 +298,7 @@
 </section>
 
 <footer>
-  <div class="networkpage scroll-up" align="center">
+  <div class="scroll-up" align="center">
     <a mat-stroked-button (click)="scrollToA('top')" class="black">
       Go to top
     </a>
