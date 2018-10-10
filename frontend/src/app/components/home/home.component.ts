@@ -118,7 +118,7 @@ export class HomeComponent implements OnInit {
 
   @HostListener('window:scroll', ['$event'])
   onListenerTriggered(): void {
-    const element = document.querySelector('.graph-container');
+    const element = document.querySelector('.network-section');
     const bounds = element.getBoundingClientRect();
 
     let offset = 0.1 * bounds.top;
@@ -142,10 +142,6 @@ export class HomeComponent implements OnInit {
   // noinspection JSMethodCanBeStatic
   public scrollToA(loc: string) {
     document.getElementById(loc).scrollIntoView({behavior: 'smooth'});
-  }
-
-  public setCurrent(tokenNetwork: TokenNetwork) {
-    this._currentNetwork = tokenNetwork;
   }
 
   //noinspection JSMethodCanBeStatic
