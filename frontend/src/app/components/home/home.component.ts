@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit {
     private overlayContainer: OverlayContainer
   ) {
     this.metrics$ = netMetricsService.metrics$.pipe(tap((metrics) => {
-      this._allNetworks = metrics.tokenNetworks;
+      this._allNetworks = HomeComponent.onlyActive(metrics.tokenNetworks);
       this._loading = false;
 
       if (this._visibleNetworks.length === 0) {
@@ -110,6 +110,10 @@ export class HomeComponent implements OnInit {
 
   public get main(): boolean {
     return this.config.main;
+  }
+
+  private static onlyActive(networks: TokenNetwork[]): TokenNetwork[] {
+    return networks.filter(value => value.openedChannels > 0);
   }
 
   ngOnInit() {
@@ -222,7 +226,7 @@ export class HomeComponent implements OnInit {
   }
 
   private _filter(value?: string): Observable<TokenNetwork[]> {
-    const networks$ = this.metrics$.pipe(map(metrics => metrics.tokenNetworks));
+    const networks$ = this.metrics$.pipe(map(metrics => HomeComponent.onlyActive(metrics.tokenNetworks)));
     if (!value || typeof value !== 'string') {
       return networks$;
     }

@@ -142,6 +142,14 @@
         </div>
       </div>
 
+      <div class="active-networks"
+           fxLayout="row"
+           fxLayoutAlign="center"
+           matTooltip="The networks that have at least one open channel."
+           *ngIf="metrics.totalTokenNetworks > 1">
+        <div class="title">Active Networks</div>
+      </div>
+
       <div fxLayout="row" fxLayoutAlign="center" *ngIf="metrics.totalTokenNetworks > 1">
         <mat-form-field class="search-field"
                         fxLayout="column"
@@ -184,7 +192,6 @@
           </mat-autocomplete>
         </mat-form-field>
       </div>
-
 
       <div class="network-metrics" fxLayout="row" [@flyInOut]="'in'" fxLayoutAlign="center">
         <div fxLayout="column" *ngIf="numberOfNetworks > 1"
