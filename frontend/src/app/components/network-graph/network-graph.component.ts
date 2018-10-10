@@ -329,7 +329,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('width', this.width)
       .attr('height', this.height);
 
-    this.svg.on('click', () => this.clearSelection());
+    this.svg.on('click', () => {
+      this.clearSelection();
+      this.filterControl.setValue(null);
+    });
 
     this.link = this.svg.append('g')
       .attr('class', 'links')
