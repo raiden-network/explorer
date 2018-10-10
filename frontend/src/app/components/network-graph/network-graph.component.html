@@ -1,8 +1,53 @@
 <div fxLayout="column">
-  <div fxLayout="row" #graph class="graph-container"></div>
+  <div fxLayout="row" fxLayoutAlign="end" fxFlex="0 0 auto">
+    <mat-form-field class="search-field"
+                    fxLayout="column"
+                    fxFlex="1 1 300px"
+                    fxFlex.lt-md="1 1 380px"
+                    fxFlex.xs="1 1 300px"
+                    fxFlexOffset="500px"
+                    fxFlexOffset.lt-md="0">
+          <span matPrefix class="search-icon">
+            <img src="../../../assets/baseline-search-24px-color.svg"/>
+          </span>
+      <input type="text"
+             placeholder="Filter"
+             aria-label="Filter"
+             matInput
+             [formControl]="filterControl"
+             [matAutocomplete]="auto">
+      <button mat-button
+              *ngIf="filterControl.value"
+              matSuffix
+              mat-icon-button
+              aria-label="Clear"
+              (click)="clearFilter()">
+        <img src="../../../assets/baseline-clear-24px-color.svg"/>
+      </button>
+      <mat-autocomplete #auto="matAutocomplete"
+                        autoActiveFirstOption
+                        (optionSelected)="elementSelected($event.option.value)"
+                        [displayWith]="displayFn">
+        <mat-option class="element-suggestion"
+                    *ngFor="let option of filteredOptions$ | async; trackBy: trackByFn" [value]="option">
+              <span class="blocky" *ngIf="isNode(option); else channel">
+                <small class="medium">Node</small>
+                <span>Address: <span class="address">{{option.node().id}}</span></span>
+              </span>
+          <ng-template #channel>
+              <span class="blocky">
+                <small class="medium">Channel</small>
+                <span>Participant 1: <span class="address">{{option.link().sourceAddress}}</span></span>
+                <span>Participant 2: <span class="address">{{option.link().targetAddress}}</span></span>
+              </span>
+          </ng-template>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+  <div fxLayout="row" #graph class="network-section"></div>
   <div fxLayout="row" fxLayoutAlign="end" fxFlex="0 0 auto">
     <mat-slide-toggle
-      class="light-theme"
       color="accent"
       matTooltip="The graph will only display open channels when this switch is off."
       (change)="showAllChannels = $event.checked"
