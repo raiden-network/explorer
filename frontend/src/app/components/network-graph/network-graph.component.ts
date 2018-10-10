@@ -233,13 +233,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private updateWidth() {
-    const availWidth = document.documentElement.clientWidth;
-
-    if (availWidth > 1000) {
-      this.width = 960;
-    } else {
-      this.width = availWidth - 60;
-    }
+    this.width = document.documentElement.clientWidth - 60;
   }
 
   private filterChanged() {

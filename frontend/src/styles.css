@@ -93,3 +93,7 @@ tr td {
   width: 16px;
   height: 16px;
 }
+
+.network-section svg {
+  border: 1px solid #D3D3D3;
+}
