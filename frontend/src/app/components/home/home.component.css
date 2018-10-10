@@ -276,3 +276,9 @@
   height: 68px !important;
 }
 
+.active-networks {
+  font-size: 22px;
+  text-align: center;
+  margin-top: 2rem;
+}
+
