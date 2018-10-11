@@ -123,6 +123,11 @@ export class HomeComponent implements OnInit {
   @HostListener('window:scroll', ['$event'])
   onListenerTriggered(): void {
     const element = document.querySelector('.network-section');
+
+    if (!element) {
+      return;
+    }
+
     const bounds = element.getBoundingClientRect();
 
     let offset = 0.1 * bounds.top;
@@ -241,13 +246,5 @@ export class HomeComponent implements OnInit {
     }
 
     return networks$.pipe(map(networks => networks.filter(network => matches(network.token))));
-  }
-
-  onOpened() {
-    this.overlayContainer.getContainerElement().classList.add('dark-theme');
-  }
-
-  onClosed() {
-    this.overlayContainer.getContainerElement().classList.remove('dark-theme');
   }
 }
