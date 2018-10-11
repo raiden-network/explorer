@@ -31,7 +31,8 @@
         </span>
         </h3>
 
-        <div matLine class="channel-capacity" matTooltip="Capacity {{channel.capacity}} tokens">
+        <div matLine class="channel-capacity"
+             matTooltip="Capacity {{channel.capacity | number: '1.' + info.node.token.decimals + '-' + info.node.token.decimals}} tokens">
           Capacity: {{channel.capacity | smallNumber}} tokens
         </div>
       </mat-list-item>
