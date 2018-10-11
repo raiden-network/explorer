@@ -117,7 +117,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private static nodeCompare() {
-    return (datum: Node) => `${datum.id}-${datum.tokenAddress}`;
+    return (datum: Node) => `${datum.id}-${datum.token.address}`;
   }
 
   private static linkCompare() {
@@ -278,9 +278,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
         openChannels: value.openChannels,
         closedChannels: value.closedChannels,
         settledChannels: value.settledChannels,
-        tokenAddress: value.tokenAddress,
-        tokenName: value.tokenName,
-        tokenSymbol: value.tokenSymbol
+        token: value.token
       };
 
       this.graphData.nodes.push(node);
@@ -293,8 +291,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     }
 
     links.forEach(value => {
-      const matchSource = simNode => simNode.id === value.sourceAddress && simNode.tokenAddress === value.tokenAddress;
-      const matchTarget = simNode => simNode.id === value.targetAddress && simNode.tokenAddress === value.tokenAddress;
+      const matchSource = (simNode: Node) => simNode.id === value.sourceAddress && simNode.token.address === value.tokenAddress;
+      const matchTarget = (simNode: Node) => simNode.id === value.targetAddress && simNode.token.address === value.tokenAddress;
 
       const link: SimulationLink = {
         source: this.graphData.nodes.find(matchSource),
@@ -392,13 +390,13 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
         .style('font-size', '20px');
       return;
     }
-    this.tokenNetworks = d3.set(simulationNodes.map(value => value.tokenAddress)).values();
+    this.tokenNetworks = d3.set(simulationNodes.map(value => value.token.address)).values();
     this.nodeColor = d3Scale.scaleOrdinal()
       .domain(this.tokenNetworks)
       .range(this.generateColors(this.tokenNetworks.length));
 
     this.simulation = d3.forceSimulation<SimulationNode, SimulationLink>()
-      .force('link', d3.forceLink().id((node1: SimulationNode) => node1.id + node1.tokenAddress))
+      .force('link', d3.forceLink().id((node1: SimulationNode) => node1.id + node1.token.address))
       .force('charge', d3.forceManyBody().distanceMax(180))
       .force('center', d3.forceCenter(this.width / 2, this.height / 2))
       .stop();
@@ -435,15 +433,15 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .enter()
       .append('circle')
       .attr('class', 'node')
-      .attr('fill', datum => this.nodeColor(datum.tokenAddress))
-      .attr('r', datum => this.circleSize(datum.openChannels))
+      .attr('fill', (datum: Node) => this.nodeColor(datum.token.address))
+      .attr('r', (datum: Node) => this.circleSize(datum.openChannels))
       .call(d3.drag<any, any, any>()
-        .on('start', datum => this.dragstarted(datum, this.simulation))
+        .on('start', (datum: Node) => this.dragstarted(datum, this.simulation))
         .on('drag', this.dragged)
-        .on('end', datum => this.dragended(datum, this.simulation)))
+        .on('end', (datum: Node) => this.dragended(datum, this.simulation)))
       .merge(nodes);
 
-    node.on('click', selectedNode => {
+    node.on('click', (selectedNode: Node) => {
       d3.event.stopPropagation();
       this.clearSelection();
       this._selectionInfo = this.getChannels(selectedNode);
@@ -493,7 +491,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .enter()
       .append('g')
       .classed('legend', true)
-      .attr('transform', (d, i) => `translate(${this.width - 100},${(i * legendHeight) + 20})`);
+      .attr('transform', (_d, i: number) => `translate(${this.width - 100},${(i * legendHeight) + 20})`);
 
     legend.append('rect')
       .attr('width', legendRectSize)
@@ -631,19 +629,20 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       strings.push('Raiden Echo Node');
     }
 
+    const token = d.token;
     strings.push(
       d.id,
       '',
       `Token`,
-      `Address: ${d.tokenAddress}`
+      `Address: ${token.address}`
     );
 
-    if (d.tokenSymbol) {
-      strings.push(`Symbol: ${d.tokenSymbol}`);
+    if (token.symbol) {
+      strings.push(`Symbol: ${token.symbol}`);
     }
 
-    if (d.tokenName) {
-      strings.push(`Name: ${d.tokenName}`);
+    if (token.name) {
+      strings.push(`Name: ${token.name}`);
     }
 
     strings.push(
@@ -658,7 +657,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   private clearSelection() {
     this.svg.selectAll('.node')
-      .attr('fill', (datum: Node) => this.nodeColor(datum.tokenAddress))
+      .attr('fill', (datum: Node) => this.nodeColor(datum.token.address))
       .attr('opacity', 1);
     this.svg.selectAll('.link')
       .attr('stroke-opacity', NetworkGraphComponent.DEFAULT_NODE_STROKE_OPACITY)
@@ -673,7 +672,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('fill', (node: Node) => this.ifNodeElse(selectedNode, node, neighbors, [
         NetworkGraphComponent.SELECTED_COLOR,
         NetworkGraphComponent.HIGHLIGHT_COLOR,
-        this.nodeColor(node.tokenAddress)
+        this.nodeColor(node.token.address)
       ]))
       .attr('opacity', (node: Node) => {
         return this.ifNodeElse(selectedNode, node, neighbors, [
@@ -710,7 +709,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private getChannels(node: Node): NodeInfo {
     const filter = channel => {
       const opened = channel.status === 'opened';
-      const sameTokenNetwork = channel.tokenAddress === node.tokenAddress;
+      const sameTokenNetwork = channel.tokenAddress === node.token.address;
       const isSource = channel.sourceAddress === node.id;
       const isTarget = channel.targetAddress === node.id;
       return opened && sameTokenNetwork && (isTarget || isSource);
@@ -722,9 +721,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private getNeighbors(node: Node): Node[] {
     return this.graphData.links
       .reduce((neighbors, link) => {
-        if (link.targetAddress === node.id && link.tokenAddress === node.tokenAddress) {
+        if (link.targetAddress === node.id && link.tokenAddress === node.token.address) {
           neighbors.push(link.source);
-        } else if (link.sourceAddress === node.id && link.tokenAddress === node.tokenAddress) {
+        } else if (link.sourceAddress === node.id && link.tokenAddress === node.token.address) {
           neighbors.push(link.target);
         }
         return neighbors;
@@ -733,7 +732,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   // noinspection JSMethodCanBeStatic
   private isNeighbor(node: Node, link: Link): boolean {
-    const sameNetwork = node.tokenAddress === link.tokenAddress;
+    const sameNetwork = node.token.address === link.tokenAddress;
     const sourceMatches = sameNetwork && node.id === link.sourceAddress;
     const targetMatches = sameNetwork && node.id === link.targetAddress;
     return sourceMatches || targetMatches;
@@ -763,7 +762,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   // noinspection JSMethodCanBeStatic
   private isSameNode(node1: Node, node2: Node): boolean {
-    return node1.tokenAddress === node2.tokenAddress && node1.id === node2.id;
+    return node1.token.address === node2.token.address && node1.id === node2.id;
   }
 
   //noinspection JSMethodCanBeStatic

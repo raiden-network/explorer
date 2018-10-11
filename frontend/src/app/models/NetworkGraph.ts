@@ -1,3 +1,5 @@
+import { Token } from './NMNetwork';
+
 export interface Link {
   readonly sourceAddress: string;
   readonly targetAddress: string;
@@ -6,14 +8,12 @@ export interface Link {
   readonly capacity: number;
 }
 
-export interface Node {
+export class Node {
   readonly id: string;
   readonly openChannels: number;
   readonly closedChannels: number;
   readonly settledChannels: number;
-  readonly tokenAddress: string;
-  readonly tokenName: string;
-  readonly tokenSymbol: string;
+  readonly token: Token;
 }
 
 export interface NetworkGraph {
