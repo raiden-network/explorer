@@ -1,0 +1,39 @@
+.channels {
+  background-color: #F5F5F5;
+  position: absolute;
+  /* make it dynamically adjust on the position of the svg */
+  right: 30px;
+  width: 300px;
+  margin-top: 1px;
+  border-left: 1px solid #D3D3D3;
+}
+
+.title {
+  font-size: 1rem;
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+  font-weight: 300;
+  text-align: center;
+  border-bottom: 1px solid #D3D3D3;
+}
+
+.node {
+  text-align: center;
+  font-weight: 500;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.channels-list {
+  overflow-y: scroll;
+}
+
+.channels-header {
+  padding: 1rem;
+}
+
+a {
+  text-decoration: none;
+  color: #424242;
+}
+

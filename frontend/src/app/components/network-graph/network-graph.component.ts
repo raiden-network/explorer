@@ -9,6 +9,7 @@ import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config'
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { NodeInfo } from '../../models/node-info';
 
 interface SimulationNode extends SimulationNodeDatum, Node {
 }
@@ -81,6 +82,20 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       startWith(''),
       map(value => this._filter(value))
     );
+  }
+
+  private _selectionInfo?: NodeInfo;
+
+  public get selectionInfo(): NodeInfo | undefined {
+    return this._selectionInfo;
+  }
+
+  public get containerHeight(): number {
+    return this.height;
+  }
+
+  public get containerWidth(): number {
+    return this.width;
   }
 
   private _showAllChannels = false;
@@ -203,10 +218,16 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   elementSelected(value: FilterElement) {
     if (value.type === ElementType.NODE) {
-      this.selectNode((value.element as SimulationNode));
+      const selectedNode = (value.element as SimulationNode);
+      this.selectNode(selectedNode);
+      this._selectionInfo = this.getChannels(selectedNode);
     } else if (value.type === ElementType.LINK) {
       this.linkSelected((value.element as SimulationLink));
     }
+  }
+
+  channelListClosed() {
+    this._selectionInfo = undefined;
   }
 
   private _filter(value: string): FilterElement[] {
@@ -332,6 +353,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     this.svg.on('click', () => {
       this.clearSelection();
       this.filterControl.setValue(null);
+      this._selectionInfo = undefined;
     });
 
     this.link = this.svg.append('g')
@@ -421,10 +443,11 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
         .on('end', datum => this.dragended(datum, this.simulation)))
       .merge(nodes);
 
-    node.on('click', datum => {
+    node.on('click', selectedNode => {
       d3.event.stopPropagation();
       this.clearSelection();
-      return this.selectNode(datum);
+      this._selectionInfo = this.getChannels(selectedNode);
+      return this.selectNode(selectedNode);
     });
 
     node.on('mouseover', (datum: SimulationNode) => {
@@ -682,6 +705,18 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     const boxY = this.getBoxY(minY, maxY, 10, boxHeight);
 
     this.drawInformationBox(boxX, boxY, boxWidth, boxHeight, info);
+  }
+
+  private getChannels(node: Node): NodeInfo {
+    const filter = channel => {
+      const opened = channel.status === 'opened';
+      const sameTokenNetwork = channel.tokenAddress === node.tokenAddress;
+      const isSource = channel.sourceAddress === node.id;
+      const isTarget = channel.targetAddress === node.id;
+      return opened && sameTokenNetwork && (isTarget || isSource);
+    };
+    const links = this.graphData.links.filter(filter);
+    return new NodeInfo(node, links);
   }
 
   private getNeighbors(node: Node): Node[] {

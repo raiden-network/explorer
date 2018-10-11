@@ -22,6 +22,7 @@ import {
   MatButtonModule,
   MatFormFieldModule,
   MatInputModule,
+  MatListModule,
   MatProgressSpinnerModule,
   MatRippleModule,
   MatSlideToggleModule,
@@ -30,6 +31,7 @@ import {
 import { environment } from '../environments/environment';
 import { SmallNumberPipe } from './pipes/small-number.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
+import { OpenChannelListComponent } from './components/open-channel-list/open-channel-list.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -50,7 +52,8 @@ export function ConfigFactory(config: NetMetricsConfig) {
     CarouselItemElementDirective,
     DonutChartComponent,
     NetworkGraphComponent,
-    SmallNumberPipe
+    SmallNumberPipe,
+    OpenChannelListComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -63,6 +66,7 @@ export function ConfigFactory(config: NetMetricsConfig) {
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
+    MatListModule,
     ReactiveFormsModule,
     BrowserModule,
     CommonModule,

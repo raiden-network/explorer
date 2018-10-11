@@ -45,7 +45,13 @@
       </mat-autocomplete>
     </mat-form-field>
   </div>
-  <div fxLayout="row" #graph class="network-section"></div>
+  <div fxLayout="row" #graph class="network-section">
+    <app-active-channel-list
+      *ngIf="selectionInfo && containerWidth >= 900"
+      (closed)="channelListClosed()"
+      [info]="selectionInfo"
+      [height]="containerHeight"></app-active-channel-list>
+  </div>
   <div fxLayout="row" fxLayoutAlign="end" fxFlex="0 0 auto" class="switch">
     <mat-slide-toggle
       color="accent"
