@@ -115,31 +115,32 @@ export class NetMetricsService {
       return (value.participant1 === id || value.participant2 === id) && value.status === status;
     });
 
+    const token = network.token;
+
     network.nodes.forEach(id => {
 
       const openChannels = getChannels(id, 'opened').length;
       const closedChannels = getChannels(id, 'closed').length;
       const settledChannels = getChannels(id, 'settled').length;
+
       graph.nodes.push({
         id,
         openChannels,
         closedChannels,
         settledChannels,
-        tokenAddress: network.token.address,
-        tokenName: network.token.name,
-        tokenSymbol: network.token.symbol
+        token: token
       });
     });
 
     for (const channel of network.channels) {
       let capacity = channel.deposit1 + channel.deposit2;
-      capacity = TokenUtils.toDecimal(capacity, network.token.decimals);
+      capacity = TokenUtils.toDecimal(capacity, token.decimals);
 
       graph.links.push({
         sourceAddress: channel.participant1,
         targetAddress: channel.participant2,
         status: channel.status,
-        tokenAddress: network.token.address,
+        tokenAddress: token.address,
         capacity: capacity
       });
     }
