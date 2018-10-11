@@ -509,15 +509,19 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   private linkSelected(datum: SimulationLink) {
     this.highlightLink(datum);
-    const x1 = (datum.source as SimulationNodeDatum).x || 0;
-    const x2 = (datum.target as SimulationNodeDatum).x || 0;
-    const y1 = (datum.source as SimulationNodeDatum).y || 0;
-    const y2 = (datum.target as SimulationNodeDatum).y || 0;
+
+    const source = (datum.source as SimulationNodeDatum);
+    const target = (datum.target as SimulationNodeDatum);
+
+    const x1 = source.x || 0;
+    const x2 = target.x || 0;
+    const y1 = source.y || 0;
+    const y2 = target.y || 0;
 
     const data = [
       `Source: ${datum.sourceAddress}`,
       `Target: ${datum.targetAddress}`,
-      `Channel capacity: ${datum.capacity} tokens`
+      `Channel capacity: ${datum.capacity.toFixed((source as Node).token.decimals)} tokens`
     ];
 
     const boxHeight = data.length * 15 + 10;
