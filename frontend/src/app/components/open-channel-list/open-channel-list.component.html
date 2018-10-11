@@ -1,0 +1,41 @@
+<div class="channels" [style.height.px]="height">
+  <div class="channels-header">
+    <button mat-icon-button (click)="closed.emit(true)">
+      <img src="../../../assets/baseline-close-24px.svg">
+    </button>
+    <div class="title">Open Channels</div>
+
+    <div class="node truncate">
+      <a target="_blank" href="{{etherscanUrl(info.node.id)}}">{{info.node.id}}</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <mat-list class="channels-list" dense="" [style.height.px]="listHeight">
+      <mat-list-item class="active-channel" *ngFor="let channel of info.links" fxLayout="column">
+        <h3 matLine>
+          With
+          <span class="truncate">
+          <a target="_blank"
+             href="{{etherscanUrl(channel.sourceAddress)}}"
+             *ngIf="channel.sourceAddress !== info.node.id; else show_target">
+            {{channel.sourceAddress}}
+          </a>
+
+          <ng-template #show_target>
+            <a class="truncate" target="_blank" href="{{etherscanUrl(channel.targetAddress)}}">
+              {{channel.targetAddress}}
+            </a>
+          </ng-template>
+
+        </span>
+        </h3>
+
+        <div matLine class="channel-capacity" matTooltip="Capacity {{channel.capacity}} tokens">
+          Capacity: {{channel.capacity | smallNumber}} tokens
+        </div>
+      </mat-list-item>
+    </mat-list>
+
+  </div>
+</div>

@@ -97,3 +97,9 @@ tr td {
 .network-section svg {
   border: 1px solid #D3D3D3;
 }
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
