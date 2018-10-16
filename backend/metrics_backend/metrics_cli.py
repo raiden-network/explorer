@@ -14,7 +14,12 @@ from eth_utils import is_checksum_address
 from web3 import HTTPProvider, Web3
 from requests.exceptions import ConnectionError
 from raiden_libs.no_ssl_patch import no_ssl_verification
-from raiden_contracts.contract_manager import CONTRACT_MANAGER
+from raiden_contracts.contract_manager import (
+    ContractManager,
+    contracts_precompiled_path,
+    get_contracts_deployed,
+)
+from raiden_contracts.constants import CONTRACT_TOKEN_NETWORK_REGISTRY
 
 from metrics_backend.api.rest import NetworkInfoAPI
 from metrics_backend.metrics_service import MetricsService
@@ -22,7 +27,6 @@ from metrics_backend.utils.serialisation import token_network_to_dict
 
 log = logging.getLogger(__name__)
 
-REGISTRY_ADDRESS = '0xf2a175A52Bd3c815eD7500c765bA19652AB89B30'
 DEFAULT_PORT = 4567
 OUTPUT_FILE = 'network-info.json'
 TEMP_FILE = 'tmp.json'
@@ -62,13 +66,6 @@ def main(
     logging.getLogger('web3').setLevel(logging.INFO)
     logging.getLogger('urllib3.connectionpool').setLevel(logging.ERROR)
 
-    if not is_checksum_address(registry_address):
-        log.error('Provided registry address is not valid:', registry_address)
-        sys.exit(1)
-    if start_block < 0:
-        log.error('Provided start block is not valid:', start_block)
-        sys.exit(1)
-
     log.info("Starting Raiden Metrics Server")
 
     try:
@@ -82,11 +79,24 @@ def main(
         sys.exit()
 
     with no_ssl_verification():
-        service = None
+        valid_params_given = is_checksum_address(registry_address) and start_block >= 0
+        if not valid_params_given:
+            try:
+                contract_data = get_contracts_deployed(int(web3.net.version))
+                token_network_registry_info = contract_data['contracts'][CONTRACT_TOKEN_NETWORK_REGISTRY]  # noqa
+                registry_address = token_network_registry_info['address']
+                start_block = max(0, token_network_registry_info['block_number'] - 100)
+            except (ValueError, FileNotFoundError):
+                log.error(
+                    'Provided registry address or start block are not valid and '
+                    'no deployed contracts were found'
+                )
+                sys.exit(1)
+
         try:
             service = MetricsService(
                 web3=web3,
-                contract_manager=CONTRACT_MANAGER,
+                contract_manager=ContractManager(contracts_precompiled_path()),
                 registry_address=registry_address,
                 sync_start_block=start_block,
             )

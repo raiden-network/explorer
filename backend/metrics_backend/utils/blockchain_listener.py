@@ -10,7 +10,7 @@ from eth_utils import to_checksum_address, encode_hex, decode_hex
 from eth_utils.abi import event_abi_to_log_topic
 import gevent
 import gevent.event
-from raiden_contracts.contract_manager import ContractManager, CONTRACT_MANAGER
+from raiden_contracts.contract_manager import ContractManager
 from raiden_contracts.constants import (
     CONTRACT_TOKEN_NETWORK_REGISTRY,
     EVENT_TOKEN_NETWORK_CREATED,
@@ -26,8 +26,8 @@ def create_channel_event_topics() -> List:
     ]
 
 
-def create_registry_event_topics() -> List:
-    new_network_abi = CONTRACT_MANAGER.get_event_abi(
+def create_registry_event_topics(contract_manager: ContractManager) -> List:
+    new_network_abi = contract_manager.get_event_abi(
         CONTRACT_TOKEN_NETWORK_REGISTRY,
         EVENT_TOKEN_NETWORK_CREATED,
     )

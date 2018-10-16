@@ -8,7 +8,7 @@ from web3 import Web3
 from eth_utils import is_checksum_address
 from raiden_libs.gevent_error_handler import register_error_handler
 from raiden_libs.types import Address
-from raiden_contracts.contract_manager import ContractManager, CONTRACT_MANAGER
+from raiden_contracts.contract_manager import ContractManager
 from raiden_contracts.constants import (
     ChannelEvent,
     CONTRACT_TOKEN_NETWORK,
@@ -79,7 +79,7 @@ class MetricsService(gevent.Greenlet):
 
     def _setup_token_networks(self):
         self.token_network_registry_listener.add_confirmed_listener(
-            create_registry_event_topics(),
+            create_registry_event_topics(self.contract_manager),
             self.handle_token_network_created
         )
 
@@ -223,7 +223,7 @@ class MetricsService(gevent.Greenlet):
         # get token infos
         token_contract = self.web3.eth.contract(
             address=token_address,
-            abi=CONTRACT_MANAGER.get_contract_abi(CONTRACT_HUMAN_STANDARD_TOKEN),
+            abi=self.contract_manager.get_contract_abi(CONTRACT_HUMAN_STANDARD_TOKEN),
         )
         token_infos = get_token_info(token_contract)
 
