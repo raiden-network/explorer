@@ -49,3 +49,46 @@ body {
   font-size: 16px;
   padding-top: 1.0%;
 }
+
+.footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: black;
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+.heading {
+  margin-bottom: 10px;
+  padding-top: 15px;
+  color: rgb(189, 189, 189);
+  letter-spacing: 2px;
+  font-family: 'Roboto Mono', sans-serif;
+  font-size: 13px;
+}
+
+.contactlist {
+  font-size: 14px;
+}
+
+.contactlist div {
+  padding-top: 15px;
+}
+
+.contactlist div a {
+  text-decoration: none !important;
+}
+
+.sociallist {
+  font-size: 14px;
+}
+
+.contactlist a, .sociallist a {
+  -webkit-transition: all 0.35s;
+  -moz-transition: all 0.35s;
+  transition: all 0.35s;
+  color: #9b9b9b;
+}
