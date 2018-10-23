@@ -12,6 +12,7 @@ import click
 import gevent
 from eth_utils import is_checksum_address
 from web3 import HTTPProvider, Web3
+from web3.middleware import geth_poa_middleware
 from requests.exceptions import ConnectionError
 from raiden_libs.no_ssl_patch import no_ssl_verification
 from raiden_contracts.contract_manager import (
@@ -82,6 +83,7 @@ def main(
     try:
         log.info(f'Starting Web3 client for node at {eth_rpc}')
         web3 = Web3(HTTPProvider(eth_rpc))
+        web3.middleware_stack.inject(geth_poa_middleware, layer=0)
     except ConnectionError:
         log.error(
             'Can not connect to the Ethereum client. Please check that it is running and that '
