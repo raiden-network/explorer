@@ -1,0 +1,8 @@
+{
+  "backend_url": "BACKEND_URL",
+  "http_timeout": 60000,
+  "poll_interval": POLL_INTERVAL,
+  "etherscan_base_url": "ETHERSCAN_BASE_URL",
+  "network_type": "NETWORK_TYPE",
+  "echo_node_address": "ECHO_NODE_ADDRESS"
+}
