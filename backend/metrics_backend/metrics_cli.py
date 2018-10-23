@@ -51,10 +51,17 @@ OUTPUT_PERIOD = 10  # seconds
     type=int,
     help='Block to start syncing at'
 )
+@click.option(
+    '--port',
+    default=DEFAULT_PORT,
+    type=int,
+    help='Port to provide the REST endpoint on'
+)
 def main(
     eth_rpc,
     registry_address,
     start_block,
+    port,
 ):
     # setup logging
     logging.basicConfig(
@@ -65,6 +72,10 @@ def main(
 
     logging.getLogger('web3').setLevel(logging.INFO)
     logging.getLogger('urllib3.connectionpool').setLevel(logging.ERROR)
+
+    if not isinstance(port, int):
+        log.error('Port is not an integer.')
+        sys.exit(1)
 
     log.info("Starting Raiden Metrics Server")
 
@@ -82,11 +93,14 @@ def main(
         valid_params_given = is_checksum_address(registry_address) and start_block >= 0
         if not valid_params_given:
             try:
-                contract_data = get_contracts_deployed(int(web3.net.version))
+                chain_id = int(web3.net.version)
+                # use limits for mainnet, pre limits for testnets
+                version = None if chain_id == 1 else 'pre_limits'
+                contract_data = get_contracts_deployed(int(web3.net.version), version)
                 token_network_registry_info = contract_data['contracts'][CONTRACT_TOKEN_NETWORK_REGISTRY]  # noqa
                 registry_address = token_network_registry_info['address']
                 start_block = max(0, token_network_registry_info['block_number'] - 100)
-            except (ValueError, FileNotFoundError):
+            except ValueError:
                 log.error(
                     'Provided registry address or start block are not valid and '
                     'no deployed contracts were found'
@@ -105,8 +119,8 @@ def main(
             # gevent.spawn(write_topology_task, service)
 
             api = NetworkInfoAPI(service)
-            api.run(port=DEFAULT_PORT)
-            print(f'Running metrics endpoint at http://localhost:{DEFAULT_PORT}/json')
+            api.run(port=port)
+            print(f'Running metrics endpoint at http://localhost:{port}/json')
 
             print('Raiden Status Page backend running...')
             service.run()
