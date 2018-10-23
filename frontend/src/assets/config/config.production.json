@@ -3,6 +3,6 @@
   "http_timeout": 60000,
   "poll_interval": 10000,
   "etherscan_base_url": "https://etherscan.io/address/",
-  "network_type": "main",
-  "echo_node_address": "0x02f4b6BC65561A792836212Ebc54434Db0Ab759a"
+  "echo_node_address": "0x02f4b6BC65561A792836212Ebc54434Db0Ab759a",
+  "network_name": "Main"
 }
