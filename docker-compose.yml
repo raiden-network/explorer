@@ -9,7 +9,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:explorer.raiden.network"
-      - "traefik.port=3000"
 
   backend:
     image: backend
@@ -23,7 +22,39 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:explorer.raiden.network; Path: /json"
-      - "traefik.port=4567"
+
+  backend-ropsten:
+    image: backend
+    build:
+      context: ./backend
+    restart: always
+    environment:
+      - EXPLORER_ETH_RPC=http://geth.ropsten.ethnodes.brainbot.com:8545
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:ropsten.explorer.raiden.network; Path: /json"
+
+  backend-rinkeby:
+    image: backend
+    build:
+      context: ./backend
+    restart: always
+    environment:
+      - EXPLORER_ETH_RPC=http://geth.rinkeby.ethnodes.brainbot.com:8545
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:rinkeby.explorer.raiden.network; Path: /json"
+
+  backend-kovan:
+    image: backend
+    build:
+      context: ./backend
+    restart: always
+    environment:
+      - EXPLORER_ETH_RPC=http://parity.kovan.ethnodes.brainbot.com:8545
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:kovan.explorer.raiden.network; Path: /json"
 
   traefik:
     image: traefik:1.7
@@ -37,4 +68,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - backend
+      - backend-ropsten
+      - backend-rinkeby
+      - backend-kovan
       - frontend
