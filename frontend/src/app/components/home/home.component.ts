@@ -108,8 +108,8 @@ export class HomeComponent implements OnInit {
     return this._displayDots;
   }
 
-  public get main(): boolean {
-    return this.config.main;
+  public get network(): string {
+    return this.config.configuration.network_name;
   }
 
   private static onlyActive(networks: TokenNetwork[]): TokenNetwork[] {

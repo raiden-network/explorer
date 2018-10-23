@@ -6,8 +6,8 @@ export interface Config {
   http_timeout: number;
   poll_interval: number;
   etherscan_base_url: string;
-  network_type: string;
   echo_node_address: string;
+  network_name: string;
 }
 
 const defaultConfiguration: Config = {
@@ -15,8 +15,8 @@ const defaultConfiguration: Config = {
   http_timeout: 60000,
   poll_interval: 10000,
   etherscan_base_url: 'https://ropsten.etherscan.io/address/',
-  network_type: 'test',
-  echo_node_address: '0x02f4b6BC65561A792836212Ebc54434Db0Ab759a'
+  echo_node_address: '0x02f4b6BC65561A792836212Ebc54434Db0Ab759a',
+  network_name: 'ropsten'
 };
 
 @Injectable()
@@ -26,10 +26,6 @@ export class NetMetricsConfig {
 
   public get configuration(): Config {
     return this._configuration;
-  }
-
-  public get main(): boolean {
-    return this._configuration.network_type === 'main';
   }
 
   constructor(private http: HttpClient) {
