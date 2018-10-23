@@ -4,5 +4,5 @@
   "poll_interval": 10000,
   "etherscan_base_url": "https://ropsten.etherscan.io/address/",
   "echo_node_address": "0x02f4b6BC65561A792836212Ebc54434Db0Ab759a",
-  "network_name":  "Ropsten"
+  "network_name": "Ropsten"
 }

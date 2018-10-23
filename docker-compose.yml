@@ -9,8 +9,8 @@ services:
         backend_url: https://explorer.raiden.network/json
         poll_interval: 10000
         etherscan_base_url: https://ropsten.etherscan.io/address/
-        network_type: main
         echo_node_address: "0x02f4b6BC65561A792836212Ebc54434Db0Ab759a"
+        network_type: ""
     restart: always
     labels:
       - "traefik.enable=true"
@@ -37,8 +37,8 @@ services:
         backend_url: https://ropsten.explorer.raiden.network/json
         poll_interval: 10000
         etherscan_base_url: https://ropsten.etherscan.io/address/
-        network_type: test
         echo_node_address: "0x02f4b6BC65561A792836212Ebc54434Db0Ab759a"
+        network_type: Ropsten
     restart: always
     labels:
       - "traefik.enable=true"
@@ -63,7 +63,7 @@ services:
         backend_url: https://rinkeby.explorer.raiden.network/json
         poll_interval: 10000
         etherscan_base_url: https://rinkeby.etherscan.io/address/
-        network_type: test
+        network_name: Rinkeby
     restart: always
     labels:
       - "traefik.enable=true"
@@ -88,7 +88,7 @@ services:
         backend_url: https://kovan.explorer.raiden.network/json
         poll_interval: 10000
         etherscan_base_url: https://kovan.etherscan.io/address/
-        network_type: test
+        network_name: Kovan
     restart: always
     labels:
       - "traefik.enable=true"
