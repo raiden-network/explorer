@@ -7,7 +7,7 @@ ARG backend_url
 ARG poll_interval
 ARG etherscan_base_url
 ARG network_type
-ARG echo_node_address
+ARG echo_node_address=""
 
 WORKDIR /frontend
 ADD . /frontend

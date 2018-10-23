@@ -8,7 +8,7 @@ services:
       args:
         backend_url: https://explorer.raiden.network/json
         poll_interval: 10000
-        etherscan_base_url: https://etherscan.io/address/
+        etherscan_base_url: https://ropsten.etherscan.io/address/
         network_type: main
         echo_node_address: "0x02f4b6BC65561A792836212Ebc54434Db0Ab759a"
     restart: always
@@ -29,6 +29,21 @@ services:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:explorer.raiden.network; Path: /json"
 
+  frontend-ropsten:
+    image: frontend
+    build:
+      context: ./frontend
+      args:
+        backend_url: https://ropsten.explorer.raiden.network/json
+        poll_interval: 10000
+        etherscan_base_url: https://ropsten.etherscan.io/address/
+        network_type: test
+        echo_node_address: "0x02f4b6BC65561A792836212Ebc54434Db0Ab759a"
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:ropsten.explorer.raiden.network"
+
   backend-ropsten:
     image: backend
     build:
@@ -40,6 +55,20 @@ services:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:ropsten.explorer.raiden.network; Path: /json"
 
+  frontend-rinkeby:
+    image: frontend
+    build:
+      context: ./frontend
+      args:
+        backend_url: https://rinkeby.explorer.raiden.network/json
+        poll_interval: 10000
+        etherscan_base_url: https://rinkeby.etherscan.io/address/
+        network_type: test
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:rinkeby.explorer.raiden.network"
+
   backend-rinkeby:
     image: backend
     build:
@@ -50,6 +79,20 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:rinkeby.explorer.raiden.network; Path: /json"
+
+  frontend-kovan:
+    image: frontend
+    build:
+      context: ./frontend
+      args:
+        backend_url: https://kovan.explorer.raiden.network/json
+        poll_interval: 10000
+        etherscan_base_url: https://kovan.etherscan.io/address/
+        network_type: test
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:kovan.explorer.raiden.network"
 
   backend-kovan:
     image: backend
@@ -78,3 +121,6 @@ services:
       - backend-rinkeby
       - backend-kovan
       - frontend
+      - frontend-ropsten
+      - frontend-rinkeby
+      - frontend-kovan
