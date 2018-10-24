@@ -25,7 +25,6 @@ export class NetMetricsService {
   private unique = function (value, index, self) {
     return self.indexOf(value) === index;
   };
-  private _nonScenarioTokens = value => !value.token.name.toLocaleLowerCase().startsWith('scenario test token');
 
   public constructor(
     private http: HttpClient,
@@ -57,7 +56,7 @@ export class NetMetricsService {
 
     const networkMetrics: Observable<TokenNetwork[]> = metrics.pipe(
       map((networks: NMNetwork[]) => {
-        return networks.filter(this._nonScenarioTokens).map(network => {
+        return networks.map(network => {
           const valid = ajv.validate(schema, network);
           if (!valid) {
             throw new Error(`Malformed API data: ${this.ajvErrorsToString(ajv.errors)}`);
