@@ -62,7 +62,9 @@ class MetricsService(gevent.Greenlet):
         self.token_networks: Dict[Address, TokenNetwork] = {}
         self.token_network_listeners: List[BlockchainListener] = []
 
-        log.info('Starting TokenNetworkRegistry Listener...')
+        log.info('Starting TokenNetworkRegistry Listener (required confirmations: {})...'.format(
+            self.required_confirmations,
+        ))
         self.token_network_registry_listener = BlockchainListener(
             web3=web3,
             contract_manager=contract_manager,
