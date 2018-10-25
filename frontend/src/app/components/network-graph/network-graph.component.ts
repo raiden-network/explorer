@@ -519,12 +519,12 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     const y2 = target.y || 0;
 
     const data = [
-      `Source: ${datum.sourceAddress}`,
-      `Target: ${datum.targetAddress}`,
-      `Channel capacity: ${datum.capacity.toFixed((source as Node).token.decimals)} tokens`
+      this.tooltipLine('Source:', datum.sourceAddress),
+      this.tooltipLine('Target:', datum.targetAddress),
+      this.tooltipLine('Channel capacity:', `${datum.capacity.toFixed((source as Node).token.decimals)} tokens`)
     ];
 
-    const boxHeight = data.length * 15 + 10;
+    const boxHeight = data.length * 15 + 20;
     const boxWidth = 320;
     const boxMargin = 20;
 
@@ -532,6 +532,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     const boxY = this.getBoxY(y1, y2, boxMargin, boxHeight);
 
     this.drawInformationBox(boxX, boxY, boxWidth, boxHeight, data);
+  }
+
+  private tooltipLine(label: string, content: string | number): string {
+    return `<span class="tooltip-label">${label}</span> ${content}`;
   }
 
   private drawInformationBox(boxX: number, boxY: number, boxWidth: number, boxHeight: number, data: string[]) {
@@ -549,25 +553,23 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('box-x', boxX)
       .attr('box-y', boxY);
 
-
-    info.append('rect')
+    const foreignObject = info.append('foreignObject')
       .attr('width', `${boxWidth}px`)
       .attr('height', `${boxHeight}px`)
       .style('fill', '#fff')
       .style('stroke', '#000')
       .style('stroke-width', '1px');
 
-    const appendText = (text, index) => info
-      .append('text')
-      .attr('x', 10)
-      .attr('y', 15 + (index * 15))
-      .text(text)
-      .style('fill', '#000')
-      .style('font-size', '11px');
+    const appendText = (text) => `<div class="truncate">${text}</div>`;
 
+    let html = '';
     for (let i = 0; i < data.length; i++) {
-      appendText(data[i], i);
+      html += appendText(data[i]);
     }
+
+    foreignObject.append('xhtml:body')
+      .style('background', 'white')
+      .html(`<div class="graph-tooltip">${html}</div>`);
   }
 
   private highlightLink(datum: SimulationLink) {
@@ -630,30 +632,30 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     const strings: string[] = [];
 
     if (d.id === this.config.configuration.echo_node_address) {
-      strings.push('Raiden Echo Node');
+      strings.push(`<strong>Raiden Echo Node</strong>`);
     }
 
     const token = d.token;
     strings.push(
-      d.id,
+      `<strong>${d.id}</strong>`,
       '',
-      `Token`,
-      `Address: ${token.address}`
+      `<strong>Token</strong>`,
+      this.tooltipLine('Address:', token.address)
     );
 
     if (token.symbol) {
-      strings.push(`Symbol: ${token.symbol}`);
+      strings.push(this.tooltipLine('Symbol:', token.symbol));
     }
 
     if (token.name) {
-      strings.push(`Name: ${token.name}`);
+      strings.push(this.tooltipLine('Name:', token.name));
     }
 
     strings.push(
       '',
-      `Open Channels: ${d.openChannels}`,
-      `Closed Channels: ${d.closedChannels}`,
-      `Settled Channels: ${d.settledChannels}`
+      this.tooltipLine('Open Channels:', d.openChannels),
+      this.tooltipLine('Closed Channels:', d.closedChannels),
+      this.tooltipLine('Settled Channels:', d.settledChannels)
     );
 
     return strings;
