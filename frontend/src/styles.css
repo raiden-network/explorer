@@ -103,3 +103,26 @@ tr td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.graph-tooltip {
+  max-width: 100% !important;
+  margin: 4px !important;
+  padding: 6px;
+  color: black;
+  border-radius: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: white;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.graph-tooltip div {
+  min-height: 11px
+}
+
+.tooltip-label {
+  font-weight: 500;
+}
