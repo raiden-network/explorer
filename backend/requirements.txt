@@ -11,5 +11,5 @@ requests==2.19.1
 dataclasses==0.6.0
 cachetools==2.1.0
 
-raiden-libs==0.1.11
-raiden-contracts==0.6.0
+raiden-libs==0.1.12
+raiden-contracts==0.7.0

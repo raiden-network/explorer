@@ -7,9 +7,9 @@ services:
       args:
         backend_url: https://explorer.raiden.network/json
         poll_interval: 10000
-        etherscan_base_url: https://ropsten.etherscan.io/address/
+        etherscan_base_url: https://etherscan.io/address/
         echo_node_address: "0x02f4b6BC65561A792836212Ebc54434Db0Ab759a"
-        network_name: ""
+        network_name: Mainnet
     restart: always
     labels:
       - "traefik.enable=true"
@@ -20,9 +20,8 @@ services:
       context: ./backend
     restart: always
     environment:
-      - EXPLORER_ETH_RPC=http://geth.ropsten.ethnodes.brainbot.com:8545
-      - EXPLORER_REGISTRY_ADDRESS=0xf2a175A52Bd3c815eD7500c765bA19652AB89B30
-      - EXPLORER_START_BLOCK=3800000
+      - EXPLORER_ETH_RPC=http://parity.mainnet.ethnodes.brainbot.com:8545
+      - EXPLORER_CONFIRMATIONS=5
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:explorer.raiden.network; Path: /json"
