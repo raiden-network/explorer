@@ -54,7 +54,14 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     private cd: ChangeDetectorRef
   ) {
     this.metrics$ = netMetricsService.metrics$.pipe(tap((metrics) => {
-      this._allNetworks = HomeComponent.onlyActive(metrics.tokenNetworks);
+
+      if (metrics.tokenNetworks.length === 1) {
+        this._allNetworks = metrics.tokenNetworks;
+        this.updateVisible(0);
+      } else {
+        this._allNetworks = HomeComponent.onlyActive(metrics.tokenNetworks);
+      }
+
       this._loading = false;
 
       const isTheSame = (value: TokenNetwork, other: TokenNetwork) => value.token.address === other.token.address;
