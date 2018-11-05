@@ -1,15 +1,19 @@
-<div class="topnav">
+<div class="topnav" fxLayout="row" fxLayoutAlign="center" fxLayoutGap="30px">
   {{setTitle("Raiden Explorer")}}
-  <img class="raiden-logo" src="../assets/favicon.png">
-  <a href="http://raiden.network/" target="_blank" class="raiden-link" id="top">
-    {{title}}
-  </a>
-  <a href="https://github.com/raiden-network" target="_blank" class="navigation-link">
-    Github
-  </a>
-  <a href="https://raiden-network.readthedocs.io/en/stable/" target="_blank" class="navigation-link">
-    Documentation
-  </a>
+  <div fxLayout="column" fxLayoutAlign="center">
+    <img class="raiden-logo" src="../assets/favicon.png">
+  </div>
+  <div fxLayout="column" fxFlex="1 1 auto"></div>
+  <div fxLayout="column" fxLayoutAlign="center">
+    <a href="https://raiden-network.readthedocs.io/en/stable/" target="_blank" class="navigation-link">
+      Documentation
+    </a>
+  </div>
+  <div fxLayout="column" fxLayoutAlign="center">
+    <a href="https://github.com/raiden-network" target="_blank" class="navigation-link">
+      Github
+    </a>
+  </div>
 </div>
 <div>
   <router-outlet></router-outlet>
