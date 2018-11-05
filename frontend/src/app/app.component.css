@@ -1,28 +1,19 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: black !important;
 }
 
 .topnav {
+  height: 70px;
   background-color: white;
-  overflow: auto;
-  padding: 2px 0;
+  margin-left: 20px;
+  margin-right: 40px;
 }
 
 .topnav a {
-  padding: 14px 16px;
   text-decoration: none;
-  font-weight: 400;
+  font-weight: 300;
   color: black;
-
-}
-
-.topnav a.raiden-link {
-  font-size: 22px;
-  text-align: center;
-  float: left;
-  display: inline-block;
 }
 
 .topnav a:hover {
@@ -35,9 +26,7 @@ body {
 }
 
 .topnav img {
-  max-height: 36px;
-  padding: 8px 8px 8px 8px;
-  float: left;
+  max-height: 40px;
 }
 
 .raiden-logo {
@@ -46,7 +35,7 @@ body {
 
 .navigation-link {
   float: right;
-  font-size: 16px;
+  font-size: 15px;
   padding-top: 1.0%;
 }
 
