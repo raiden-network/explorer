@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { NetMetricsService } from '../../services/net.metrics/net.metrics.service';
 import { Observable } from 'rxjs';
 import { RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
@@ -35,7 +35,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
     ])
   ]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewChecked {
 
   metrics$: Observable<RaidenNetworkMetrics>;
   messages$: Observable<Message>;
@@ -50,16 +50,29 @@ export class HomeComponent implements OnInit {
     private netMetricsService: NetMetricsService,
     private sharedService: SharedService,
     private config: NetMetricsConfig,
-    private overlayContainer: OverlayContainer
+    private overlayContainer: OverlayContainer,
+    private cd: ChangeDetectorRef
   ) {
     this.metrics$ = netMetricsService.metrics$.pipe(tap((metrics) => {
       this._allNetworks = HomeComponent.onlyActive(metrics.tokenNetworks);
       this._loading = false;
 
-      if (this._visibleNetworks.length === 0) {
-        this.updateVisible(0);
+      const isTheSame = (value: TokenNetwork, other: TokenNetwork) => value.token.address === other.token.address;
+
+      if (this._currentNetwork) {
+        const tokenIndex = this._allNetworks.findIndex(value => isTheSame(value, this._currentNetwork));
+
+        if (tokenIndex >= 0) {
+          this._currentNetwork = this._allNetworks[tokenIndex];
+        }
+
+        const visibleIndex = this._visibleNetworks.findIndex(value => isTheSame(value, this._currentNetwork));
+        if (visibleIndex >= 0) {
+          this._visibleNetworks[visibleIndex] = this._currentNetwork;
+        }
       }
     }));
+
     this.messages$ = sharedService.messages;
     this.filteredOptions$ = this.searchControl.valueChanges.pipe(
       startWith(''),
@@ -254,5 +267,9 @@ export class HomeComponent implements OnInit {
 
   onClosed() {
     this.overlayContainer.getContainerElement().classList.remove('dark-theme');
+  }
+
+  ngAfterViewChecked(): void {
+    this.cd.detectChanges();
   }
 }
