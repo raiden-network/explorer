@@ -247,4 +247,12 @@ export class HomeComponent implements OnInit {
 
     return networks$.pipe(map(networks => networks.filter(network => matches(network.token))));
   }
+
+  onOpened() {
+    this.overlayContainer.getContainerElement().classList.add('dark-theme');
+  }
+
+  onClosed() {
+    this.overlayContainer.getContainerElement().classList.remove('dark-theme');
+  }
 }
