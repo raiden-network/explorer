@@ -1,7 +1,6 @@
 <div class="container">
 
-  <div class="active-networks"
-       fxLayout="row"
+  <div fxLayout="row"
        fxLayoutAlign="center"
        matTooltip="The networks that have at least one open channel."
        *ngIf="metrics.totalTokenNetworks > 1">
@@ -49,7 +48,7 @@
     </mat-form-field>
   </div>
 
-  <div class="network-metrics" fxLayout="row" [@flyInOut]="'in'" fxLayoutAlign="center">
+  <div fxLayout="row" [@flyInOut]="'in'" fxLayoutAlign="center">
     <div fxLayout="column" *ngIf="numberOfNetworks > 1"
          fxFlex="0 0 40px"
          fxFlexAlign="center">

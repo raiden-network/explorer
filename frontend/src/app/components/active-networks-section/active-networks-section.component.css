@@ -13,3 +13,16 @@
   width: 70px;
   height: 70px;
 }
+
+.network-suggestion {
+  line-height: 20px !important;
+  height: 68px !important;
+}
+
+.blocky {
+  display: block;
+}
+
+.blocky :nth-child(2) {
+  margin-left: 5px;
+}
