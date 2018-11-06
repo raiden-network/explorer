@@ -1,0 +1,24 @@
+.totals {
+  background-color: black;
+  height: 600px;
+  color: white;
+}
+
+.testnet-label {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.totals-logo {
+  height: 50px;
+}
+
+.totals-title {
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.totals-subtitle {
+  font-weight: 300;
+  font-size: 18px;
+}

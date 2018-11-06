@@ -19,7 +19,7 @@ import { NetworkGraphComponent } from './components/network-graph/network-graph.
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {
   MatAutocompleteModule,
-  MatButtonModule,
+  MatButtonModule, MatCardModule,
   MatFormFieldModule,
   MatInputModule,
   MatListModule,
@@ -32,6 +32,10 @@ import { environment } from '../environments/environment';
 import { SmallNumberPipe } from './pipes/small-number.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OpenChannelListComponent } from './components/open-channel-list/open-channel-list.component';
+import { TotalsSectionComponent } from './components/totals-section/totals-section.component';
+import { ButtonsSectionComponent } from './components/buttons-section/buttons-section.component';
+import { GraphSectionComponent } from './components/graph-section/graph-section.component';
+import { ActiveNetworksSectionComponent } from './components/active-networks-section/active-networks-section.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -53,7 +57,11 @@ export function ConfigFactory(config: NetMetricsConfig) {
     DonutChartComponent,
     NetworkGraphComponent,
     SmallNumberPipe,
-    OpenChannelListComponent
+    OpenChannelListComponent,
+    TotalsSectionComponent,
+    ButtonsSectionComponent,
+    GraphSectionComponent,
+    ActiveNetworksSectionComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -67,6 +75,7 @@ export function ConfigFactory(config: NetMetricsConfig) {
     MatInputModule,
     MatAutocompleteModule,
     MatListModule,
+    MatCardModule,
     ReactiveFormsModule,
     BrowserModule,
     CommonModule,
