@@ -1,0 +1,14 @@
+:host {
+  min-height: 600px;
+}
+
+.title {
+  color: #02c1ef;
+  font-weight: 500;
+  font-size: 32px;
+}
+
+.subtitle {
+  font-weight: 300;
+  font-size: 18px;
+}

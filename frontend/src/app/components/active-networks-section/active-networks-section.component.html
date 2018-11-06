@@ -1,0 +1,89 @@
+<div class="container">
+
+  <div class="active-networks"
+       fxLayout="row"
+       fxLayoutAlign="center"
+       matTooltip="The networks that have at least one open channel."
+       *ngIf="metrics.totalTokenNetworks > 1">
+    <div class="title">Active Networks</div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="center" *ngIf="metrics.totalTokenNetworks > 1">
+    <mat-form-field class="search-field"
+                    fxLayout="column"
+                    fxFlex="1 1 300px"
+                    fxFlex.lt-md="1 1 380px"
+                    fxFlex.xs="1 1 300px"
+                    fxFlexOffset="500px"
+                    fxFlexOffset.lt-md="0">
+          <span matPrefix class="search-icon">
+            <img src="../../../assets/baseline-search-24px.svg"/>
+          </span>
+      <input class="white-text" type="text"
+             placeholder="Filter"
+             aria-label="Filter"
+             matInput
+             [formControl]="searchControl"
+             [matAutocomplete]="auto">
+      <button mat-button
+              *ngIf="searchControl.value"
+              matSuffix
+              mat-icon-button
+              aria-label="Clear"
+              (click)="clearFilter()">
+        <img src="../../../assets/baseline-clear-24px.svg"/>
+      </button>
+      <mat-autocomplete #auto="matAutocomplete"
+                        autoActiveFirstOption
+                        (optionSelected)="networkSelected($event.option.value)"
+                        [displayWith]="displayFn">
+        <mat-option class="network-suggestion"
+                    *ngFor="let option of filteredOptions$ | async; trackBy: trackByFn" [value]="option">
+              <span class="blocky">
+                <span *ngIf="option.token.symbol">[{{option.token.symbol}}]</span>
+                <span *ngIf="option.token.name">{{option.token.name}}</span>
+              </span>
+          <small>{{option.token.address}}</small>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div class="network-metrics" fxLayout="row" [@flyInOut]="'in'" fxLayoutAlign="center">
+    <div fxLayout="column" *ngIf="numberOfNetworks > 1"
+         fxFlex="0 0 40px"
+         fxFlexAlign="center">
+      <button class="navigation-button" (click)="carousel.showPrev()" mat-icon-button color="primary">
+        <img src="../../../assets/baseline-navigate_before-24px.svg">
+      </button>
+    </div>
+
+    <carousel #carousel
+              [showControls]="false"
+              [slides]="numberOfNetworks"
+              fxLayout="column"
+              (pageChange)="updateVisible($event);"
+              fxFlex.gt-sm="0 0 900px"
+              fxFlex.lt-sm="1 1 auto"
+              fxFlexAlign="center">
+
+      <ng-container
+        *ngFor="let tokenNetwork of visibleNetworks; trackBy: trackByFn">
+        <ng-container *carouselItem>
+          <app-network-information [style.width.px]="carousel.width"
+                                   class="item"
+                                   [tokenNetwork]="tokenNetwork">
+          </app-network-information>
+        </ng-container>
+      </ng-container>
+    </carousel>
+    <div fxLayout="column" *ngIf="numberOfNetworks > 1"
+         fxFlex="0 0 40px"
+         fxFlexAlign="center">
+      <button class="navigation-button" (click)="carousel.showNext()" mat-icon-button color="primary">
+        <img src="../../../assets/baseline-navigate_next-24px.svg">
+      </button>
+    </div>
+  </div>
+
+</div>

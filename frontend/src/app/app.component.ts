@@ -26,17 +26,12 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   ]
 })
 export class AppComponent implements OnInit {
-  title = 'Raiden Network';
 
   public constructor(private titleService: Title) {
+    titleService.setTitle('Raiden Explorer');
   }
 
   ngOnInit() {
 
   }
-
-  public setTitle(title: string) {
-    this.titleService.setTitle(title);
-  }
-
 }

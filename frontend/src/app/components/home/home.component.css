@@ -1,27 +1,4 @@
-.metrics-title {
-  color: white;
-  text-align: center;
-  overflow: auto;
-  font-size: 2.2rem;
-  font-weight: 500;
-  margin-top: 4rem;
-}
 
-.metrics-subtitle {
-  margin-top: 1rem;
-  color: white;
-  overflow: auto;
-  font-weight: 400;
-  font-size: 1.1rem;
-  padding: 0.5% 0 0;
-  text-align: center;
-}
-
-.metrics-totals img {
-  float: inherit;
-  height: 4em;
-  padding-right: 0;
-}
 
 .links line {
   stroke: #999;
@@ -130,38 +107,9 @@
   margin-top: 0.5em;
 }
 
-.network-totals {
-  margin-top: 2.5rem;
-  color: white;
-}
-
-.information-buttons {
-  margin-top: 3rem;
-}
-
 .horizontal-padding {
   padding-left: 8px;
   padding-right: 8px;
-}
-
-@media screen and (max-width: 480px) {
-  .metrics-totals img {
-    float: inherit;
-    height: 3em;
-    padding-right: 0;
-  }
-
-  .metric-description {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #bdbdbd;
-  }
-
-  .metric-information {
-    font-size: 1.4rem;
-    font-weight: 400;
-  }
-
 }
 
 .loading-container {
@@ -170,11 +118,6 @@
 
 #network-graph {
   margin-top: 3rem;
-}
-
-.testnet-label {
-  margin-left: 4px;
-  margin-right: 4px;
 }
 
 .dotstyle ul {

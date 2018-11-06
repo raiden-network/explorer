@@ -6,11 +6,46 @@
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 
+$my-palette: (
+  50 : #e1f8fd,
+  100 : #b3ecfa,
+  200 : #81e0f7,
+  300 : #4ed4f4,
+  400 : #28caf1,
+  500 : #02c1ef,
+  600 : #02bbed,
+  700 : #01b3eb,
+  800 : #01abe8,
+  900 : #019ee4,
+  A100 : #ffffff,
+  A200 : #d8f1ff,
+  A400 : #a5e0ff,
+  A700 : #8bd7ff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #000000,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$explorer-app-primary: mat-palette($mat-light-blue);
-$explorer-app-accent:  mat-palette($mat-blue, A200, A100, A400);
+$explorer-app-primary: mat-palette($my-palette);
+$explorer-app-accent:  mat-palette($my-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
 $explorer-app-warn:    mat-palette($mat-red);
@@ -26,8 +61,8 @@ $explorer-app-theme: mat-dark-theme($explorer-app-primary, $explorer-app-accent,
   @include angular-material-theme($explorer-app-theme);
 }
 
-$explorer-light-app-primary: mat-palette($mat-blue);
-$explorer-light-app-accent:  mat-palette($mat-blue, A200, A100, A400);
+$explorer-light-app-primary: mat-palette($my-palette);
+$explorer-light-app-accent:  mat-palette($my-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
 $explorer-light-app-warn:    mat-palette($mat-red);

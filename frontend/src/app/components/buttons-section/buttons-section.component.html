@@ -1,0 +1,59 @@
+<div class="information-buttons"
+     fxLayout="row"
+     fxLayout.lt-md="column"
+     fxLayoutAlign="center center"
+     fxFlexAlign.lt-md="center"
+     [ngStyle.xs]="{'padding': '0 16px'}"
+     fxLayoutGap="26px">
+  <div fxLayout="column"
+       fxLayout.lt-md="row"
+       fxFlex="0 0 200px"
+       fxFlex.lt-md="0 0 auto">
+    <a mat-stroked-button
+       color="primary"
+       [ngStyle.lt-md]="{'width': '100%'}"
+       href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#tokens"
+       target="_blank"
+       matTooltip="Learn how to register a token">
+      Token registration tutorial
+    </a>
+  </div>
+  <div fxLayout="column"
+       fxLayout.lt-md="row"
+       fxFlex="0 0 200px"
+       fxFlex.lt-md="0 0 auto">
+    <a mat-stroked-button
+       color="primary"
+       [ngStyle.lt-md]="{'width': '380px'}"
+       matTooltip="Learn how to open a channel"
+       href="http://raiden-network.readthedocs.io/en/stable/webui_tutorial.html#channels"
+       target="_blank">
+      Channel creation tutorial
+    </a>
+  </div>
+  <div fxLayout="column"
+       fxLayout.lt-md="row"
+       fxFlex="0 0 200px"
+       fxFlex.lt-md="0 0 auto">
+    <a mat-stroked-button
+       color="primary"
+       [ngStyle.lt-md]="{'width': '100%'}"
+       matTooltip="Get started with the Raiden Network"
+       href="http://raiden.network/"
+       target="_blank">
+      Learn more about Raiden
+    </a>
+  </div>
+  <div fxLayout="column"
+       fxLayout.lt-md="row"
+       fxFlex="0 0 200px"
+       fxFlex.lt-md="0 0 auto">
+    <a mat-stroked-button
+       matTooltip="Interactive visualization of the Raiden Network"
+       color="primary"
+       [ngStyle.lt-md]="{'width': '100%'}"
+       (click)="scrollToA('network-graph')">
+      Show Network Visualization
+    </a>
+  </div>
+</div>
