@@ -1,46 +1,66 @@
 <div class="totals" fxLayout="column" fxLayoutAlign="center center">
-  <div [@flyInOut]="'in'">
-    <div fxLayout="row" fxLayoutAlign="center" class="totals-title">Raiden Explorer</div>
+  <div fxLayout="row" [@flyInOut]="'in'">
+    <div fxLayout="column" fxLayoutGap="1.4rem">
+      <div fxLayout="row" fxLayoutAlign="center" class="totals-title">Raiden Explorer</div>
 
-    <div fxLayout="row" fxLayoutAlign="center" class="totals-subtitle">
-      Metrics for the<span class="testnet-label" *ngIf="network">{{network}}</span> Raiden Network
+      <div fxLayout="row" fxLayoutAlign="center" class="totals-subtitle">
+        Metrics for the<span class="testnet-label" *ngIf="network">{{network}}</span> Raiden Network
+      </div>
     </div>
   </div>
 
   <div [@flyInOut]="'in'"
        fxFlexAlign="center center"
        fxLayout="row"
-       fxLayoutGap.gt-sm="30px"
+       fxLayoutGap.gt-sm="150px"
        fxLayoutGap="140px"
+       class="totals-bar"
        ngClass.xs="horizontal-padding">
 
-    <div fxLayout="column" *ngIf="metrics.totalTokenNetworks > 1">
+    <div fxLayout="column"
+         fxLayoutAlign="center center"
+         fxLayoutGap="1rem"
+         *ngIf="metrics.totalTokenNetworks > 1">
       <div fxLayout="row">
         <img class="totals-logo" src="../../../assets/network.svg">
       </div>
-      <div fxLayout="row" class="totals-title">{{metrics.totalTokenNetworks}}</div>
-      <div fxLayout="row" class="totals-subtitle">Token Networks</div>
+      <div fxLayout="row">
+        <div fxLayout="column" fxLayoutAlign="center center">
+          <div fxLayout="row" class="totals-title">{{metrics.totalTokenNetworks}}</div>
+          <div fxLayout="row" class="totals-subtitle">Token Networks</div>
+        </div>
+      </div>
+
+
     </div>
 
-    <div fxLayout="column">
+    <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
       <div fxLayout="row">
         <img class="totals-logo" src="../../../assets/channel.svg">
       </div>
 
-      <div fxLayout="row"
-           class="totals-title">
-        {{metrics.openChannels || 0}}
+      <div fxLayout="row">
+        <div fxLayout="column" fxLayoutAlign="center center">
+          <div fxLayout="row" class="totals-title">
+            {{metrics.openChannels || 0}}
+          </div>
+          <div fxLayout="row" class="totals-subtitle">Open Channels</div>
+        </div>
       </div>
-      <div fxLayout="row" class="totals-subtitle">Open Channels</div>
     </div>
 
-    <div fxLayout="column">
+    <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
       <div fxLayout="row">
         <img class="totals-logo" src="../../../assets/account.svg">
       </div>
-      <div fxLayout="row" class="totals-title">{{metrics.uniqueAccounts || 0}}
+
+      <div fxLayout="row">
+        <div fxLayout="column" fxLayoutAlign="center center">
+          <div fxLayout="row" class="totals-title">{{metrics.uniqueAccounts || 0}}</div>
+          <div fxLayout="row" class="totals-subtitle">Unique Accounts</div>
+        </div>
       </div>
-      <div fxLayout="row" class="totals-subtitle">Unique Accounts</div>
+
     </div>
 
 
