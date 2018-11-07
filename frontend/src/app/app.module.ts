@@ -19,7 +19,7 @@ import { NetworkGraphComponent } from './components/network-graph/network-graph.
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {
   MatAutocompleteModule,
-  MatButtonModule, MatCardModule,
+  MatButtonModule,
   MatFormFieldModule,
   MatInputModule,
   MatListModule,
@@ -75,7 +75,6 @@ export function ConfigFactory(config: NetMetricsConfig) {
     MatInputModule,
     MatAutocompleteModule,
     MatListModule,
-    MatCardModule,
     ReactiveFormsModule,
     BrowserModule,
     CommonModule,

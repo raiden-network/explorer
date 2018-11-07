@@ -6,12 +6,18 @@
 .title {
   color: #02c1ef;
   font-weight: 500;
-  font-size: 32px;
+  font-size: 30px;
+  padding-top: 3rem;
 }
 
 .navigation-button {
-  width: 70px;
-  height: 70px;
+  width: 40px;
+  height: 40px;
+}
+
+.navigation-button img {
+  height: 40px;
+  width: 40px;
 }
 
 .network-suggestion {

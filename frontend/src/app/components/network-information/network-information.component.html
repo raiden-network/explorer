@@ -1,157 +1,156 @@
-<div fxFlex.lt-md="1 1 100%">
-  <div class="information-container token-info" fxLayout="row">
-    <div class="title text-center" fxLayout="column">
-      <span>
+<div fxFlex.lt-md="1 1 100%" class="elevated">
+  <div class="header-gradient"></div>
+  <div fxLayout="row" class="header content" fxLayoutAlign="start center">
+    <div fxLayout="column">
+      <div class="cyan title space truncate">
         <span *ngIf="tokenNetwork.token.symbol">[{{tokenNetwork.token.symbol}}]</span>
-        <span class="small-caps truncate" *ngIf="tokenNetwork.token.name">{{tokenNetwork.token.name}}</span>
-      </span>
-
+        <span *ngIf="tokenNetwork.token.name">{{tokenNetwork.token.name}}</span>
+      </div>
       <a href="{{etherscanUrl(tokenNetwork.token.address)}}"
          target="_blank"
-         class="truncate clickable-address">{{tokenNetwork.token.address}}</a>
+         class="truncate clickable-address token-address">{{tokenNetwork.token.address}}</a>
     </div>
   </div>
 
-  <div class="information-container"
-       fxLayout="row"
-       fxLayout.lt-md="column"
-       fxLayoutGap="8px">
-    <div class="information-column"
-         fxLayout="column"
-         fxLayout.lt-md="row"
-         fxLayoutGap="8px"
-         fxLayoutGap.lt-md="8px"
-         fxLayout.lt-md="row"
-         fxFlex="0 0 405px"
-         fxFlex.lt-md="0 0 225px">
-      <div class="information-group first" fxFlex.lt-md="1 1 auto" fxFlex="0 0 225px">
-        <div class="title small-caps">Channel Overview</div>
-        <div fxLayout="row" fxLayoutGap="2em">
-          <div fxLayout="column">
-            <app-donut-chart [data]="chart(tokenNetwork)"></app-donut-chart>
+  <div fxLayout="row">
+    <div fxLayout="column" fxFlex="1 1 50" class="content titles">
+      <div class="group-title">Channel Overview</div>
+    </div>
+    <div fxLayout="column" fxFlex="1 1 50" class="content titles">
+      <div class="group-title">Network Averages</div>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="column" fxFlex="1 1 50">
+      <div fxLayout="row" class="content darker-box-background statistics">
+        <div fxLayout="column" fxFlex="1 1 45" fxLayoutAlign="center">
+          <app-donut-chart [data]="chart(tokenNetwork)"></app-donut-chart>
+        </div>
+        <div fxLayout="column" fxLayoutGap="0.3rem" fxFlex="1 1 55" fxLayoutAlign="center">
+          <div fxLayout="row" class="space" fxLayoutAlign="start center">
+            <span class="bold">{{tokenNetwork.openedChannels}}</span>
+            <span>Open Channels</span>
           </div>
-          <div fxLayout="column">
-            <div fxLayout="row" class="metric-information">{{tokenNetwork.openedChannels}}</div>
-            <div fxLayout="row" class="metric-description">Open Channels</div>
-            <div fxLayout="row" class="metric-information">{{tokenNetwork.closedChannels}}</div>
-            <div fxLayout="row" class="metric-description">Closed Channels</div>
-            <div fxLayout="row" class="metric-information">{{tokenNetwork.settledChannels}}</div>
-            <div fxLayout="row" class="metric-description">Settled Channels</div>
+          <div fxLayout="row" class="space" fxLayoutAlign="start center">
+            <span class="bold">{{tokenNetwork.closedChannels}}</span>
+            <span>Closed Channels</span>
+          </div>
+          <div fxLayout="row" class="space" fxLayoutAlign="start center">
+            <span class="bold">{{tokenNetwork.settledChannels}}</span>
+            <span>Settled Channels</span>
           </div>
         </div>
-      </div>
-
-      <div class="information-group second" fxShow.lt-md="false" fxFlex="0 0 280px">
-        <div class="title small-caps">Top Channels By Deposit</div>
-
-        <div fxLayout="column"
-             fxLayoutGap="0.4em"
-             *ngIf="tokenNetwork.topChannelsByDeposit.length > 0; else no_channels">
-          <div fxLayout="row" class="table-title">
-            <div fxLayout="column" fxFlex="auto">PARTICIPANTS</div>
-            <div fxLayout="column" fxFlexAlign="right">DEPOSIT</div>
-          </div>
-
-          <div fxLayout="row"
-               *ngFor="let channel of tokenNetwork.topChannelsByDeposit; trackBy: trackByFn" fxLayoutGap="8px">
-            <div fxFlex="1 1 auto"
-                 class="truncate address small"
-                 fxLayout="column">
-              <a href="{{etherscanUrl(channel.participant1)}}"
-                 target="_blank"
-                 class="clickable-address">{{channel.participant1}}</a>
-              <a href="{{etherscanUrl(channel.participant2)}}"
-                 target="_blank"
-                 class="clickable-address">{{channel.participant2}}</a>
-            </div>
-            <div class="table-number"
-                 fxFlex="0 0 4em"
-                 fxFlexAlign="center"
-                 fxLayout="column">{{channel.deposit1 + channel.deposit2 | smallNumber}}
-            </div>
-          </div>
-        </div>
-
-        <ng-template #no_channels>
-          <div class="empty-text" fxLayoutAlign="center center">
-            No channels found for this network.
-          </div>
-        </ng-template>
       </div>
     </div>
-    <div class="information-column"
-         fxLayout="column"
-         fxLayout.lt-md="row"
-         fxLayoutGap="8px"
-         fxLayoutGap.lt-md="0px"
-         fxLayout.lt-md="row"
-         fxFlex="0 0 405px"
-         fxFlex.lt-md="0 0 225px">
-      <div class="information-group first" fxFlex.lt-md="1 1 auto" fxFlex="0 0 225px">
-        <div class="title small-caps">Network Averages</div>
-        <div fxLayout="row">
-          <div fxLayout="column" fxFlex="1 1 50">
-            <div fxLayout="row" class="metric-information">
-              {{tokenNetwork.averageDepositPerParticipant | smallNumber}}
-              <sup class="token-symbol">{{tokenNetwork.token.symbol}}</sup>
-            </div>
-            <div fxLayout="row" class="metric-description">Avg. deposit per participant</div>
-          </div>
-          <div fxLayout="column" fxFlex="1 1 50" fxLayoutAlign="start end">
-            <div fxLayout="row"
-                 matTooltip="The total number of tokens currently deposited on the token network."
-                 class="metric-information">
-              {{tokenNetwork.totalNetworkDeposits | smallNumber}}
-              <sup class="token-symbol">{{tokenNetwork.token.symbol}}</sup>
-            </div>
-            <div fxLayout="row" class="metric-description truncate">Total Network Deposits</div>
-          </div>
-        </div>
-        <div fxLayout="row" class="metric-information">{{tokenNetwork.channelsPerParticipant | number}}</div>
-        <div fxLayout="row" class="metric-description">Avg. number of channels per participant</div>
-        <div fxLayout="row" class="metric-information">
-          {{tokenNetwork.averageDepositPerChannel | smallNumber}}
-          <sup class="token-symbol">{{tokenNetwork.token.symbol}}</sup>
-        </div>
-        <div fxLayout="row" class="metric-description">Avg. deposit per channel</div>
-      </div>
 
-      <div class="information-group second" fxShow.lt-md="false" fxFlex="0 0 280px">
-        <div class="title small-caps">Top Participants By Channels</div>
+    <div fxLayout="column" fxFlex="1 1 50">
+      <div fxLayout="row" class="content statistics">
+        <div fxLayout="column" fxFlex="1 1 50" fxLayoutAlign="center" fxLayoutGap="0.35rem">
+
+          <div fxLayout="row">
+            <div fxLayout="column">
+              <div fxLayout="row" class="bold space">
+                <span>{{tokenNetwork.averageDepositPerParticipant | smallNumber}}</span>
+                <span>{{tokenNetwork.token.symbol}}</span>
+              </div>
+              <div fxLayout="row">Avg. deposit per participant</div>
+            </div>
+          </div>
+
+          <div fxLayout="row">
+            <div fxLayout="column">
+              <div fxLayout="row" class="bold">{{tokenNetwork.channelsPerParticipant | number}}</div>
+              <div fxLayout="row">Avg. number of channels</div>
+              <div fxLayout="row">per participant</div>
+            </div>
+          </div>
+
+          <div fxLayout="row">
+            <div fxLayout="column">
+              <div fxLayout="row" class="bold space">
+                <span>{{tokenNetwork.averageDepositPerChannel | smallNumber}}</span>
+                <span>{{tokenNetwork.token.symbol}}</span>
+              </div>
+              <div fxLayout="row">Avg. deposit per channel</div>
+            </div>
+          </div>
+
+        </div>
         <div fxLayout="column"
-             fxLayoutGap="0.4em"
-             *ngIf="tokenNetwork.topParticipantsByChannels.length > 0; else no_participants">
-          <div fxLayout="row" class="table-title">
-            <div fxLayout="column" fxFlex="a">PARTICIPANT</div>
-            <div fxLayout="column" fxFlexAlign="right">CHANNELS</div>
-          </div>
-
+             fxLayoutAlign="center center"
+             fxFlex="1 1 50"
+             fxLayoutGap="0.3rem"
+             class="cyan totals">
           <div fxLayout="row"
-               *ngFor="let participant of tokenNetwork.topParticipantsByChannels;trackBy: trackByParticipant">
-            <div class="truncate address small"
-                 fxLayout="column"
-                 fxFlex="1 1 auto">
-              <a href="{{etherscanUrl(participant.address)}}"
-                 target="_blank"
-                 class="clickable-address">{{participant.address}}</a>
-            </div>
-            <div class="table-number"
-                 fxLayout="column"
-                 fxFlex="0 0 4em"
-                 fxFlexAlign="center right">{{participant.channels}}
-            </div>
+               class="bold space"
+               matTooltip="The total number of tokens currently deposited on the token network.">
+            <span>{{tokenNetwork.totalNetworkDeposits | smallNumber}}</span>
+            <span>{{tokenNetwork.token.symbol}}</span>
           </div>
+          <div fxLayout="row">Total Network Deposits</div>
         </div>
-
-        <ng-template #no_participants>
-
-          <div class="empty-text" fxLayoutAlign="center center">
-            No participants for this network
-          </div>
-
-        </ng-template>
       </div>
     </div>
+  </div>
+
+  <div fxLayout="row">
+    <div fxLayout="column" fxFlex="1 1 50" class="titles content">
+      <div class="group-title">Top Channels By Deposit</div>
+    </div>
+    <div fxLayout="column" fxFlex="1 1 50" class="titles content darker-box-background">
+      <div class="group-title">Top Participants By Channels</div>
+    </div>
+  </div>
+
+  <div fxLayout="row" class="content table-info">
+    <mat-list *ngIf="false" fxLayout="column">
+      <div fxLayout="row" class="table-title">
+        <div fxLayout="column" fxFlex="auto">Participants</div>
+        <div fxLayout="column" fxFlexAlign="right">Deposit</div>
+      </div>
+      <mat-list-item fxLayout="row"
+                     *ngFor="let channel of tokenNetwork.topChannelsByDeposit; trackBy: trackByFn" fxLayoutGap="8px">
+        <div fxFlex="1 1 auto"
+             class="truncate address small-text"
+             fxLayout="column">
+          <a href="{{etherscanUrl(channel.participant1)}}"
+             target="_blank"
+             class="clickable-address dark">{{channel.participant1}}</a>
+          <a href="{{etherscanUrl(channel.participant2)}}"
+             target="_blank"
+             class="clickable-address dark">{{channel.participant2}}</a>
+        </div>
+        <div class="table-number bold"
+             fxFlex="0 0 4em"
+             fxFlexAlign="center"
+             fxLayout="column">{{channel.deposit1 + channel.deposit2 | smallNumber}}
+        </div>
+      </mat-list-item>
+    </mat-list>
+    <mat-list *ngIf="false" fxLayout="column">
+      <div fxLayout="row" class="group-title">
+        <div fxLayout="column" fxFlex="1 1 auto">Participant</div>
+        <div fxLayout="column" fxFlexAlign="right">Channels</div>
+      </div>
+      <mat-list-item
+        *ngFor="let participant of tokenNetwork.topParticipantsByChannels;trackBy: trackByParticipant">
+        <div class="truncate address"
+             fxLayout="column"
+             fxFlex="1 1 auto">
+          <a href="{{etherscanUrl(participant.address)}}"
+             target="_blank"
+             class="clickable-address dark">{{participant.address}}</a>
+        </div>
+        <div class="table-number bold"
+             fxLayout="column"
+             fxFlex="0 0 4em"
+             fxFlexAlign="center right">{{participant.channels}}
+        </div>
+      </mat-list-item>
+    </mat-list>
   </div>
 
 </div>
