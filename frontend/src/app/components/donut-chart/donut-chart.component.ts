@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, OnInit, SimpleChange, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import * as d3 from 'd3';
+import { Arc, Pie } from 'd3';
 import * as d3Scale from 'd3-scale';
 import * as d3Shape from 'd3-shape';
-import { Arc, Pie } from 'd3';
 import * as deepEqual from 'deep-equal';
 
 export interface ChannelData {
@@ -17,7 +17,7 @@ export interface ChannelData {
   templateUrl: './donut-chart.component.html',
   styleUrls: ['./donut-chart.component.css']
 })
-export class DonutChartComponent implements OnInit, OnChanges  {
+export class DonutChartComponent implements OnInit, OnChanges {
 
   @Input() data: ChannelData[];
   @ViewChild('chart') chart;
@@ -71,7 +71,7 @@ export class DonutChartComponent implements OnInit, OnChanges  {
 
     this.color = d3Scale.scaleOrdinal()
       .domain(['opened', 'closed', 'settled'])
-      .range(['#64dd17', '#e65100', '#8e24aa']);
+      .range(['#06ccf4', '#000000', '#d8d8d8']);
 
     this.arc = d3Shape.arc<ChannelData>()
       .outerRadius(outerRadius)
@@ -107,29 +107,32 @@ export class DonutChartComponent implements OnInit, OnChanges  {
   }
 
   private drawLegend() {
-    const legendRectSize = 12;
-    const legendSpacing = 7;
-    const legendHeight = legendRectSize + legendSpacing;
+
+    const legendSpacing = 15;
+    const legendHeight = 1 + legendSpacing;
     const legend = this.svg.selectAll('.legend')
       .data(this.color.domain())
       .enter()
       .append('g')
       .classed('legend', true)
-      .attr('transform', (d, i) => `translate(-25,${(i * legendHeight) - 28})`);
+      .attr('transform', (d, i) => `translate(-25,${(i * legendHeight - 18)})`);
 
     legend.append('rect')
-      .attr('width', legendRectSize)
-      .attr('height', legendRectSize)
-      .attr('rx', 20)
-      .attr('ry', 20)
+      .attr('width', 10)
+      .attr('height', 1)
       .style('fill', this.color)
       .style('stroke', this.color);
 
     legend.append('text')
-      .attr('x', 15)
-      .attr('y', 10)
-      .text(d => d)
-      .style('fill', '#fff')
-      .style('font-size', '12px');
+      .attr('x', 18)
+      .attr('y', 5)
+      .text((d: string) => {
+        if (d.startsWith('op')) {
+          d = d.replace('ed', '');
+        }
+        return d.charAt(0).toUpperCase() + d.slice(1);
+      })
+      .style('fill', '#676767')
+      .style('font-size', '10px');
   }
 }
