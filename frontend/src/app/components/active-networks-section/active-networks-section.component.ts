@@ -12,11 +12,27 @@ import { Token } from '../../models/NMNetwork';
 })
 export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
 
+  @Input() metrics: RaidenNetworkMetrics;
+  @Output() selectionChange: EventEmitter<TokenNetwork> = new EventEmitter();
+  readonly searchControl = new FormControl();
+  filteredOptions$: Observable<TokenNetwork[]>;
   private selectedNetwork: TokenNetwork;
+  private _allNetworks: TokenNetwork[];
+
+  constructor() {
+
+  }
+
   private _visibleNetworks: TokenNetwork[] = [];
 
   public get visibleNetworks(): TokenNetwork[] {
     return this._visibleNetworks;
+  }
+
+  private _isExpanded: boolean;
+
+  public get isExpanded(): boolean {
+    return this._isExpanded;
   }
 
   private _numberOfNetworks = 0;
@@ -25,43 +41,8 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
     return this._numberOfNetworks;
   }
 
-  @Input() metrics: RaidenNetworkMetrics;
-  @Output() selectionChange: EventEmitter<TokenNetwork> = new EventEmitter();
-  readonly searchControl = new FormControl();
-  filteredOptions$: Observable<TokenNetwork[]>;
-  private _allNetworks: TokenNetwork[];
-
   private static onlyActive(networks: TokenNetwork[]): TokenNetwork[] {
     return networks.filter(value => value.openedChannels > 0);
-  }
-
-  constructor() {
-
-  }
-
-  private update(metrics: RaidenNetworkMetrics) {
-    if (metrics.tokenNetworks.length === 1) {
-      this._allNetworks = metrics.tokenNetworks;
-      this.updateVisible(0);
-    } else {
-      this._allNetworks = ActiveNetworksSectionComponent.onlyActive(metrics.tokenNetworks);
-    }
-
-    const isTheSame = (value: TokenNetwork, other: TokenNetwork) => value.token.address === other.token.address;
-
-    if (this.selectedNetwork) {
-      const tokenIndex = this._allNetworks.findIndex(value => isTheSame(value, this.selectedNetwork));
-
-      if (tokenIndex >= 0) {
-        this.selectedNetwork = this._allNetworks[tokenIndex];
-        this.selectionChange.emit(this.selectedNetwork);
-      }
-
-      const visibleIndex = this._visibleNetworks.findIndex(value => isTheSame(value, this.selectedNetwork));
-      if (visibleIndex >= 0) {
-        this._visibleNetworks[visibleIndex] = this.selectedNetwork;
-      }
-    }
   }
 
   ngOnInit() {
@@ -83,7 +64,6 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
 
     this.update(changes['metrics'].currentValue);
   }
-
 
   // noinspection JSMethodCanBeStatic
   displayFn(network: TokenNetwork | null): string {
@@ -110,7 +90,6 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
   trackByFn(network: TokenNetwork) {
     return network.token;
   }
-
 
   networkSelected(value?: TokenNetwork) {
     if (value) {
@@ -155,6 +134,34 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
     this._visibleNetworks = this._allNetworks.slice(start, end);
   }
 
+  setExpanded(expanded: boolean) {
+    this._isExpanded = expanded;
+  }
+
+  private update(metrics: RaidenNetworkMetrics) {
+    if (metrics.tokenNetworks.length === 1) {
+      this._allNetworks = metrics.tokenNetworks;
+      this.updateVisible(0);
+    } else {
+      this._allNetworks = ActiveNetworksSectionComponent.onlyActive(metrics.tokenNetworks);
+    }
+
+    const isTheSame = (value: TokenNetwork, other: TokenNetwork) => value.token.address === other.token.address;
+
+    if (this.selectedNetwork) {
+      const tokenIndex = this._allNetworks.findIndex(value => isTheSame(value, this.selectedNetwork));
+
+      if (tokenIndex >= 0) {
+        this.selectedNetwork = this._allNetworks[tokenIndex];
+        this.selectionChange.emit(this.selectedNetwork);
+      }
+
+      const visibleIndex = this._visibleNetworks.findIndex(value => isTheSame(value, this.selectedNetwork));
+      if (visibleIndex >= 0) {
+        this._visibleNetworks[visibleIndex] = this.selectedNetwork;
+      }
+    }
+  }
 
   private _filter(value?: string): Observable<TokenNetwork[]> {
     const networks$ = of(this._allNetworks);
@@ -173,6 +180,4 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
 
     return networks$.pipe(map(networks => networks.filter(network => matches(network.token))));
   }
-
-
 }

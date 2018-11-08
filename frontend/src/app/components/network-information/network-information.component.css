@@ -20,6 +20,7 @@
 
 .table-number {
   text-align: end;
+  width: 3rem;
 }
 
 .token-address {
@@ -101,4 +102,18 @@ mat-list-item {
 
 .darker-box-background {
   background-color: #fafafa;
+}
+
+.expandable-icon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.table-header {
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.table-content {
+  padding-bottom: 1rem;
 }

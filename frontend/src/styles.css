@@ -126,3 +126,7 @@ tr td {
 .tooltip-label {
   font-weight: 500;
 }
+
+.mat-list-item-content {
+  width: 100%
+}
