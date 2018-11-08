@@ -12,6 +12,10 @@
   font-weight: 500;
 }
 
-.switch {
-  margin-top: 1.2rem;
+.switch-text {
+  color: #676767;
+}
+
+.channels-toggle {
+  margin-top: 1rem;
 }
