@@ -143,7 +143,7 @@ export class CarouselComponent implements OnInit, OnChanges {
       availableWidth = window.innerWidth;
     }
     if (availableWidth >= 960) {
-      this.itemWidth = 818;
+      this.itemWidth = 900;
     } else if (availableWidth >= 444) {
       this.itemWidth = 380;
     } else {

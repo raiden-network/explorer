@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Channel, Participant, TokenNetwork } from '../../models/TokenNetwork';
 import { ChannelData } from '../donut-chart/donut-chart.component';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
@@ -12,6 +12,8 @@ export class NetworkInformationComponent implements OnInit {
 
   @Input() tokenNetwork: TokenNetwork;
   @Input() topChannels: boolean;
+  @Input() isExpanded: boolean;
+  @Output() expandedChanged: EventEmitter<boolean> = new EventEmitter();
 
   constructor(private config: NetMetricsConfig) {
   }
@@ -58,5 +60,13 @@ export class NetworkInformationComponent implements OnInit {
   //noinspection JSMethodCanBeStatic
   trackByParticipant(participant: Participant): string {
     return participant.address;
+  }
+
+  toggleExpanded(): void {
+    this.expandedChanged.emit(!this.isExpanded);
+  }
+
+  close(): void {
+    this.expandedChanged.emit(false);
   }
 }

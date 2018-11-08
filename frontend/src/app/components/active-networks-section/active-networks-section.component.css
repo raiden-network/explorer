@@ -16,8 +16,8 @@
 }
 
 .navigation-button img {
-  height: 40px;
-  width: 40px;
+  height: 30px;
+  width: 30px;
 }
 
 .network-suggestion {
@@ -31,4 +31,8 @@
 
 .blocky :nth-child(2) {
   margin-left: 5px;
+}
+
+.carousel {
+  padding-bottom: 2rem;
 }
