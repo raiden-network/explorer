@@ -23,6 +23,7 @@ services:
       - EXPLORER_ETH_RPC=http://geth.ropsten.ethnodes.brainbot.com:8545
       - EXPLORER_REGISTRY_ADDRESS=0xf2a175A52Bd3c815eD7500c765bA19652AB89B30
       - EXPLORER_START_BLOCK=3800000
+      - EXPLORER_USE_PRODUCTION_CONTRACTS=false
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:explorer.raiden.network; Path: /json"
@@ -71,6 +72,7 @@ services:
     restart: always
     environment:
       - EXPLORER_ETH_RPC=http://geth.ropsten.ethnodes.brainbot.com:8545
+      - EXPLORER_USE_PRODUCTION_CONTRACTS=false
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:ropsten.explorer.raiden.network; Path: /json"
@@ -94,6 +96,7 @@ services:
     restart: always
     environment:
       - EXPLORER_ETH_RPC=http://geth.rinkeby.ethnodes.brainbot.com:8545
+      - EXPLORER_USE_PRODUCTION_CONTRACTS=false
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:rinkeby.explorer.raiden.network; Path: /json"
@@ -117,9 +120,34 @@ services:
     restart: always
     environment:
       - EXPLORER_ETH_RPC=http://parity.kovan.ethnodes.brainbot.com:8545
+      - EXPLORER_USE_PRODUCTION_CONTRACTS=false
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:kovan.explorer.raiden.network; Path: /json"
+
+  frontend-kovan-limits:
+    build:
+      context: ./frontend
+      args:
+        backend_url: https://kovan-limits.explorer.raiden.network/json
+        poll_interval: 10000
+        etherscan_base_url: https://kovan.etherscan.io/address/
+        network_name: Kovan
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:kovan-limits.explorer.raiden.network"
+
+  backend-kovan-limits:
+    build:
+      context: ./backend
+    restart: always
+    environment:
+      - EXPLORER_ETH_RPC=http://parity.kovan.ethnodes.brainbot.com:8545
+      - EXPLORER_USE_PRODUCTION_CONTRACTS=true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:kovan-limits.explorer.raiden.network; Path: /json"
 
   traefik:
     image: traefik:1.7
@@ -137,8 +165,10 @@ services:
       - backend-ropsten
       - backend-rinkeby
       - backend-kovan
+      - backend-kovan-limits
       - frontend
       - frontend-notlive
       - frontend-ropsten
       - frontend-rinkeby
       - frontend-kovan
+      - frontend-kovan-limits

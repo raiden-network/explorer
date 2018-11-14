@@ -65,12 +65,19 @@ REQUIRED_CONFIRMATIONS = 8  # ~2min with 15s blocks
     type=int,
     help='Number of block confirmations to wait for'
 )
+@click.option(
+    '--use-production-contracts',
+    default=True,
+    type=bool,
+    help='Use the production version of the contracts'
+)
 def main(
     eth_rpc,
     registry_address,
     start_block,
     port,
     confirmations,
+    use_production_contracts,
 ):
     # setup logging
     logging.basicConfig(
@@ -94,15 +101,14 @@ def main(
         )
         sys.exit()
 
+    contracts_version = None if use_production_contracts else 'pre_limits'
+    log.info(f'Using contracts version: {contracts_version}')
+
     with no_ssl_verification():
         valid_params_given = is_checksum_address(registry_address) and start_block >= 0
         if not valid_params_given:
             try:
-                chain_id = int(web3.net.version)
-                # use limits for mainnet, pre limits for testnets
-                is_mainnet = chain_id == 1
-                version = None if is_mainnet else 'pre_limits'
-                contract_data = get_contracts_deployed(int(web3.net.version), version)
+                contract_data = get_contracts_deployed(int(web3.net.version), contracts_version)
                 token_network_registry_info = contract_data['contracts'][CONTRACT_TOKEN_NETWORK_REGISTRY]  # noqa
                 registry_address = token_network_registry_info['address']
                 start_block = max(0, token_network_registry_info['block_number'] - 100)
