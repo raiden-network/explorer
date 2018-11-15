@@ -1,6 +1,10 @@
 <div fxLayout="column">
-  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2rem">
-    <div fxLayout="column">
+  <div fxLayout.gt-xs="row"
+       fxLayout="column"
+       fxLayoutAlign="center center"
+       fxLayoutGap.gt-xs="2rem">
+
+    <div fxLayout="column" fxLayout.lt-md="row">
       <mat-form-field class="search-field"
                       fxLayout="column">
           <span matPrefix class="search-icon">
@@ -41,9 +45,11 @@
         </mat-autocomplete>
       </mat-form-field>
     </div>
-    <div fxLayout="column">
+
+    <div fxLayout="column" fxLayout.lt-md="row">
       <mat-slide-toggle
-        class="channels-toggle"
+        ngClass.gt-xs="channels-toggle"
+        [ngStyle.lt-sm]="{'margin-bottom': '1rem'}"
         color="accent"
         matTooltip="The graph will only display open channels when this switch is off."
         (change)="showAllChannels = $event.checked"
@@ -51,7 +57,6 @@
         <span class="switch-text">Show all channels</span>
       </mat-slide-toggle>
     </div>
-
 
   </div>
   <div fxLayout="row" #graph class="network-section">

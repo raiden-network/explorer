@@ -3,6 +3,7 @@
 }
 
 .mat-stroked-button {
+  width: 100%;
   border-radius: 20px;
   font-weight: 300;
 }

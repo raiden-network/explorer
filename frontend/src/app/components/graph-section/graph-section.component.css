@@ -7,9 +7,11 @@
   color: #02c1ef;
   font-weight: 500;
   font-size: 30px;
+  text-align: center;
 }
 
 .subtitle {
   font-weight: 300;
   font-size: 18px;
+  text-align: center;
 }

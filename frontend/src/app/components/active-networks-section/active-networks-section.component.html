@@ -10,9 +10,6 @@
   <div fxLayout="row" fxLayoutAlign="center" *ngIf="metrics.totalTokenNetworks > 1">
     <mat-form-field class="search-field"
                     fxLayout="column"
-                    fxFlex="1 1 300px"
-                    fxFlex.lt-md="1 1 380px"
-                    fxFlex.xs="1 1 300px"
                     fxFlexOffset="600px"
                     fxFlexOffset.lt-md="0">
           <span matPrefix class="search-icon">
@@ -48,10 +45,14 @@
     </mat-form-field>
   </div>
 
+  <div fxLayout="row" class="mat-hint hint" fxShow.xs fxHide fxLayoutAlign="center">
+    Swipe to view a different token network
+  </div>
+
   <div fxLayout="row"
        class="carousel"
        [@flyInOut]="'in'" fxLayoutAlign="center">
-    <div fxLayout="column" *ngIf="numberOfNetworks > 1"
+    <div fxLayout="column" *ngIf="numberOfNetworks > 1" [fxShow.xs]="false"
          fxFlex="0 30px"
          fxFlexAlign="center">
       <button class="navigation-button"
@@ -83,7 +84,7 @@
         </ng-container>
       </ng-container>
     </carousel>
-    <div fxLayout="column" *ngIf="numberOfNetworks > 1"
+    <div fxLayout="column" *ngIf="numberOfNetworks > 1" [fxShow.xs]="false"
          fxFlex="0 0 30px"
          fxFlexAlign="center">
       <button class="navigation-button" (click)="carousel.showNext()" mat-icon-button color="primary">

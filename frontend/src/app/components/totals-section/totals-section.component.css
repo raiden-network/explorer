@@ -16,11 +16,13 @@
 .totals-title {
   font-weight: 600;
   font-size: 24px;
+  text-align: center;
 }
 
 .totals-subtitle {
   font-weight: 300;
   font-size: 18px;
+  text-align: center;
 }
 
 .totals-bar {
