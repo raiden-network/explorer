@@ -1,4 +1,8 @@
-<section class="carousel-wrapper" [ngStyle]="carouselWrapperStyle" fxFlexAlign="center">
+<section class="carousel-wrapper"
+         [ngStyle]="carouselWrapperStyle"
+         fxFlexAlign="center"
+         (swipeleft)="showNext()"
+         (swiperight)="showPrev()">
   <ul class="carousel-inner" #carousel [style.width.px]="width">
     <li *ngFor="let item of items;" class="carousel-item" [style.width.px]="width">
       <ng-container [ngTemplateOutlet]="item.tpl"></ng-container>

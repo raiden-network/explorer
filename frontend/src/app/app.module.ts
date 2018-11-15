@@ -36,6 +36,7 @@ import { TotalsSectionComponent } from './components/totals-section/totals-secti
 import { ButtonsSectionComponent } from './components/buttons-section/buttons-section.component';
 import { GraphSectionComponent } from './components/graph-section/graph-section.component';
 import { ActiveNetworksSectionComponent } from './components/active-networks-section/active-networks-section.component';
+import 'hammerjs';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
