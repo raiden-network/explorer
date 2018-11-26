@@ -133,3 +133,7 @@ tr td {
 .mat-list-item-content {
   width: 100%
 }
+
+.mat-stroked-button:not([disabled]) {
+  border-color: rgba(2, 193, 239, 0.7) !important;
+}
