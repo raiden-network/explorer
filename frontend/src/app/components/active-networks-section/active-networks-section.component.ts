@@ -5,6 +5,7 @@ import { flatMap, map, startWith, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Token } from '../../models/NMNetwork';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import { ExpandedAreas } from '../network-information/network-information.component';
 
 @Component({
   selector: 'app-active-networks-section',
@@ -49,10 +50,10 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
     return this._visibleNetworks;
   }
 
-  private _isExpanded: boolean;
+  private _expandedAreas: ExpandedAreas;
 
-  public get isExpanded(): boolean {
-    return this._isExpanded;
+  public get expandedAreas(): ExpandedAreas {
+    return this._expandedAreas;
   }
 
   private _numberOfNetworks = 0;
@@ -154,8 +155,8 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
     this._visibleNetworks = this._allNetworks.slice(start, end);
   }
 
-  setExpanded(expanded: boolean) {
-    this._isExpanded = expanded;
+  setExpandedAreas(expanded: ExpandedAreas) {
+    this._expandedAreas = expanded;
   }
 
   private update(metrics: RaidenNetworkMetrics) {

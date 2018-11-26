@@ -13,7 +13,7 @@
                     fxFlexOffset="600px"
                     fxFlexOffset.lt-md="0">
           <span matPrefix class="search-icon">
-            <img src="../../../assets/baseline-search-24px.svg"/>
+            <img src="../../../assets/baseline-search-24px.svg" alt="Search"/>
           </span>
       <input class="white-text" type="text"
              placeholder="Filter"
@@ -27,7 +27,7 @@
               mat-icon-button
               aria-label="Clear"
               (click)="clearFilter()">
-        <img src="../../../assets/baseline-clear-24px.svg"/>
+        <img src="../../../assets/baseline-clear-24px.svg" alt="Clear"/>
       </button>
       <mat-autocomplete #auto="matAutocomplete"
                         autoActiveFirstOption
@@ -58,7 +58,7 @@
       <button class="navigation-button"
               (click)="carousel.showPrev();"
               mat-icon-button color="primary">
-        <img src="../../../assets/back.svg">
+        <img src="../../../assets/back.svg" alt="Previous">
       </button>
     </div>
 
@@ -75,8 +75,8 @@
         *ngFor="let tokenNetwork of visibleNetworks; trackBy: trackByFn">
         <ng-container *carouselItem>
           <app-network-information
-            [isExpanded]="isExpanded"
-            (expandedChanged)="setExpanded($event)"
+            [expandedAreas]="expandedAreas"
+            (expandedChanged)="setExpandedAreas($event)"
             [style.width.px]="carousel.width"
             class="item"
             [tokenNetwork]="tokenNetwork">
@@ -88,7 +88,7 @@
          fxFlex="0 0 30px"
          fxFlexAlign="center">
       <button class="navigation-button" (click)="carousel.showNext()" mat-icon-button color="primary">
-        <img src="../../../assets/next.svg">
+        <img src="../../../assets/next.svg" alt="Next">
       </button>
     </div>
   </div>
