@@ -50,3 +50,7 @@
   padding-right: 30px;
   padding-left: 30px;
 }
+
+.header-column {
+  max-width: 100%;
+}
