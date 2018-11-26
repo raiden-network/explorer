@@ -8,10 +8,14 @@
   font-weight: 500;
   font-size: 30px;
   text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .subtitle {
   font-weight: 300;
   font-size: 18px;
   text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
 }
