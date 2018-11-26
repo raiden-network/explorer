@@ -12,179 +12,34 @@
     </div>
   </div>
 
-  <div fxLayout="row">
-    <div fxLayout="column" fxFlex="1 1 50" class="content titles">
-      <div class="group-title">Channel Overview</div>
-    </div>
-    <div fxLayout="column" fxFlex="1 1 50" class="content titles">
-      <div class="group-title">Network Averages</div>
-    </div>
-  </div>
+  <div>
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <div fxLayout="column" fxFlex="1 1 50">
+        <app-channels-overview [tokenNetwork]="tokenNetwork"></app-channels-overview>
+      </div>
 
-  <mat-divider></mat-divider>
-
-  <div fxLayout="row" fxLayoutAlign="start center">
-    <div fxLayout="column" fxFlex="1 1 50">
-      <div fxLayout="row" class="content darker-box-background statistics">
-        <div fxLayout="column" fxFlex="1 1 45" fxLayoutAlign="center">
-          <app-donut-chart [data]="chart(tokenNetwork)"></app-donut-chart>
-        </div>
-        <div fxLayout="column" fxLayoutGap="0.3rem" fxFlex="1 1 55" fxLayoutAlign="center">
-          <div fxLayout="row" class="space" fxLayoutAlign="start center">
-            <span class="bold">{{tokenNetwork.openedChannels}}</span>
-            <span>Open Channels</span>
-          </div>
-          <div fxLayout="row" class="space" fxLayoutAlign="start center">
-            <span class="bold">{{tokenNetwork.closedChannels}}</span>
-            <span>Closed Channels</span>
-          </div>
-          <div fxLayout="row" class="space" fxLayoutAlign="start center">
-            <span class="bold">{{tokenNetwork.settledChannels}}</span>
-            <span>Settled Channels</span>
-          </div>
-        </div>
+      <div fxLayout="column" fxFlex="1 1 50">
+        <app-network-averages [tokenNetwork]="tokenNetwork"></app-network-averages>
       </div>
     </div>
 
-    <div fxLayout="column" fxFlex="1 1 50">
-      <div fxLayout="row" class="content statistics">
-        <div fxLayout="column" fxFlex="1 1 50" fxLayoutAlign="center" fxLayoutGap="0.35rem">
+    <div fxLayout="row">
+      <div fxLayout="column" fxFlex="1 1 50">
+        <app-total-channels-by-deposit
+          [tokenNetwork]="tokenNetwork"
+          [isExpanded]="channelsByDepositExpanded"
+          (expandedChanged)="channelsExpanded($event)"></app-total-channels-by-deposit>
+      </div>
 
-          <div fxLayout="row">
-            <div fxLayout="column">
-              <div fxLayout="row" class="bold space">
-                <span>{{tokenNetwork.averageDepositPerParticipant | smallNumber}}</span>
-                <span>{{tokenNetwork.token.symbol}}</span>
-              </div>
-              <div fxLayout="row">Avg. deposit per participant</div>
-            </div>
-          </div>
-
-          <div fxLayout="row">
-            <div fxLayout="column">
-              <div fxLayout="row" class="bold">{{tokenNetwork.channelsPerParticipant | number}}</div>
-              <div fxLayout="row">Avg. number of channels</div>
-              <div fxLayout="row">per participant</div>
-            </div>
-          </div>
-
-          <div fxLayout="row">
-            <div fxLayout="column">
-              <div fxLayout="row" class="bold space">
-                <span>{{tokenNetwork.averageDepositPerChannel | smallNumber}}</span>
-                <span>{{tokenNetwork.token.symbol}}</span>
-              </div>
-              <div fxLayout="row">Avg. deposit per channel</div>
-            </div>
-          </div>
-
-        </div>
-        <div fxLayout="column"
-             fxLayoutAlign="center center"
-             fxFlex="1 1 50"
-             fxLayoutGap="0.3rem"
-             class="cyan totals">
-          <div fxLayout="row"
-               class="bold space"
-               matTooltip="The total number of tokens currently deposited on the token network.">
-            <span>{{tokenNetwork.totalNetworkDeposits | smallNumber}}</span>
-            <span>{{tokenNetwork.token.symbol}}</span>
-          </div>
-          <div fxLayout="row">Total Network Deposits</div>
-        </div>
+      <div fxLayout="column" fxFlex="1 1 50">
+        <app-top-participants-by-channel
+          [tokenNetwork]="tokenNetwork"
+          [isExpanded]="topParticipantsByChannelExpanded"
+          (expandedChanged)="participantsExpanded($event)"
+        ></app-top-participants-by-channel>
       </div>
     </div>
   </div>
 
-  <div fxLayout="row">
-
-    <div fxLayout="column" fxFlex="1 1 50" class="titles content">
-      <div fxLayout="row">
-        <div fxLayout="column" fxFlex="1 1 auto" fxLayoutAlign="center start">
-          <div class="group-title">Top Channels By Deposit</div>
-        </div>
-        <div fxLayout="column" fxFlex="1 1 20px" fxLayoutAlign="end">
-          <button mat-icon-button (click)="toggleExpanded()">
-            <img *ngIf="!isExpanded; else expanded" class="expandable-icon" src="../../../assets/down-arrow.svg">
-            <ng-template #expanded>
-              <img class="expandable-icon" src="../../../assets/up-arrow.svg">
-            </ng-template>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div fxLayout="column" fxFlex="1 1 50" class="titles content darker-box-background">
-      <div fxLayout="row">
-        <div fxLayout="column" fxFlex="1 1 auto" fxLayoutAlign="center start">
-          <div class="group-title">Top Participants By Channels</div>
-        </div>
-        <div fxLayout="column" fxFlex="1 1 20px" fxLayoutAlign="end">
-          <button mat-icon-button (click)="toggleExpanded()">
-            <img *ngIf="!isExpanded; else expanded" class="expandable-icon" src="../../../assets/down-arrow.svg">
-            <ng-template #expanded>
-              <img class="expandable-icon" src="../../../assets/up-arrow.svg">
-            </ng-template>
-          </button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <mat-divider *ngIf="isExpanded"></mat-divider>
-
-  <div fxLayout="row" *ngIf="isExpanded">
-    <mat-list fxLayout="column"
-              fxFlex="1 1 50"
-              class="content darker-box-background table-content">
-      <div fxLayout="row" class="group-title table-header">
-        <div fxLayout="column" fxFlex="auto">Participants</div>
-        <div fxLayout="column" fxFlexAlign="right">Deposit</div>
-      </div>
-      <mat-list-item fxLayout="row"
-                     *ngFor="let channel of tokenNetwork.topChannelsByDeposit; trackBy: trackByFn" fxLayoutGap="8px">
-        <div class="truncate address small-text"
-             fxFlex="88"
-             fxLayoutAlign="center start"
-             fxLayout="column">
-          <a href="{{etherscanUrl(channel.participant1)}}"
-             target="_blank"
-             class="clickable-address dark">{{channel.participant1}}</a>
-          <a href="{{etherscanUrl(channel.participant2)}}"
-             target="_blank"
-             class="clickable-address dark">{{channel.participant2}}</a>
-        </div>
-        <div class="table-number bold"
-             fxFlex="12"
-             fxLayoutAlign="center end"
-             fxLayout="column">{{channel.deposit1 + channel.deposit2 | smallNumber}}
-        </div>
-      </mat-list-item>
-    </mat-list>
-    <mat-list fxLayout="column"
-              fxFlex="1 1 50"
-              class="content table-content">
-      <div fxLayout="row" class="group-title table-header">
-        <div fxLayout="column" fxFlex="1 1 auto">Participant</div>
-        <div fxLayout="column" fxFlexAlign="right">Channels</div>
-      </div>
-      <mat-list-item class="list-item"
-                     *ngFor="let participant of tokenNetwork.topParticipantsByChannels;trackBy: trackByParticipant">
-        <div class="truncate address"
-             fxFlex="88"
-             fxLayoutAlign="center start"
-             fxLayout="column">
-          <a href="{{etherscanUrl(participant.address)}}"
-             target="_blank"
-             class="clickable-address dark">{{participant.address}}</a>
-        </div>
-        <div class="table-number bold"
-             fxFlex="12"
-             fxLayout="column">{{participant.channels}}
-        </div>
-      </mat-list-item>
-    </mat-list>
-  </div>
 
 </div>

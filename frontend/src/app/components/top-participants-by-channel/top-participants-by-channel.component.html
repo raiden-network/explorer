@@ -1,0 +1,38 @@
+<div fxLayout="row" class="titles content darker-box-background">
+  <div fxLayout="column" fxFlex="1 1 auto" fxLayoutAlign="center start">
+    <div class="group-title">Top Participants By Channels</div>
+  </div>
+  <div fxLayout="column" fxFlex="1 1 40px" fxLayoutAlign="end">
+    <button mat-icon-button (click)="toggleExpanded()">
+      <img *ngIf="!isExpanded; else expanded" class="expandable-icon" src="../../../assets/down-arrow.svg">
+      <ng-template #expanded>
+        <img class="expandable-icon" src="../../../assets/up-arrow.svg">
+      </ng-template>
+    </button>
+  </div>
+</div>
+
+<mat-divider *ngIf="isExpanded"></mat-divider>
+
+<mat-list *ngIf="isExpanded" class="table-content">
+  <div fxLayout="row" class="group-title table-header content">
+    <div fxLayout="column" fxFlex="1 1 auto">Participant</div>
+    <div fxLayout="column" fxFlexAlign="right">Channels</div>
+  </div>
+  <mat-list-item class="list-item"
+                 *ngFor="let participant of tokenNetwork.topParticipantsByChannels;trackBy: trackByParticipant">
+    <div class="truncate small-text"
+         fxFlex="88"
+         fxLayoutAlign="center start"
+         fxLayout="column">
+      <a href="{{etherscanUrl(participant.address)}}"
+         target="_blank"
+         class="clickable-address dark">{{participant.address}}</a>
+    </div>
+    <div class="table-number bold small-text"
+         fxFlex="12"
+         fxLayout="column">{{participant.channels}}
+    </div>
+  </mat-list-item>
+</mat-list>
+

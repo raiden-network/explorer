@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Channel, Participant, TokenNetwork } from '../../models/TokenNetwork';
-import { ChannelData } from '../donut-chart/donut-chart.component';
+import { TokenNetwork } from '../../models/TokenNetwork';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
+import { ObservableMedia } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-network-information',
@@ -15,7 +15,19 @@ export class NetworkInformationComponent implements OnInit {
   @Input() isExpanded: boolean;
   @Output() expandedChanged: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private config: NetMetricsConfig) {
+  constructor(private config: NetMetricsConfig, public readonly media$: ObservableMedia) {
+  }
+
+  private _channelsByDepositExpanded: boolean;
+
+  public get channelsByDepositExpanded(): boolean {
+    return this._channelsByDepositExpanded;
+  }
+
+  private _topParticipantsByChannelExpanded: boolean;
+
+  public get topParticipantsByChannelExpanded(): boolean {
+    return this._topParticipantsByChannelExpanded;
   }
 
   public etherscanUrl(address: string): string {
@@ -25,48 +37,17 @@ export class NetworkInformationComponent implements OnInit {
   ngOnInit() {
   }
 
-  //noinspection JSMethodCanBeStatic
-  chart(tokenNetwork: TokenNetwork): ChannelData[] {
-    const chartData: ChannelData[] = [];
-
-    if (tokenNetwork.openedChannels) {
-      chartData.push({
-        status: 'opened',
-        channels: tokenNetwork.openedChannels
-      });
+  channelsExpanded(expanded: boolean) {
+    this._channelsByDepositExpanded = expanded;
+    if (!this.media$.isActive('xs')) {
+      this._topParticipantsByChannelExpanded = expanded;
     }
+  }
 
-    if (tokenNetwork.closedChannels) {
-      chartData.push({
-        status: 'closed',
-        channels: tokenNetwork.closedChannels
-      });
+  participantsExpanded(expanded: boolean) {
+    this._topParticipantsByChannelExpanded = expanded;
+    if (!this.media$.isActive('xs')) {
+      this._channelsByDepositExpanded = expanded;
     }
-
-    if (tokenNetwork.settledChannels) {
-      chartData.push({
-        status: 'settled',
-        channels: tokenNetwork.settledChannels
-      });
-    }
-    return chartData;
-  }
-
-  //noinspection JSMethodCanBeStatic
-  trackByFn(channel: Channel): string {
-    return channel.participant1 + channel.participant2;
-  }
-
-  //noinspection JSMethodCanBeStatic
-  trackByParticipant(participant: Participant): string {
-    return participant.address;
-  }
-
-  toggleExpanded(): void {
-    this.expandedChanged.emit(!this.isExpanded);
-  }
-
-  close(): void {
-    this.expandedChanged.emit(false);
   }
 }
