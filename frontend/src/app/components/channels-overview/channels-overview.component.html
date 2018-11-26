@@ -1,0 +1,25 @@
+<div fxLayout="row" class="content titles">
+  <div class="group-title">Channel Overview</div>
+</div>
+
+<mat-divider></mat-divider>
+
+<div fxLayout="row" class="content darker-box-background statistics">
+  <div fxLayout="column" fxFlex="1 1 50" fxLayoutAlign="center">
+    <app-donut-chart [data]="chart(tokenNetwork)"></app-donut-chart>
+  </div>
+  <div fxLayout="column" fxLayoutGap="0.3rem" fxFlex="1 1 50" fxLayoutAlign="center">
+    <div fxLayout="row" class="space" fxLayoutAlign="start center">
+      <span class="bold">{{tokenNetwork.openedChannels}}</span>
+      <span>Open Channels</span>
+    </div>
+    <div fxLayout="row" class="space" fxLayoutAlign="start center">
+      <span class="bold">{{tokenNetwork.closedChannels}}</span>
+      <span>Closed Channels</span>
+    </div>
+    <div fxLayout="row" class="space" fxLayoutAlign="start center">
+      <span class="bold">{{tokenNetwork.settledChannels}}</span>
+      <span>Settled Channels</span>
+    </div>
+  </div>
+</div>

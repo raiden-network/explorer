@@ -37,6 +37,10 @@ import { ButtonsSectionComponent } from './components/buttons-section/buttons-se
 import { GraphSectionComponent } from './components/graph-section/graph-section.component';
 import { ActiveNetworksSectionComponent } from './components/active-networks-section/active-networks-section.component';
 import 'hammerjs';
+import { ChannelsOverviewComponent } from './components/channels-overview/channels-overview.component';
+import { NetworkAveragesComponent } from './components/network-averages/network-averages.component';
+import { TotalChannelsByDepositComponent } from './components/total-channels-by-deposit/total-channels-by-deposit.component';
+import { TopParticipantsByChannelComponent } from './components/top-participants-by-channel/top-participants-by-channel.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -62,7 +66,11 @@ export function ConfigFactory(config: NetMetricsConfig) {
     TotalsSectionComponent,
     ButtonsSectionComponent,
     GraphSectionComponent,
-    ActiveNetworksSectionComponent
+    ActiveNetworksSectionComponent,
+    ChannelsOverviewComponent,
+    NetworkAveragesComponent,
+    TotalChannelsByDepositComponent,
+    TopParticipantsByChannelComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

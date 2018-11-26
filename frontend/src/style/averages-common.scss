@@ -1,0 +1,41 @@
+@import "~src/style/variables";
+
+.space :nth-child(2) {
+  margin-left: 0.25rem;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.darker-box-background {
+  background-color: #fafafa;
+}
+
+.content {
+  padding-right: $content-padding;
+  padding-left: $content-padding;
+}
+
+@media only screen and (max-width: 768px) {
+  .content {
+    padding-right: $content-padding-mobile;
+    padding-left: $content-padding-mobile;
+  }
+}
+
+.statistics {
+  font-size: 0.85rem;
+  min-height: 200px;
+}
+
+.group-title {
+  color: #676767;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.titles {
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+}
