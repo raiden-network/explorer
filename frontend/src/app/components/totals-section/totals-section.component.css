@@ -4,11 +4,6 @@
   color: white;
 }
 
-.testnet-label {
-  margin-left: 4px;
-  margin-right: 4px;
-}
-
 .totals-logo {
   height: 50px;
 }
@@ -23,6 +18,8 @@
   font-weight: 300;
   font-size: 18px;
   text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .totals-bar {

@@ -19,7 +19,12 @@
 </div>
 <div class="footer" fxLayout="row" fxLayoutAlign="center">
   <div fxLayout="column" fxLayoutGap="15px" fxFlex="960px" fxFlex.lt-md="100%">
-    <div fxLayout="row" fxLayoutAlign="end">
+    <div fxLayout="row"
+         fxLayout.xs="column"
+         fxLayoutAlign="end"
+         ngClass.xs="mobile"
+         fxFlexAlign.xs="start"
+         fxLayoutGap.xs="20px">
       <div class="contactlist" fxLayout="column" fxFlex.lt-sm="33%" fxFlex="180px">
         <div fxLayout="row" class="heading">DEVELOPMENT</div>
         <div fxLayout="row"><a href="http://www.github.com/raiden-network/raiden/?fref=ts">Raiden Network Github</a>

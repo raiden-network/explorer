@@ -10,6 +10,8 @@
   <div fxLayout="row" fxLayoutAlign="center" *ngIf="metrics.totalTokenNetworks > 1">
     <mat-form-field class="search-field"
                     fxLayout="column"
+                    fxFlex="0 0 300px"
+                    fxFlex.lt-md="1 1 280px"
                     fxFlexOffset="600px"
                     fxFlexOffset.lt-md="0">
           <span matPrefix class="search-icon">
@@ -53,7 +55,7 @@
        class="carousel"
        [@flyInOut]="'in'" fxLayoutAlign="center">
     <div fxLayout="column" *ngIf="numberOfNetworks > 1" [fxShow.xs]="false"
-         fxFlex="0 30px"
+         fxFlex="0 40px"
          fxFlexAlign="center">
       <button class="navigation-button"
               (click)="carousel.showPrev();"
@@ -85,7 +87,7 @@
       </ng-container>
     </carousel>
     <div fxLayout="column" *ngIf="numberOfNetworks > 1" [fxShow.xs]="false"
-         fxFlex="0 0 30px"
+         fxFlex="0 0 40px"
          fxFlexAlign="center">
       <button class="navigation-button" (click)="carousel.showNext()" mat-icon-button color="primary">
         <img src="../../../assets/next.svg" alt="Next">

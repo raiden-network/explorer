@@ -80,3 +80,8 @@ body {
   transition: all 0.35s;
   color: #9b9b9b;
 }
+
+.mobile {
+  padding-left: 15px;
+  padding-right: 15px;
+}

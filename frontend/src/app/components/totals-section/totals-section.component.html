@@ -4,7 +4,13 @@
       <div fxLayout="row" fxLayoutAlign="center" class="totals-title">Raiden Explorer</div>
 
       <div fxLayout="row" fxLayoutAlign="center" class="totals-subtitle">
-        Metrics for the<span class="testnet-label" *ngIf="network">{{network}}</span> Raiden Network
+        <span *ngIf="network; else mainnet">
+          Metrics for the {{network}} Raiden Network
+        </span>
+        <ng-template #mainnet>
+          Metrics for the Raiden Network
+        </ng-template>
+
       </div>
     </div>
   </div>
@@ -14,8 +20,8 @@
        fxLayout="row"
        fxLayoutGap.gt-sm="150px"
        fxLayoutGap="8px"
-       class="totals-bar"
-       ngClass.xs="horizontal-padding">
+       fxLayoutGap.xs="4px"
+       class="totals-bar">
 
     <div fxLayout="column"
          fxLayoutAlign="center center"
@@ -30,8 +36,6 @@
           <div fxLayout="row" class="totals-subtitle">Token Networks</div>
         </div>
       </div>
-
-
     </div>
 
     <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
@@ -60,10 +64,7 @@
           <div fxLayout="row" class="totals-subtitle">Unique Accounts</div>
         </div>
       </div>
-
     </div>
-
-
   </div>
 
 </div>
