@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
@@ -49,6 +49,13 @@ const appRoutes: Routes = [
 
 export function ConfigFactory(config: NetMetricsConfig) {
   return () => config.load(environment.configurationFile);
+}
+
+export class ExplorerHammerConfig extends HammerGestureConfig {
+  overrides = <any>{
+    'pinch': {enable: false},
+    'rotate': {enable: false}
+  };
 }
 
 @NgModule({
@@ -104,6 +111,10 @@ export function ConfigFactory(config: NetMetricsConfig) {
       useFactory: ConfigFactory,
       deps: [NetMetricsConfig],
       multi: true
+    },
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: ExplorerHammerConfig
     },
     NetMetricsService
   ],
