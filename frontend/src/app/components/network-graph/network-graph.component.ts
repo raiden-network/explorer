@@ -42,13 +42,13 @@ class FilterElement {
   styleUrls: ['./network-graph.component.css']
 })
 export class NetworkGraphComponent implements OnInit, OnChanges {
-  private static HIGHLIGHT_COLOR = '#2E41FF';
-  private static SELECTED_COLOR = '#00b409';
-  private static DEFAULT_COLOR = '#2637d6';
+  private static HIGHLIGHT_COLOR = '#536DFE';
+  private static SELECTED_COLOR = '#00E676';
+  private static DEFAULT_COLOR = '#3F51B5';
 
-  private static OPEN_CHANNEL_COLOR = '#089000';
-  private static CLOSED_CHANNEL_COLOR = '#E50000';
-  private static SETTLED_CHANNEL_COLOR = '#8e24aa';
+  private static OPEN_CHANNEL_COLOR = '#4CAF50';
+  private static CLOSED_CHANNEL_COLOR = '#F44336';
+  private static SETTLED_CHANNEL_COLOR = '#673AB7';
 
   private static DEFAULT_NODE_STROKE_OPACITY = 0.3;
   private static SELECTED_NODE_STROKE_OPACITY = 2;
