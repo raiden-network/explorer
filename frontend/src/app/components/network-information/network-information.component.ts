@@ -1,38 +1,39 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TokenNetwork } from '../../models/TokenNetwork';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
 import { ObservableMedia } from '@angular/flex-layout';
-
-export interface ExpandedAreas {
-  readonly channelsByDeposit: boolean;
-  readonly participantsByChannel: boolean;
-}
+import { ActiveNetworkSharedService } from '../../services/active-network-shared.service';
+import { ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-network-information',
   templateUrl: './network-information.component.html',
   styleUrls: ['./network-information.component.css']
 })
-export class NetworkInformationComponent implements OnChanges {
+export class NetworkInformationComponent implements OnInit, OnDestroy {
 
-  @Input() tokenNetwork: TokenNetwork;
-  @Input() topChannels: boolean;
-  @Input() expandedAreas: ExpandedAreas;
-  @Output() expandedChanged: EventEmitter<ExpandedAreas> = new EventEmitter();
+  private subscription: Subscription;
 
-  constructor(private config: NetMetricsConfig, public readonly media$: ObservableMedia) {
+  constructor(
+    private config: NetMetricsConfig,
+    private sharedService: ActiveNetworkSharedService,
+    private route: ActivatedRoute,
+    public readonly media$: ObservableMedia
+  ) {
   }
-
-  private _channelsByDepositExpanded: boolean;
-
-  public get channelsByDepositExpanded(): boolean {
-    return this._channelsByDepositExpanded;
-  }
-
-  private _topParticipantsByChannelExpanded: boolean;
 
   public get topParticipantsByChannelExpanded(): boolean {
-    return this._topParticipantsByChannelExpanded;
+    return this.sharedService.topParticipantsByChannelExpanded;
+  }
+
+  public get channelsByDepositExpanded(): boolean {
+    return this.sharedService.channelsByDepositExpanded;
+  }
+
+  public get tokenNetwork(): TokenNetwork {
+    return this.sharedService.tokenNetwork;
   }
 
   public etherscanUrl(address: string): string {
@@ -40,41 +41,25 @@ export class NetworkInformationComponent implements OnChanges {
   }
 
   channelsExpanded(expanded: boolean) {
-    this._channelsByDepositExpanded = expanded;
+    this.sharedService.channelsByDepositExpanded = expanded;
     if (!this.media$.isActive('lt-md')) {
-      this._topParticipantsByChannelExpanded = expanded;
+      this.sharedService.topParticipantsByChannelExpanded = expanded;
     }
-
-    this.emitEvent();
   }
 
   participantsExpanded(expanded: boolean) {
-    this._topParticipantsByChannelExpanded = expanded;
+    this.sharedService.topParticipantsByChannelExpanded = expanded;
     if (!this.media$.isActive('lt-md')) {
-      this._channelsByDepositExpanded = expanded;
+      this.sharedService.channelsByDepositExpanded = expanded;
     }
-    this.emitEvent();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (!changes.hasOwnProperty('expandedAreas')) {
-      return;
-    }
-
-    const expandedAreas: ExpandedAreas | undefined = changes['expandedAreas'].currentValue;
-
-    if (!expandedAreas) {
-      return;
-    }
-
-    this._topParticipantsByChannelExpanded = expandedAreas.participantsByChannel;
-    this._channelsByDepositExpanded = expandedAreas.channelsByDeposit;
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
-  private emitEvent() {
-    this.expandedChanged.emit({
-      channelsByDeposit: this._channelsByDepositExpanded,
-      participantsByChannel: this._topParticipantsByChannelExpanded
-    });
+  ngOnInit(): void {
+    this.subscription = this.route.params.pipe(map(params => params.token_address))
+      .subscribe(address => this.sharedService.loadTokenNetworkInformation(address));
   }
 }

@@ -1,62 +1,73 @@
 <div fxFlex.lt-md="1 1 100%" class="elevated">
   <div class="header-gradient"></div>
-  <div fxLayout="row" class="header content" fxLayoutAlign="start center">
-    <div fxLayout="column" class="header-column">
-      <div class="cyan title space truncate">
-        <span *ngIf="tokenNetwork.token.symbol">[{{tokenNetwork.token.symbol}}]</span>
-        <span *ngIf="tokenNetwork.token.name">{{tokenNetwork.token.name}}</span>
+
+  <div *ngIf="tokenNetwork; else loading">
+    <div fxLayout="row" class="header content" fxLayoutAlign="start center">
+      <div fxLayout="column" class="header-column">
+        <div class="cyan title space truncate">
+          <span *ngIf="tokenNetwork.token.symbol">[{{tokenNetwork.token.symbol}}]</span>
+          <span *ngIf="tokenNetwork.token.name">{{tokenNetwork.token.name}}</span>
+        </div>
+        <a [href]="etherscanUrl(tokenNetwork.token.address)"
+           target="_blank"
+           class="truncate clickable-address token-address">{{tokenNetwork.token.address}}</a>
       </div>
-      <a [href]="etherscanUrl(tokenNetwork.token.address)"
-         target="_blank"
-         class="truncate clickable-address token-address">{{tokenNetwork.token.address}}</a>
     </div>
+
+    <div *ngIf="!media$.isActive('lt-md'); else mobile_layout">
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <div fxLayout="column"
+             fxFlex="1 1 50">
+          <app-channels-overview [tokenNetwork]="tokenNetwork"></app-channels-overview>
+        </div>
+
+        <div fxLayout="column"
+             fxFlex="1 1 50">
+          <app-network-averages [tokenNetwork]="tokenNetwork"></app-network-averages>
+        </div>
+      </div>
+
+      <div fxLayout="row">
+        <div fxLayout="column"
+             fxFlex="1 1 50">
+          <app-total-channels-by-deposit
+            [tokenNetwork]="tokenNetwork"
+            [isExpanded]="channelsByDepositExpanded"
+            (expandedChanged)="channelsExpanded($event)"></app-total-channels-by-deposit>
+        </div>
+
+        <div fxLayout="column"
+             fxFlex="1 1 50">
+          <app-top-participants-by-channel
+            [tokenNetwork]="tokenNetwork"
+            [isExpanded]="topParticipantsByChannelExpanded"
+            (expandedChanged)="participantsExpanded($event)"
+          ></app-top-participants-by-channel>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #mobile_layout>
+      <app-channels-overview [tokenNetwork]="tokenNetwork"></app-channels-overview>
+      <app-network-averages [tokenNetwork]="tokenNetwork"></app-network-averages>
+      <app-total-channels-by-deposit
+        [tokenNetwork]="tokenNetwork"
+        [isExpanded]="channelsByDepositExpanded"
+        (expandedChanged)="channelsExpanded($event)"></app-total-channels-by-deposit>
+      <app-top-participants-by-channel
+        [tokenNetwork]="tokenNetwork"
+        [isExpanded]="topParticipantsByChannelExpanded"
+        (expandedChanged)="participantsExpanded($event)"></app-top-participants-by-channel>
+    </ng-template>
+
   </div>
 
-  <div *ngIf="!media$.isActive('lt-md'); else mobile_layout">
-    <div fxLayout="row" fxLayoutAlign="start center">
-      <div fxLayout="column"
-           fxFlex="1 1 50">
-        <app-channels-overview [tokenNetwork]="tokenNetwork"></app-channels-overview>
-      </div>
-
-      <div fxLayout="column"
-           fxFlex="1 1 50">
-        <app-network-averages [tokenNetwork]="tokenNetwork"></app-network-averages>
-      </div>
+  <ng-template #loading>
+    <div class="loading-container"
+         fxLayout="row"
+         fxLayoutAlign="center center">
+      <mat-spinner></mat-spinner>
     </div>
-
-    <div fxLayout="row">
-      <div fxLayout="column"
-           fxFlex="1 1 50">
-        <app-total-channels-by-deposit
-          [tokenNetwork]="tokenNetwork"
-          [isExpanded]="channelsByDepositExpanded"
-          (expandedChanged)="channelsExpanded($event)"></app-total-channels-by-deposit>
-      </div>
-
-      <div fxLayout="column"
-           fxFlex="1 1 50">
-        <app-top-participants-by-channel
-          [tokenNetwork]="tokenNetwork"
-          [isExpanded]="topParticipantsByChannelExpanded"
-          (expandedChanged)="participantsExpanded($event)"
-        ></app-top-participants-by-channel>
-      </div>
-    </div>
-  </div>
-
-  <ng-template #mobile_layout>
-    <app-channels-overview [tokenNetwork]="tokenNetwork"></app-channels-overview>
-    <app-network-averages [tokenNetwork]="tokenNetwork"></app-network-averages>
-    <app-total-channels-by-deposit
-      [tokenNetwork]="tokenNetwork"
-      [isExpanded]="channelsByDepositExpanded"
-      (expandedChanged)="channelsExpanded($event)"></app-total-channels-by-deposit>
-    <app-top-participants-by-channel
-      [tokenNetwork]="tokenNetwork"
-      [isExpanded]="topParticipantsByChannelExpanded"
-      (expandedChanged)="participantsExpanded($event)"></app-top-participants-by-channel>
   </ng-template>
-
 
 </div>

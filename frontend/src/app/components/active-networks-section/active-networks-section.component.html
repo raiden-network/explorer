@@ -54,42 +54,28 @@
   <div fxLayout="row"
        class="carousel"
        [@flyInOut]="'in'" fxLayoutAlign="center">
-    <div fxLayout="column" *ngIf="numberOfNetworks > 1" [fxShow.xs]="false"
+    <div fxLayout="column" *ngIf="showNavigation" [fxShow.xs]="false"
          fxFlex="0 40px"
          fxFlexAlign="center">
       <button class="navigation-button"
-              (click)="carousel.showPrev();"
+              (click)="previous();"
               mat-icon-button color="primary">
         <img src="../../../assets/back.svg" alt="Previous">
       </button>
     </div>
 
-    <carousel #carousel
-              [showControls]="false"
-              [slides]="numberOfNetworks"
-              fxLayout="column"
-              (pageChange)="updateVisible($event);"
-              fxFlex.gt-sm="0 0 960px"
-              fxFlex.lt-sm="1 1 auto"
-              fxFlexAlign="center">
+    <div fxLayout="column"
+         fxFlex.gt-sm="0 0 960px"
+         fxFlex.lt-sm="1 1 auto"
+         fxFlexAlign="center"
+         class="network-information">
+      <router-outlet></router-outlet>
+    </div>
 
-      <ng-container
-        *ngFor="let tokenNetwork of visibleNetworks; trackBy: trackByFn">
-        <ng-container *carouselItem>
-          <app-network-information
-            [expandedAreas]="expandedAreas"
-            (expandedChanged)="setExpandedAreas($event)"
-            [style.width.px]="carousel.width"
-            class="item"
-            [tokenNetwork]="tokenNetwork">
-          </app-network-information>
-        </ng-container>
-      </ng-container>
-    </carousel>
-    <div fxLayout="column" *ngIf="numberOfNetworks > 1" [fxShow.xs]="false"
+    <div fxLayout="column" *ngIf="showNavigation" [fxShow.xs]="false"
          fxFlex="0 0 40px"
          fxFlexAlign="center">
-      <button class="navigation-button" (click)="carousel.showNext()" mat-icon-button color="primary">
+      <button class="navigation-button" (click)="next()" mat-icon-button color="primary">
         <img src="../../../assets/next.svg" alt="Next">
       </button>
     </div>

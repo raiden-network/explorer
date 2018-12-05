@@ -42,3 +42,11 @@
   text-align: center;
   font-size: 13px;
 }
+
+.network-information {
+  overflow: hidden;
+  background-color: white;
+  -webkit-box-shadow: 0 1px 6px 0 rgba(50, 50, 50, 0.3);
+  -moz-box-shadow:    0 1px 6px 0 rgba(50, 50, 50, 0.3);
+  box-shadow:         0 1px 6px 0 rgba(50, 50, 50, 0.3);
+}
