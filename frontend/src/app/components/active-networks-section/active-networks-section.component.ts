@@ -1,11 +1,12 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { FormControl } from '@angular/forms';
-import { flatMap, map, startWith, tap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { flatMap, map, startWith } from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
 import { Token } from '../../models/NMNetwork';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { ExpandedAreas } from '../network-information/network-information.component';
+import { ActiveNetworkSharedService } from '../../services/active-network-shared.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-active-networks-section',
@@ -31,51 +32,53 @@ import { ExpandedAreas } from '../network-information/network-information.compon
     ])
   ]
 })
-export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
+export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() metrics: RaidenNetworkMetrics;
   @Output() selectionChange: EventEmitter<TokenNetwork> = new EventEmitter();
   readonly searchControl = new FormControl();
   filteredOptions$: Observable<TokenNetwork[]>;
-  private selectedNetwork: TokenNetwork;
-  private _allNetworks: TokenNetwork[];
+  private subscription: Subscription;
 
-  constructor() {
+  constructor(
+    private sharedService: ActiveNetworkSharedService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
 
   }
 
-  private _visibleNetworks: TokenNetwork[] = [];
-
-  public get visibleNetworks(): TokenNetwork[] {
-    return this._visibleNetworks;
-  }
-
-  private _expandedAreas: ExpandedAreas;
-
-  public get expandedAreas(): ExpandedAreas {
-    return this._expandedAreas;
-  }
-
-  private _numberOfNetworks = 0;
-
-  public get numberOfNetworks(): number {
-    return this._numberOfNetworks;
-  }
-
-  private static onlyActive(networks: TokenNetwork[]): TokenNetwork[] {
-    return networks.filter(value => value.openedChannels > 0);
+  public get showNavigation(): boolean {
+    const control = this.searchControl;
+    const isObject = control.value && typeof control.value === 'object';
+    return this.sharedService.numberOfNetworks > 1 && !isObject;
   }
 
   ngOnInit() {
     this.filteredOptions$ = this.searchControl.valueChanges.pipe(
       startWith(''),
-      tap(x => {
-        if (x === '') {
-          this.updateVisible(0);
-        }
-      }),
       flatMap(value => this._filter(value))
     );
+
+    const sharedService = this.sharedService;
+
+    this.subscription = sharedService.tokenNotFound.subscribe((notFound) => {
+      if (notFound) {
+        this.navigateToToken(this.sharedService.firstTokenAddress());
+      }
+    });
+
+    this.subscription.add(sharedService.tokenNetworkSelected.subscribe(tokenNetwork => {
+      this.selectionChange.emit(tokenNetwork);
+    }));
+
+    if (this.activatedRoute.children.length === 0) {
+      this.navigateToToken(sharedService.firstTokenAddress());
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -83,7 +86,7 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
       return;
     }
 
-    this.update(changes['metrics'].currentValue);
+    this.sharedService.update(changes['metrics'].currentValue.tokenNetworks);
   }
 
   // noinspection JSMethodCanBeStatic
@@ -112,80 +115,33 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges {
     return network.token;
   }
 
-  networkSelected(value?: TokenNetwork) {
-    if (value) {
-      const selectedToken = value.token;
-      const network = this._allNetworks.find(currentNetwork => currentNetwork.token.address === selectedToken.address);
-      if (network) {
-        this._numberOfNetworks = 1;
-        this.selectedNetwork = network;
-        this._visibleNetworks = [network];
-      } else {
-      }
-    } else {
-      this.updateVisible(0);
+  networkSelected(tokenNetwork?: TokenNetwork) {
+    if (tokenNetwork) {
+      this.navigateToToken(tokenNetwork.token.address);
     }
   }
 
   clearFilter() {
     this.searchControl.setValue(null);
-    this.updateVisible(0);
+    this.navigateToToken(this.sharedService.firstTokenAddress());
   }
 
-  updateVisible(current: number) {
-    this._numberOfNetworks = this._allNetworks.length;
-
-    let start: number;
-    let end: number;
-    if (current > 0) {
-      start = current - 1;
-    } else {
-      start = 0;
-    }
-
-    this.selectedNetwork = this._allNetworks[current];
-    this.selectionChange.emit(this.selectedNetwork);
-
-    if (current === this._allNetworks.length) {
-      end = current;
-    } else {
-      end = current + 2;
-    }
-
-    this._visibleNetworks = this._allNetworks.slice(start, end);
+  previous() {
+    this.navigateToToken(this.sharedService.previousTokenAddress());
   }
 
-  setExpandedAreas(expanded: ExpandedAreas) {
-    this._expandedAreas = expanded;
+  next() {
+    this.navigateToToken(this.sharedService.nextTokenAddress());
   }
 
-  private update(metrics: RaidenNetworkMetrics) {
-    if (metrics.tokenNetworks.length === 1) {
-      this._allNetworks = metrics.tokenNetworks;
-      this.updateVisible(0);
-    } else {
-      this._allNetworks = ActiveNetworksSectionComponent.onlyActive(metrics.tokenNetworks);
-    }
-
-    const isTheSame = (value: TokenNetwork, other: TokenNetwork) => value.token.address === other.token.address;
-
-    if (this.selectedNetwork) {
-      const tokenIndex = this._allNetworks.findIndex(value => isTheSame(value, this.selectedNetwork));
-
-      if (tokenIndex >= 0) {
-        this.selectedNetwork = this._allNetworks[tokenIndex];
-        this.selectionChange.emit(this.selectedNetwork);
-      }
-
-      const visibleIndex = this._visibleNetworks.findIndex(value => isTheSame(value, this.selectedNetwork));
-      if (visibleIndex >= 0) {
-        this._visibleNetworks[visibleIndex] = this.selectedNetwork;
-      }
+  private navigateToToken(tokenAddress) {
+    if (tokenAddress) {
+      this.router.navigate([`tokens/${tokenAddress}`]);
     }
   }
 
   private _filter(value?: string): Observable<TokenNetwork[]> {
-    const networks$ = of(this._allNetworks);
+    const networks$ = of(this.sharedService.allNetworks);
     if (!value || typeof value !== 'string') {
       return networks$;
     }

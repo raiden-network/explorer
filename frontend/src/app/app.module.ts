@@ -11,8 +11,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './components/home/home.component';
 import { NetMetricsInterceptor } from './services/net.metrics/net.metrics.interceptor';
 import { NetworkInformationComponent } from './components/network-information/network-information.component';
-import { CarouselComponent, CarouselItemElementDirective } from './components/carousel/carousel.component';
-import { CarouselItemDirective } from './directives/carousel-item.directive';
 import { CommonModule } from '@angular/common';
 import { DonutChartComponent } from './components/donut-chart/donut-chart.component';
 import { NetworkGraphComponent } from './components/network-graph/network-graph.component';
@@ -43,8 +41,17 @@ import { TotalChannelsByDepositComponent } from './components/total-channels-by-
 import { TopParticipantsByChannelComponent } from './components/top-participants-by-channel/top-participants-by-channel.component';
 
 const appRoutes: Routes = [
-  {path: '', redirectTo: '/home', pathMatch: 'full'},
-  {path: 'home', component: HomeComponent}
+  {path: '', redirectTo: '/tokens', pathMatch: 'full'},
+  {
+    path: 'tokens',
+    component: HomeComponent,
+    children: [
+      {
+        path: ':token_address',
+        component: NetworkInformationComponent
+      }
+    ]
+  }
 ];
 
 export function ConfigFactory(config: NetMetricsConfig) {
@@ -63,9 +70,6 @@ export class ExplorerHammerConfig extends HammerGestureConfig {
     AppComponent,
     HomeComponent,
     NetworkInformationComponent,
-    CarouselComponent,
-    CarouselItemDirective,
-    CarouselItemElementDirective,
     DonutChartComponent,
     NetworkGraphComponent,
     SmallNumberPipe,
