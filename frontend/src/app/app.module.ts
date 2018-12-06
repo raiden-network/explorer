@@ -2,7 +2,7 @@ import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angu
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { RouterModule, Routes } from '@angular/router';
+import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { NetMetricsConfig } from './services/net.metrics/net.metrics.config';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SharedService } from './services/net.metrics/shared.service';
@@ -39,6 +39,8 @@ import { ChannelsOverviewComponent } from './components/channels-overview/channe
 import { NetworkAveragesComponent } from './components/network-averages/network-averages.component';
 import { TotalChannelsByDepositComponent } from './components/total-channels-by-deposit/total-channels-by-deposit.component';
 import { TopParticipantsByChannelComponent } from './components/top-participants-by-channel/top-participants-by-channel.component';
+import { ExplorerRouteReuseStrategy } from './routing/explorer-route-reuse-strategy';
+import { DebounceClickDirective } from './directives/debounce-click.directive';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: '/tokens', pathMatch: 'full'},
@@ -51,7 +53,8 @@ const appRoutes: Routes = [
         component: NetworkInformationComponent
       }
     ]
-  }
+  },
+  {path: '**', redirectTo: '/tokens', pathMatch: 'full'},
 ];
 
 export function ConfigFactory(config: NetMetricsConfig) {
@@ -81,7 +84,8 @@ export class ExplorerHammerConfig extends HammerGestureConfig {
     ChannelsOverviewComponent,
     NetworkAveragesComponent,
     TotalChannelsByDepositComponent,
-    TopParticipantsByChannelComponent
+    TopParticipantsByChannelComponent,
+    DebounceClickDirective
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -119,6 +123,10 @@ export class ExplorerHammerConfig extends HammerGestureConfig {
     {
       provide: HAMMER_GESTURE_CONFIG,
       useClass: ExplorerHammerConfig
+    },
+    {
+      provide: RouteReuseStrategy,
+      useClass: ExplorerRouteReuseStrategy
     },
     NetMetricsService
   ],

@@ -1,12 +1,14 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { FormControl } from '@angular/forms';
-import { flatMap, map, startWith } from 'rxjs/operators';
+import { flatMap, map, pairwise, startWith } from 'rxjs/operators';
 import { Observable, of, Subscription } from 'rxjs';
 import { Token } from '../../models/NMNetwork';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { ActiveNetworkSharedService } from '../../services/active-network-shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RouterAnimations } from './router.animations';
+import { TokenNetworkRoutingService } from '../../services/token-network-routing.service';
 
 @Component({
   selector: 'app-active-networks-section',
@@ -29,7 +31,8 @@ import { ActivatedRoute, Router } from '@angular/router';
           style({opacity: 0, transform: 'translateX(100%)', offset: 1.0})
         ]))
       ])
-    ])
+    ]),
+    RouterAnimations.routerSlide
   ]
 })
 export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDestroy {
@@ -39,19 +42,35 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDest
   readonly searchControl = new FormControl();
   filteredOptions$: Observable<TokenNetwork[]>;
   private subscription: Subscription;
+  private networksChange$: Observable<number>;
+  private routeTrigger$: Observable<object>;
 
   constructor(
     private sharedService: ActiveNetworkSharedService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    networkRoutingService: TokenNetworkRoutingService
   ) {
-
+    this.networksChange$ = networkRoutingService.networkChange$;
+    this.setupRouting();
   }
 
   public get showNavigation(): boolean {
     const control = this.searchControl;
     const isObject = control.value && typeof control.value === 'object';
     return this.sharedService.numberOfNetworks > 1 && !isObject;
+  }
+
+  setupRouting() {
+    this.routeTrigger$ = this.networksChange$
+      .pipe(
+        startWith(0),
+        pairwise(),
+        map(([prev, curr]) => ({
+          value: curr,
+          params: prev > curr ? RouterAnimations.rightOffsets : RouterAnimations.leftOffsets
+        })),
+      );
   }
 
   ngOnInit() {
@@ -127,7 +146,7 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDest
   }
 
   previous() {
-    this.navigateToToken(this.sharedService.previousTokenAddress());
+    this.navigateToToken(this.sharedService.previousTokenAddress(),);
   }
 
   next() {

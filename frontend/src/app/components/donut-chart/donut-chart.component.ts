@@ -36,7 +36,7 @@ export class DonutChartComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.initSvg();
     this.drawChart(this.data);
-    setTimeout(() => this.drawLegend(), 1000);
+    setTimeout(() => this.drawLegend(), 1);
   }
 
   ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
@@ -99,7 +99,7 @@ export class DonutChartComponent implements OnInit, OnChanges {
       .attr('fill', (d, i) => color(d.data.status));
 
     path.transition()
-      .duration(1000)
+      .duration(800)
       .attrTween('d', (d) => {
         const interpolate = d3.interpolate({startAngle: 0, endAngle: 0}, d);
         return (t) => arc(interpolate(t));

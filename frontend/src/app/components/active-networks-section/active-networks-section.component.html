@@ -58,24 +58,38 @@
          fxFlex="0 40px"
          fxFlexAlign="center">
       <button class="navigation-button"
-              (click)="previous();"
+              appDebounceClick
+              (debouncedClick)="previous();"
               mat-icon-button color="primary">
         <img src="../../../assets/back.svg" alt="Previous">
       </button>
     </div>
 
-    <div fxLayout="column"
+    <div [@routerTransition]="routeTrigger$ | async"
+         fxLayout="column"
          fxFlex.gt-sm="0 0 960px"
          fxFlex.lt-sm="1 1 auto"
-         fxFlexAlign="center"
-         class="network-information">
-      <router-outlet></router-outlet>
+         ngClass.xs="mobile-margin"
+         class="network-information"
+         (swipeleft)="next()"
+         (swiperight)="previous()">
+
+      <div class="header-gradient"></div>
+
+      <div fxLayout="row">
+        <router-outlet></router-outlet>
+      </div>
+
     </div>
 
     <div fxLayout="column" *ngIf="showNavigation" [fxShow.xs]="false"
          fxFlex="0 0 40px"
          fxFlexAlign="center">
-      <button class="navigation-button" (click)="next()" mat-icon-button color="primary">
+      <button class="navigation-button"
+              appDebounceClick
+              (debouncedClick)="next()"
+              mat-icon-button
+              color="primary">
         <img src="../../../assets/next.svg" alt="Next">
       </button>
     </div>
