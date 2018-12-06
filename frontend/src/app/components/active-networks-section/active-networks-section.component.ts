@@ -43,7 +43,6 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDest
   filteredOptions$: Observable<TokenNetwork[]>;
   private subscription: Subscription;
   private networksChange$: Observable<number>;
-  private routeTrigger$: Observable<object>;
 
   constructor(
     private sharedService: ActiveNetworkSharedService,
@@ -55,6 +54,12 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDest
     this.setupRouting();
   }
 
+  private _routeTrigger$: Observable<object>;
+
+  public get routeTrigger$(): Observable<object> {
+    return this._routeTrigger$;
+  }
+
   public get showNavigation(): boolean {
     const control = this.searchControl;
     const isObject = control.value && typeof control.value === 'object';
@@ -62,7 +67,7 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDest
   }
 
   setupRouting() {
-    this.routeTrigger$ = this.networksChange$
+    this._routeTrigger$ = this.networksChange$
       .pipe(
         startWith(0),
         pairwise(),
