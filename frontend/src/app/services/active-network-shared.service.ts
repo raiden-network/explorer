@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ActiveNetworkSharedService {
+
   constructor() {
   }
 
@@ -28,8 +29,10 @@ export class ActiveNetworkSharedService {
   }
 
   public set tokenNetwork(tokenNetwork: TokenNetwork) {
-    this._tokenNetwork = tokenNetwork;
-    this._tokenNetworkSelected.next(tokenNetwork);
+    if (tokenNetwork) {
+      this._tokenNetwork = tokenNetwork;
+      this._tokenNetworkSelected.next(tokenNetwork);
+    }
   }
 
   private _allNetworks: TokenNetwork[];
@@ -80,7 +83,6 @@ export class ActiveNetworkSharedService {
     } else {
       return null;
     }
-
   }
 
   public nextTokenAddress(): string {
@@ -88,17 +90,18 @@ export class ActiveNetworkSharedService {
     const tokenNetwork = this.tokenNetwork;
     const index = allNetworks.findIndex(value => value.token.address === tokenNetwork.token.address);
 
-    if (index < allNetworks.length) {
-      const previousNetwork = allNetworks[index + 1];
-      this.tokenNetwork = previousNetwork;
-      return previousNetwork.token.address;
+    if (index < allNetworks.length - 1) {
+      const nextToken = allNetworks[index + 1];
+      this.tokenNetwork = nextToken;
+      return nextToken.token.address;
     } else {
       return null;
     }
   }
 
-  loadTokenNetworkInformation(address: string) {
+  loadTokenNetworkInformation(address: string): number {
     const allNetworks = this._allNetworks;
+
     const index = allNetworks.findIndex(value => value.token.address === address);
 
     if (index >= 0) {
@@ -106,6 +109,8 @@ export class ActiveNetworkSharedService {
     } else {
       this._tokenNotFound.next(true);
     }
+
+    return index;
   }
 
   update(tokenNetworks: TokenNetwork[]) {

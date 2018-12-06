@@ -6,6 +6,7 @@ import { ActiveNetworkSharedService } from '../../services/active-network-shared
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { TokenNetworkRoutingService } from '../../services/token-network-routing.service';
 
 @Component({
   selector: 'app-network-information',
@@ -20,7 +21,8 @@ export class NetworkInformationComponent implements OnInit, OnDestroy {
     private config: NetMetricsConfig,
     private sharedService: ActiveNetworkSharedService,
     private route: ActivatedRoute,
-    public readonly media$: ObservableMedia
+    public readonly media$: ObservableMedia,
+    private routingService: TokenNetworkRoutingService
   ) {
   }
 
@@ -60,6 +62,9 @@ export class NetworkInformationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.route.params.pipe(map(params => params.token_address))
-      .subscribe(address => this.sharedService.loadTokenNetworkInformation(address));
+      .subscribe(address => {
+        const index = +this.sharedService.loadTokenNetworkInformation(address);
+        this.routingService.changed(index);
+      });
   }
 }
