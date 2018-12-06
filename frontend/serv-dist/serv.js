@@ -11,6 +11,6 @@ app.use(cors());
 
 // Path relative to parent directory:
 app.use(express.static('dist/my-app'));
-app.use('/home', express.static('dist/my-app'));
+app.use('/tokens', express.static('dist/my-app'));
 
 app.listen(port, f=>{ console.log(`app listening on port ${port}`) });
