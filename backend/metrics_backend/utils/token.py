@@ -9,6 +9,9 @@ def get_token_name(token_contract: Contract) -> str:
         return token_contract.functions.name().call()
     except BadFunctionCallOutput:
         return ''
+    # temporary fix for #138, until we understand why this happens
+    except ValueError:
+        return ''
 
 
 def get_token_symbol(token_contract: Contract) -> str:
@@ -16,12 +19,18 @@ def get_token_symbol(token_contract: Contract) -> str:
         return token_contract.functions.symbol().call()
     except BadFunctionCallOutput:
         return ''
+    # temporary fix for #138, until we understand why this happens
+    except ValueError:
+        return ''
 
 
 def get_token_decimals(token_contract: Contract) -> int:
     try:
         return token_contract.functions.decimals().call()
     except BadFunctionCallOutput:
+        return 18
+    # temporary fix for #138, until we understand why this happens
+    except ValueError:
         return 18
 
 
