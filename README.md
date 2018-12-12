@@ -1,6 +1,6 @@
 # Raiden Explorer
 
-[The Raiden Explorer](https://explorer.raiden.network/home) displays information about the status of the [Raiden Network](https://raiden.network/).
+[The Raiden Explorer](https://explorer.raiden.network) displays information about the status of the [Raiden Network](https://raiden.network/).
 
 ## Running
 
