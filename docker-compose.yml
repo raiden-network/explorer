@@ -134,13 +134,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - backend
-      - backend-notlive
       - backend-ropsten
       - backend-rinkeby
       - backend-kovan
       - backend-kovan-limits
       - frontend
-      - frontend-notlive
       - frontend-ropsten
       - frontend-rinkeby
       - frontend-kovan
