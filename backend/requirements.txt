@@ -1,14 +1,14 @@
 Click==7.0
 
 web3==4.8.2
-eth-utils==1.4.0
-eth-abi==1.2.0
+eth-utils==1.4.1
+eth-abi==1.3.0
 
 flask==1.0.2
-flask_restful==0.3.6
+flask_restful==0.3.7
 flask-cors==3.0.7
 gevent==1.3.7
-requests==2.20.1
+requests==2.21.0
 dataclasses==0.6.0
 cachetools==2.1.0
 
