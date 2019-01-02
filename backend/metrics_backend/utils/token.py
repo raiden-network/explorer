@@ -20,7 +20,7 @@ def get_token_symbol(token_contract: Contract) -> str:
     except BadFunctionCallOutput:
         return ''
     # temporary fix for #138, until we understand why this happens
-    except ValueError:
+    except (ValueError, OverflowError):
         return ''
 
 
