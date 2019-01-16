@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Participant, TokenNetwork } from '../../models/TokenNetwork';
+import { UserAccountStatistics, TokenNetwork } from '../../models/TokenNetwork';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
 
 @Component({
@@ -27,7 +27,7 @@ export class TopParticipantsByChannelComponent implements OnInit {
   }
 
   //noinspection JSMethodCanBeStatic
-  trackByParticipant(participant: Participant): string {
+  trackByParticipant(participant: UserAccountStatistics): string {
     return participant.address;
   }
 

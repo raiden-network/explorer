@@ -7,7 +7,7 @@ import { NMChannel, NMNetwork } from '../../models/NMNetwork';
 import * as NMNetworkSchema from '../../models/NMNetwork.schema';
 import { NetworkGraph } from '../../models/NetworkGraph';
 import { Observable, of, timer } from 'rxjs';
-import { Participant, RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
+import { UserAccount, UserAccountStatistics, RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { SharedService } from './shared.service';
 import { Message } from './message';
 import { TokenUtils } from '../../utils/token.utils';
@@ -177,7 +177,7 @@ export class NetMetricsService {
 
     const channelEntries = Object.entries(channelsByPart);
 
-    const participants: Participant[] = channelEntries.map(value => {
+    const participants: UserAccountStatistics[] = channelEntries.map(value => {
       return {
         address: value[0],
         channels: value[1].length
@@ -185,24 +185,7 @@ export class NetMetricsService {
     });
 
     const channelsPerParticipant = channels.length / uniqueParticipants.length || 0;
-
-    const deposits = channelEntries.map(value => {
-      const address = value[0];
-      const participantChannels = value[1];
-      return participantChannels.reduce((accumulator, channel) => {
-        let participantDeposit: number;
-
-        if (address === channel.participant1) {
-          participantDeposit = TokenUtils.toDecimal(channel.deposit1, decimals);
-        } else {
-          participantDeposit = TokenUtils.toDecimal(channel.deposit2, decimals);
-        }
-
-        return accumulator + participantDeposit;
-      }, 0);
-    }).reduce((accumulator, participantsDeposits) => accumulator + participantsDeposits, 0);
-
-    const averagePerParticipant = deposits / channelEntries.length;
+    const averagePerParticipant = this.calculateAveragePerParticipant(channelEntries, decimals);
 
     const topParticipants = participants.sort((a, b) => b.channels - a.channels).slice(0, 5);
 
@@ -246,7 +229,34 @@ export class NetMetricsService {
     };
   }
 
-  //noinspection JSMethodCanBeStatic
+  private calculateAveragePerParticipant(channelEntries, decimals: number) {
+    const accountsWithOpenChannels = channelEntries.map((entry) => ({
+      address: entry[0],
+      channels: entry[1].filter(channel => channel.status === 'opened')
+    }) as UserAccount).filter(userAccount => userAccount.channels.length > 0);
+
+    const participants = accountsWithOpenChannels.reduce((acc, account) => acc + account.channels.length, 0);
+
+    const deposits = accountsWithOpenChannels.map(value => {
+      const address = value.address;
+      const accountChannels = value.channels;
+      return accountChannels.reduce((accumulator, channel) => {
+        let participantDeposit: number;
+
+        if (address === channel.participant1) {
+          participantDeposit = TokenUtils.toDecimal(channel.deposit1, decimals);
+        } else {
+          participantDeposit = TokenUtils.toDecimal(channel.deposit2, decimals);
+        }
+
+        return accumulator + participantDeposit;
+      }, 0);
+    }).reduce((accumulator, participantsDeposits) => accumulator + participantsDeposits, 0);
+
+    return deposits / participants;
+  }
+
+//noinspection JSMethodCanBeStatic
   /**
    * Returns a readable summary of ajv errors as string
    * @param errors
