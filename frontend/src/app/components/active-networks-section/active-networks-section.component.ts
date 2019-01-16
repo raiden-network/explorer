@@ -151,7 +151,7 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDest
   }
 
   previous() {
-    this.navigateToToken(this.sharedService.previousTokenAddress(),);
+    this.navigateToToken(this.sharedService.previousTokenAddress());
   }
 
   next() {
