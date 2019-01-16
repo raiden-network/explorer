@@ -6,7 +6,7 @@ EXPOSE 3000
 WORKDIR /frontend
 ADD . /frontend
 
-RUN npm install -g @angular/cli && npm install && npm install express cors
+RUN npm install -g @angular/cli && npm ci && npm install express cors
 
 ARG backend_url
 ARG poll_interval
@@ -24,4 +24,3 @@ RUN cat ./src/assets/config/config.TEMPLATE.json \
 
 RUN ng build --prod
 CMD ["node", "serv-dist/serv.js"]
- 
