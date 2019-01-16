@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TokenNetwork } from '../../models/TokenNetwork';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
-import { ObservableMedia } from '@angular/flex-layout';
 import { ActiveNetworkSharedService } from '../../services/active-network-shared.service';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { TokenNetworkRoutingService } from '../../services/token-network-routing.service';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-network-information',
@@ -21,7 +21,7 @@ export class NetworkInformationComponent implements OnInit, OnDestroy {
     private config: NetMetricsConfig,
     private sharedService: ActiveNetworkSharedService,
     private route: ActivatedRoute,
-    public readonly media$: ObservableMedia,
+    public readonly media$: MediaObserver,
     private routingService: TokenNetworkRoutingService
   ) {
   }
