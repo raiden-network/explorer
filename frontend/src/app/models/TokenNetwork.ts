@@ -8,9 +8,14 @@ export interface Channel {
   readonly deposit2: number;
 }
 
-export interface Participant {
+export interface UserAccountStatistics {
   readonly address: string;
   readonly channels: number;
+}
+
+export interface UserAccount {
+  readonly address: string;
+  readonly channels: Channel[];
 }
 
 export interface TokenNetwork {
@@ -22,7 +27,7 @@ export interface TokenNetwork {
   readonly participants: number;
   readonly channelsPerParticipant: number;
   readonly topChannelsByDeposit: Channel[];
-  readonly topParticipantsByChannels: Participant[];
+  readonly topParticipantsByChannels: UserAccountStatistics[];
   readonly averageDepositPerChannel: number;
   readonly averageDepositPerParticipant: number;
   readonly totalNetworkDeposits: number;
