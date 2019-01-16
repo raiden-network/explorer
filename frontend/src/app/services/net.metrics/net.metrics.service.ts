@@ -233,7 +233,7 @@ export class NetMetricsService {
   // noinspection JSMethodCanBeStatic
   private calculateChannelsPerAccount(accountsWithOpenChannels: UserAccount[]) {
     const openChannels = accountsWithOpenChannels.reduce((acc, userAccount) => acc + userAccount.channels.length, 0);
-    return openChannels / accountsWithOpenChannels.length;
+    return accountsWithOpenChannels.length === 0 ? 0 : openChannels / accountsWithOpenChannels.length;
   }
 
   private calculateAverageDepositPerParticipant(accountsWithOpenChannels: UserAccount[], decimals: number) {
@@ -255,7 +255,7 @@ export class NetMetricsService {
       }, 0);
     }).reduce((accumulator, participantsDeposits) => accumulator + participantsDeposits, 0);
 
-    return deposits / participants;
+    return participants === 0 ? 0 : deposits / participants;
   }
 
   private accountsWithOpenChannels(channelEntries) {
