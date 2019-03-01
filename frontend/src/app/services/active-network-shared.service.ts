@@ -6,11 +6,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ActiveNetworkSharedService {
+  constructor() {}
 
-  constructor() {
-  }
-
-  private _tokenNetworkSelected: BehaviorSubject<TokenNetwork> = new BehaviorSubject(this.tokenNetwork);
+  private _tokenNetworkSelected: BehaviorSubject<TokenNetwork> = new BehaviorSubject(
+    this.tokenNetwork
+  );
 
   public get tokenNetworkSelected(): Observable<TokenNetwork> {
     return this._tokenNetworkSelected;
@@ -74,7 +74,9 @@ export class ActiveNetworkSharedService {
   public previousTokenAddress(): string {
     const allNetworks = this._allNetworks;
     const tokenNetwork = this.tokenNetwork;
-    const index = allNetworks.findIndex(value => value.token.address === tokenNetwork.token.address);
+    const index = allNetworks.findIndex(
+      value => value.token.address === tokenNetwork.token.address
+    );
 
     if (index > 0) {
       const previousNetwork = allNetworks[index - 1];
@@ -88,7 +90,9 @@ export class ActiveNetworkSharedService {
   public nextTokenAddress(): string {
     const allNetworks = this._allNetworks;
     const tokenNetwork = this.tokenNetwork;
-    const index = allNetworks.findIndex(value => value.token.address === tokenNetwork.token.address);
+    const index = allNetworks.findIndex(
+      value => value.token.address === tokenNetwork.token.address
+    );
 
     if (index < allNetworks.length - 1) {
       const nextToken = allNetworks[index + 1];
@@ -122,7 +126,8 @@ export class ActiveNetworkSharedService {
 
     this._numberOfNetworks = this._allNetworks.length;
 
-    const isTheSame = (value: TokenNetwork, other: TokenNetwork) => value.token.address === other.token.address;
+    const isTheSame = (value: TokenNetwork, other: TokenNetwork) =>
+      value.token.address === other.token.address;
 
     if (this.tokenNetwork) {
       const tokenIndex = this._allNetworks.findIndex(value => isTheSame(value, this.tokenNetwork));

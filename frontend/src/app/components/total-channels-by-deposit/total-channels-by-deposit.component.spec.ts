@@ -8,9 +8,8 @@ describe('TotalChannelsByDepositComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TotalChannelsByDepositComponent ]
-    })
-    .compileComponents();
+      declarations: [TotalChannelsByDepositComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

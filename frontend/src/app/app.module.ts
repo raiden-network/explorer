@@ -1,4 +1,8 @@
-import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angular/platform-browser';
+import {
+  BrowserModule,
+  HAMMER_GESTURE_CONFIG,
+  HammerGestureConfig
+} from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
@@ -43,7 +47,7 @@ import { ExplorerRouteReuseStrategy } from './routing/explorer-route-reuse-strat
 import { DebounceClickDirective } from './directives/debounce-click.directive';
 
 const appRoutes: Routes = [
-  {path: '', redirectTo: '/tokens', pathMatch: 'full'},
+  { path: '', redirectTo: '/tokens', pathMatch: 'full' },
   {
     path: 'tokens',
     component: HomeComponent,
@@ -54,7 +58,7 @@ const appRoutes: Routes = [
       }
     ]
   },
-  {path: '**', redirectTo: '/tokens', pathMatch: 'full'},
+  { path: '**', redirectTo: '/tokens', pathMatch: 'full' }
 ];
 
 export function ConfigFactory(config: NetMetricsConfig) {
@@ -63,8 +67,8 @@ export function ConfigFactory(config: NetMetricsConfig) {
 
 export class ExplorerHammerConfig extends HammerGestureConfig {
   overrides = <any>{
-    'pinch': {enable: false},
-    'rotate': {enable: false}
+    pinch: { enable: false },
+    rotate: { enable: false }
   };
 }
 
@@ -132,5 +136,4 @@ export class ExplorerHammerConfig extends HammerGestureConfig {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

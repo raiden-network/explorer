@@ -8,9 +8,8 @@ describe('TopParticipantsByChannelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TopParticipantsByChannelComponent ]
-    })
-    .compileComponents();
+      declarations: [TopParticipantsByChannelComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

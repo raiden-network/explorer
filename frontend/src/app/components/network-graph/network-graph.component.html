@@ -1,44 +1,61 @@
 <div fxLayout="column">
-  <div fxLayout.gt-xs="row"
-       fxLayout="column"
-       fxLayoutAlign="center center"
-       fxLayoutGap.gt-xs="2rem">
-
+  <div
+    fxLayout.gt-xs="row"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    fxLayoutGap.gt-xs="2rem"
+  >
     <div fxLayout="column" fxLayout.lt-md="row">
-      <mat-form-field class="search-field"
-                      fxLayout="column">
-          <span matPrefix class="search-icon">
-            <img src="../../../assets/baseline-search-24px.svg"/>
-          </span>
-        <input type="text"
-               placeholder="Filter"
-               aria-label="Filter"
-               matInput
-               [formControl]="filterControl"
-               [matAutocomplete]="auto">
-        <button mat-button
-                *ngIf="filterControl.value"
-                matSuffix
-                mat-icon-button
-                aria-label="Clear"
-                (click)="clearFilter()">
-          <img src="../../../assets/baseline-clear-24px.svg"/>
+      <mat-form-field class="search-field" fxLayout="column">
+        <span matPrefix class="search-icon">
+          <img src="../../../assets/baseline-search-24px.svg" />
+        </span>
+        <input
+          type="text"
+          placeholder="Filter"
+          aria-label="Filter"
+          matInput
+          [formControl]="filterControl"
+          [matAutocomplete]="auto"
+        />
+        <button
+          mat-button
+          *ngIf="filterControl.value"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="clearFilter()"
+        >
+          <img src="../../../assets/baseline-clear-24px.svg" />
         </button>
-        <mat-autocomplete #auto="matAutocomplete"
-                          autoActiveFirstOption
-                          (optionSelected)="elementSelected($event.option.value)"
-                          [displayWith]="displayFn">
-          <mat-option class="element-suggestion"
-                      *ngFor="let option of filteredOptions$ | async; trackBy: trackByFn" [value]="option">
-              <span class="blocky" *ngIf="isNode(option); else channel">
-                <small class="medium">Node</small>
-                <span>Address: <span class="address">{{option.node().id}}</span></span>
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          autoActiveFirstOption
+          (optionSelected)="elementSelected($event.option.value)"
+          [displayWith]="displayFn"
+        >
+          <mat-option
+            class="element-suggestion"
+            *ngFor="let option of (filteredOptions$ | async); trackBy: trackByFn"
+            [value]="option"
+          >
+            <span class="blocky" *ngIf="isNode(option); else channel">
+              <small class="medium">Node</small>
+              <span>
+                Address: <span class="address">{{ option.node().id }}</span>
               </span>
+            </span>
             <ng-template #channel>
               <span class="blocky">
                 <small class="medium">Channel</small>
-                <span>Participant 1: <span class="address">{{option.link().sourceAddress}}</span></span>
-                <span>Participant 2: <span class="address">{{option.link().targetAddress}}</span></span>
+                <span>
+                  Participant 1:
+                  <span class="address">{{ option.link().sourceAddress }}</span>
+                </span>
+                <span
+                  >Participant 2:
+                  <span class="address">{{ option.link().targetAddress }}</span>
+                </span>
               </span>
             </ng-template>
           </mat-option>
@@ -49,22 +66,22 @@
     <div fxLayout="column" fxLayout.lt-md="row">
       <mat-slide-toggle
         ngClass.gt-xs="channels-toggle"
-        [ngStyle.lt-sm]="{'margin-bottom': '1rem'}"
+        [ngStyle.lt-sm]="{ 'margin-bottom': '1rem' }"
         color="accent"
         matTooltip="The graph will only display open channels when this switch is off."
         (change)="showAllChannels = $event.checked"
-        [checked]="showAllChannels">
+        [checked]="showAllChannels"
+      >
         <span class="switch-text">Show all channels</span>
       </mat-slide-toggle>
     </div>
-
   </div>
   <div fxLayout="row" #graph class="network-section">
     <app-active-channel-list
       *ngIf="selectionInfo && containerWidth >= 900"
       (closed)="channelListClosed()"
       [info]="selectionInfo"
-      [height]="containerHeight"></app-active-channel-list>
+      [height]="containerHeight"
+    ></app-active-channel-list>
   </div>
 </div>
-

@@ -4,14 +4,22 @@ export class RouterAnimations {
   static routerSlide = trigger('routerTransition', [
     transition('* <=> *', [
       group([
-        query(':enter', [
-          style({transform: 'translateX({{enterStart}}%)'}),
-          animate('0.3s ease-in-out', style({transform: 'translateX({{enterEnd}}%)'}))
-        ], {optional: true}),
-        query(':leave', [
-          style({transform: 'translateX({{leaveStart}}%)'}),
-          animate('0.3s ease-in-out', style({transform: 'translateX({{leaveEnd}}%)'}))
-        ], {optional: true})
+        query(
+          ':enter',
+          [
+            style({ transform: 'translateX({{enterStart}}%)' }),
+            animate('0.3s ease-in-out', style({ transform: 'translateX({{enterEnd}}%)' }))
+          ],
+          { optional: true }
+        ),
+        query(
+          ':leave',
+          [
+            style({ transform: 'translateX({{leaveStart}}%)' }),
+            animate('0.3s ease-in-out', style({ transform: 'translateX({{leaveEnd}}%)' }))
+          ],
+          { optional: true }
+        )
       ])
     ])
   ]);

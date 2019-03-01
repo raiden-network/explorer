@@ -17,7 +17,7 @@ body {
 }
 
 .topnav a:hover {
-  color: #BABABA;
+  color: #bababa;
   -webkit-transition: all 1s ease;
   -moz-transition: all 1s ease;
   -o-transition: all 1s ease;
@@ -74,7 +74,8 @@ body {
   font-size: 14px;
 }
 
-.contactlist a, .sociallist a {
+.contactlist a,
+.sociallist a {
   -webkit-transition: all 0.35s;
   -moz-transition: all 0.35s;
   transition: all 0.35s;

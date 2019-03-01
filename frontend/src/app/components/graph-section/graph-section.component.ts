@@ -7,13 +7,9 @@ import { NetworkGraph } from '../../models/NetworkGraph';
   styleUrls: ['./graph-section.component.css']
 })
 export class GraphSectionComponent implements OnInit {
-
   @Input() graph: NetworkGraph;
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

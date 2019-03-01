@@ -3,37 +3,46 @@ export const schema = {
 
   properties: {
     token: {
-      'type': 'object', properties: {
-        address: {'type': 'string'},
-        decimals: {'type': 'number'},
-        name: {'type': 'string'},
-        symbol: {'type': 'string'}
+      type: 'object',
+      properties: {
+        address: { type: 'string' },
+        decimals: { type: 'number' },
+        name: { type: 'string' },
+        symbol: { type: 'string' }
       }
     },
-    num_channels_total: {'type': 'number'},
-    num_channels_opened: {'type': 'number'},
-    num_channels_closed: {'type': 'number'},
-    num_channels_settled: {'type': 'number'},
-    num_nodes: {'type': 'number'},
+    num_channels_total: { type: 'number' },
+    num_channels_opened: { type: 'number' },
+    num_channels_closed: { type: 'number' },
+    num_channels_settled: { type: 'number' },
+    num_nodes: { type: 'number' },
 
-    nodes: {'type': 'array', items: [{'type': 'string'}]},
+    nodes: { type: 'array', items: [{ type: 'string' }] },
 
     channels: {
-      'type': 'array',
-      items: [{
-        'type': 'object',
-        properties: {
-          channel_identifier: {'type': 'number'},
-          status: {'type': 'string'},
-          participant1: {'type': 'string'},
-          participant2: {'type': 'string'},
-          deposit1: {'type': 'number'},
-          deposit2: {'type': 'number'}
+      type: 'array',
+      items: [
+        {
+          type: 'object',
+          properties: {
+            channel_identifier: { type: 'number' },
+            status: { type: 'string' },
+            participant1: { type: 'string' },
+            participant2: { type: 'string' },
+            deposit1: { type: 'number' },
+            deposit2: { type: 'number' }
+          }
         }
-      }],
-      required: ['channel_identifier', 'status', 'participant1', 'participant2', 'deposit1', 'deposit2']
-    },
-
+      ],
+      required: [
+        'channel_identifier',
+        'status',
+        'participant1',
+        'participant2',
+        'deposit1',
+        'deposit2'
+      ]
+    }
   }, // properties
 
   required: [
@@ -46,5 +55,4 @@ export const schema = {
     'nodes',
     'channels'
   ]
-
 }; // schema

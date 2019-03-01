@@ -1,32 +1,30 @@
-<div class="loading-container"
-     fxLayout="row"
-     fxLayoutAlign="center center" *ngIf="loading">
+<div class="loading-container" fxLayout="row" fxLayoutAlign="center center" *ngIf="loading">
   <mat-spinner></mat-spinner>
 </div>
 
 <div *ngIf="(metrics$ | async) as metrics; else error">
-  <app-network-totals
-    [network]="network"
-    [metrics]="metrics"></app-network-totals>
+  <app-network-totals [network]="network" [metrics]="metrics"></app-network-totals>
 
   <app-buttons></app-buttons>
 
   <app-active-networks-section
     (selectionChange)="selectedNetwork($event)"
-    [metrics]="metrics"></app-active-networks-section>
+    [metrics]="metrics"
+  ></app-active-networks-section>
 
-  <app-graph-section
-    *ngIf="currentNetwork"
-    [graph]="currentNetwork.graph"></app-graph-section>
+  <app-graph-section *ngIf="currentNetwork" [graph]="currentNetwork.graph"></app-graph-section>
 </div>
-
 
 <ng-template #error>
   <div class="warning-wrapper" [@flyInOut]="'in'">
-    <div class="warning-div" fxLayout="column" fxFlex="0 0 60"
-         *ngIf="(messages$ | async) as message">
-      <h2 fxLayout="row">{{message.title}}</h2>
-      <p fxLayout="row">{{message.description}}</p>
+    <div
+      class="warning-div"
+      fxLayout="column"
+      fxFlex="0 0 60"
+      *ngIf="(messages$ | async) as message"
+    >
+      <h2 fxLayout="row">{{ message.title }}</h2>
+      <p fxLayout="row">{{ message.description }}</p>
     </div>
   </div>
 </ng-template>

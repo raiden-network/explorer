@@ -7,13 +7,9 @@ import { TokenNetwork } from '../../models/TokenNetwork';
   styleUrls: ['./network-averages.component.scss']
 })
 export class NetworkAveragesComponent implements OnInit {
-
   @Input() tokenNetwork: TokenNetwork;
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

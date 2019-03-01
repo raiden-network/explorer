@@ -5,9 +5,13 @@
 
   <div fxLayout="column" fxFlex="1 1 40px" fxLayoutAlign="end">
     <button mat-icon-button (click)="toggleExpanded()">
-      <img *ngIf="!isExpanded; else expanded" class="expandable-icon" src="../../../assets/down-arrow.svg">
+      <img
+        *ngIf="!isExpanded; else expanded"
+        class="expandable-icon"
+        src="../../../assets/down-arrow.svg"
+      />
       <ng-template #expanded>
-        <img class="expandable-icon" src="../../../assets/up-arrow.svg">
+        <img class="expandable-icon" src="../../../assets/up-arrow.svg" />
       </ng-template>
     </button>
   </div>
@@ -20,23 +24,38 @@
     <div fxLayout="column" fxFlex="auto">Participants</div>
     <div fxLayout="column" fxFlexAlign="right">Deposit</div>
   </div>
-  <mat-list-item fxLayout="row" class="list-item"
-                 *ngFor="let channel of tokenNetwork.topChannelsByDeposit; trackBy: trackByFn" fxLayoutGap="8px">
-    <div class="truncate small-text"
-         fxFlex="1 1 auto"
-         fxLayoutAlign="center start"
-         fxLayout="column">
-      <a href="{{etherscanUrl(channel.participant1)}}"
-         target="_blank"
-         class="clickable-address dark">{{channel.participant1}}</a>
-      <a href="{{etherscanUrl(channel.participant2)}}"
-         target="_blank"
-         class="clickable-address dark">{{channel.participant2}}</a>
+  <mat-list-item
+    fxLayout="row"
+    class="list-item"
+    *ngFor="let channel of tokenNetwork.topChannelsByDeposit; trackBy: trackByFn"
+    fxLayoutGap="8px"
+  >
+    <div
+      class="truncate small-text"
+      fxFlex="1 1 auto"
+      fxLayoutAlign="center start"
+      fxLayout="column"
+    >
+      <a
+        href="{{ etherscanUrl(channel.participant1) }}"
+        target="_blank"
+        class="clickable-address dark"
+        >{{ channel.participant1 }}</a
+      >
+      <a
+        href="{{ etherscanUrl(channel.participant2) }}"
+        target="_blank"
+        class="clickable-address dark"
+        >{{ channel.participant2 }}</a
+      >
     </div>
-    <div class="table-number bold small-text"
-         fxFlex="50px"
-         fxLayoutAlign="center end"
-         fxLayout="column">{{channel.deposit1 + channel.deposit2 | smallNumber}}
+    <div
+      class="table-number bold small-text"
+      fxFlex="50px"
+      fxLayoutAlign="center end"
+      fxLayout="column"
+    >
+      {{ channel.deposit1 + channel.deposit2 | smallNumber }}
     </div>
   </mat-list-item>
 </mat-list>

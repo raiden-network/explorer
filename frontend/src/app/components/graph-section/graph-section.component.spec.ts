@@ -8,9 +8,8 @@ describe('GraphSectionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GraphSectionComponent ]
-    })
-    .compileComponents();
+      declarations: [GraphSectionComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

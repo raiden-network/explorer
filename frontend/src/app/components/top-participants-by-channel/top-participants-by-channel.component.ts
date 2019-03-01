@@ -8,15 +8,13 @@ import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config'
   styleUrls: ['./top-participants-by-channel.component.scss']
 })
 export class TopParticipantsByChannelComponent implements OnInit {
-
   @Input() tokenNetwork: TokenNetwork;
   @Input() isExpanded: boolean;
   @Output() expandedChanged: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private config: NetMetricsConfig) { }
+  constructor(private config: NetMetricsConfig) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   toggleExpanded(): void {
     this.expandedChanged.emit(!this.isExpanded);
@@ -30,5 +28,4 @@ export class TopParticipantsByChannelComponent implements OnInit {
   trackByParticipant(participant: UserAccountStatistics): string {
     return participant.address;
   }
-
 }

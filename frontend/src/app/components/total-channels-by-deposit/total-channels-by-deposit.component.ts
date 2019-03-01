@@ -8,16 +8,13 @@ import { Channel, TokenNetwork } from '../../models/TokenNetwork';
   styleUrls: ['./total-channels-by-deposit.component.scss']
 })
 export class TotalChannelsByDepositComponent implements OnInit {
-
   @Input() tokenNetwork: TokenNetwork;
   @Input() isExpanded: boolean;
   @Output() expandedChanged: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private config: NetMetricsConfig) {
-  }
+  constructor(private config: NetMetricsConfig) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   toggleExpanded(): void {
     this.expandedChanged.emit(!this.isExpanded);
@@ -31,6 +28,4 @@ export class TotalChannelsByDepositComponent implements OnInit {
   trackByFn(channel: Channel): string {
     return channel.participant1 + channel.participant2;
   }
-
-
 }

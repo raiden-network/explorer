@@ -21,23 +21,20 @@ const defaultConfiguration: Config = {
 
 @Injectable()
 export class NetMetricsConfig {
-
   private _configuration: Config = defaultConfiguration;
 
   public get configuration(): Config {
     return this._configuration;
   }
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   load(url: string): Promise<any> {
-    return new Promise((resolve) => {
-      this.http.get<Config>(url)
-        .subscribe((config) => {
-          this._configuration = Object.assign({}, defaultConfiguration, config);
-          resolve();
-        });
+    return new Promise(resolve => {
+      this.http.get<Config>(url).subscribe(config => {
+        this._configuration = Object.assign({}, defaultConfiguration, config);
+        resolve();
+      });
     });
   }
 }

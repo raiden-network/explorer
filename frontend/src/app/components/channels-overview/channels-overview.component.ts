@@ -8,14 +8,11 @@ import { ChannelData } from '../donut-chart/donut-chart.component';
   styleUrls: ['./channels-overview.component.scss']
 })
 export class ChannelsOverviewComponent implements OnInit {
-
   @Input() tokenNetwork: TokenNetwork;
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   //noinspection JSMethodCanBeStatic
   chart(tokenNetwork: TokenNetwork): ChannelData[] {
@@ -43,5 +40,4 @@ export class ChannelsOverviewComponent implements OnInit {
     }
     return chartData;
   }
-
 }
