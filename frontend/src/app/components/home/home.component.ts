@@ -14,26 +14,31 @@ import { tap } from 'rxjs/operators';
   styleUrls: ['./home.component.css'],
   animations: [
     trigger('flyInOut', [
-      state('in', style({transform: 'translateX(0)'})),
+      state('in', style({ transform: 'translateX(0)' })),
       transition('void => *', [
-        animate(300, keyframes([
-          style({opacity: 0, transform: 'translateX(-100%)', offset: 0}),
-          style({opacity: 1, transform: 'translateX(15px)', offset: 0.3}),
-          style({opacity: 1, transform: 'translateX(0)', offset: 1.0})
-        ]))
+        animate(
+          300,
+          keyframes([
+            style({ opacity: 0, transform: 'translateX(-100%)', offset: 0 }),
+            style({ opacity: 1, transform: 'translateX(15px)', offset: 0.3 }),
+            style({ opacity: 1, transform: 'translateX(0)', offset: 1.0 })
+          ])
+        )
       ]),
       transition('* => void', [
-        animate(300, keyframes([
-          style({opacity: 1, transform: 'translateX(0)', offset: 0}),
-          style({opacity: 1, transform: 'translateX(-15px)', offset: 0.7}),
-          style({opacity: 0, transform: 'translateX(100%)', offset: 1.0})
-        ]))
+        animate(
+          300,
+          keyframes([
+            style({ opacity: 1, transform: 'translateX(0)', offset: 0 }),
+            style({ opacity: 1, transform: 'translateX(-15px)', offset: 0.7 }),
+            style({ opacity: 0, transform: 'translateX(100%)', offset: 1.0 })
+          ])
+        )
       ])
     ])
   ]
 })
 export class HomeComponent implements AfterViewChecked {
-
   metrics$: Observable<RaidenNetworkMetrics>;
   messages$: Observable<Message>;
 
@@ -43,7 +48,7 @@ export class HomeComponent implements AfterViewChecked {
     private config: NetMetricsConfig,
     private cd: ChangeDetectorRef
   ) {
-    this.metrics$ = netMetricsService.metrics$.pipe(tap(() => this._loading = false));
+    this.metrics$ = netMetricsService.metrics$.pipe(tap(() => (this._loading = false)));
     this.messages$ = sharedService.messages;
   }
 
@@ -52,7 +57,6 @@ export class HomeComponent implements AfterViewChecked {
   public get currentNetwork(): TokenNetwork | undefined {
     return this._currentNetwork;
   }
-
 
   private _loading = true;
 
@@ -63,7 +67,6 @@ export class HomeComponent implements AfterViewChecked {
   public get network(): string {
     return this.config.configuration.network_name;
   }
-
 
   ngAfterViewChecked(): void {
     this.cd.detectChanges();

@@ -6,14 +6,13 @@ import { Message } from './message';
 
 @Injectable()
 export class SharedService {
-
   public httpTimeout: number;
   private _messages = new Subject<Message>();
 
   private requestsSubject = new BehaviorSubject<number>(0);
-  public readonly requests$ = this.requestsSubject.asObservable().pipe(
-    scan((acc, value) => Math.max(acc + value, 0), 0),
-  );
+  public readonly requests$ = this.requestsSubject
+    .asObservable()
+    .pipe(scan((acc, value) => Math.max(acc + value, 0), 0));
 
   requestStarted(req?: HttpRequest<any>) {
     this.requestsSubject.next(+1);
@@ -30,5 +29,4 @@ export class SharedService {
   public get messages(): Observable<Message> {
     return this._messages;
   }
-
 }

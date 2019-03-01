@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { RaidenNetworkMetrics, TokenNetwork } from '../../models/TokenNetwork';
 import { FormControl } from '@angular/forms';
 import { flatMap, map, pairwise, startWith } from 'rxjs/operators';
@@ -16,27 +25,32 @@ import { TokenNetworkRoutingService } from '../../services/token-network-routing
   styleUrls: ['./active-networks-section.component.css'],
   animations: [
     trigger('flyInOut', [
-      state('in', style({transform: 'translateX(0)'})),
+      state('in', style({ transform: 'translateX(0)' })),
       transition('void => *', [
-        animate(300, keyframes([
-          style({opacity: 0, transform: 'translateX(-100%)', offset: 0}),
-          style({opacity: 1, transform: 'translateX(15px)', offset: 0.3}),
-          style({opacity: 1, transform: 'translateX(0)', offset: 1.0})
-        ]))
+        animate(
+          300,
+          keyframes([
+            style({ opacity: 0, transform: 'translateX(-100%)', offset: 0 }),
+            style({ opacity: 1, transform: 'translateX(15px)', offset: 0.3 }),
+            style({ opacity: 1, transform: 'translateX(0)', offset: 1.0 })
+          ])
+        )
       ]),
       transition('* => void', [
-        animate(300, keyframes([
-          style({opacity: 1, transform: 'translateX(0)', offset: 0}),
-          style({opacity: 1, transform: 'translateX(-15px)', offset: 0.7}),
-          style({opacity: 0, transform: 'translateX(100%)', offset: 1.0})
-        ]))
+        animate(
+          300,
+          keyframes([
+            style({ opacity: 1, transform: 'translateX(0)', offset: 0 }),
+            style({ opacity: 1, transform: 'translateX(-15px)', offset: 0.7 }),
+            style({ opacity: 0, transform: 'translateX(100%)', offset: 1.0 })
+          ])
+        )
       ])
     ]),
     RouterAnimations.routerSlide
   ]
 })
 export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDestroy {
-
   @Input() metrics: RaidenNetworkMetrics;
   @Output() selectionChange: EventEmitter<TokenNetwork> = new EventEmitter();
   readonly searchControl = new FormControl();
@@ -67,15 +81,14 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDest
   }
 
   setupRouting() {
-    this._routeTrigger$ = this.networksChange$
-      .pipe(
-        startWith(0),
-        pairwise(),
-        map(([prev, curr]) => ({
-          value: curr,
-          params: prev > curr ? RouterAnimations.rightOffsets : RouterAnimations.leftOffsets
-        })),
-      );
+    this._routeTrigger$ = this.networksChange$.pipe(
+      startWith(0),
+      pairwise(),
+      map(([prev, curr]) => ({
+        value: curr,
+        params: prev > curr ? RouterAnimations.rightOffsets : RouterAnimations.leftOffsets
+      }))
+    );
   }
 
   ngOnInit() {
@@ -86,15 +99,17 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDest
 
     const sharedService = this.sharedService;
 
-    this.subscription = sharedService.tokenNotFound.subscribe((notFound) => {
+    this.subscription = sharedService.tokenNotFound.subscribe(notFound => {
       if (notFound) {
         this.navigateToToken(this.sharedService.firstTokenAddress());
       }
     });
 
-    this.subscription.add(sharedService.tokenNetworkSelected.subscribe(tokenNetwork => {
-      this.selectionChange.emit(tokenNetwork);
-    }));
+    this.subscription.add(
+      sharedService.tokenNetworkSelected.subscribe(tokenNetwork => {
+        this.selectionChange.emit(tokenNetwork);
+      })
+    );
 
     if (this.activatedRoute.children.length === 0) {
       this.navigateToToken(sharedService.firstTokenAddress());

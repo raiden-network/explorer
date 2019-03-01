@@ -8,9 +8,8 @@ describe('ChannelsOverviewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChannelsOverviewComponent ]
-    })
-    .compileComponents();
+      declarations: [ChannelsOverviewComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

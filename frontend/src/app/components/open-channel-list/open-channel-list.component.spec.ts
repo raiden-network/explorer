@@ -8,9 +8,8 @@ describe('OpenChannelListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OpenChannelListComponent ]
-    })
-    .compileComponents();
+      declarations: [OpenChannelListComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

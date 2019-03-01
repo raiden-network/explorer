@@ -5,7 +5,6 @@ import { DecimalPipe } from '@angular/common';
   name: 'smallNumber'
 })
 export class SmallNumberPipe extends DecimalPipe implements PipeTransform {
-
   transform(value: number, args?: any): string {
     if (value < 0.001 && value !== 0) {
       return '< 0.001';

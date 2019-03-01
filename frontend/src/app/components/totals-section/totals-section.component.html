@@ -4,35 +4,35 @@
       <div fxLayout="row" fxLayoutAlign="center" class="totals-title">Raiden Explorer</div>
 
       <div fxLayout="row" fxLayoutAlign="center" class="totals-subtitle">
-        <span *ngIf="network; else mainnet">
-          Metrics for the {{network}} Raiden Network
-        </span>
+        <span *ngIf="network; else mainnet"> Metrics for the {{ network }} Raiden Network </span>
         <ng-template #mainnet>
           Metrics for the Raiden Network
         </ng-template>
-
       </div>
     </div>
   </div>
 
-  <div [@flyInOut]="'in'"
-       fxFlexAlign="center center"
-       fxLayout="row"
-       fxLayoutGap.gt-sm="150px"
-       fxLayoutGap="8px"
-       fxLayoutGap.xs="4px"
-       class="totals-bar">
-
-    <div fxLayout="column"
-         fxLayoutAlign="center center"
-         fxLayoutGap="1rem"
-         *ngIf="metrics.totalTokenNetworks > 1">
+  <div
+    [@flyInOut]="'in'"
+    fxFlexAlign="center center"
+    fxLayout="row"
+    fxLayoutGap.gt-sm="150px"
+    fxLayoutGap="8px"
+    fxLayoutGap.xs="4px"
+    class="totals-bar"
+  >
+    <div
+      fxLayout="column"
+      fxLayoutAlign="center center"
+      fxLayoutGap="1rem"
+      *ngIf="metrics.totalTokenNetworks > 1"
+    >
       <div fxLayout="row">
-        <img class="totals-logo" src="../../../assets/network.svg">
+        <img class="totals-logo" src="../../../assets/network.svg" />
       </div>
       <div fxLayout="row">
         <div fxLayout="column" fxLayoutAlign="center center">
-          <div fxLayout="row" class="totals-title">{{metrics.totalTokenNetworks}}</div>
+          <div fxLayout="row" class="totals-title">{{ metrics.totalTokenNetworks }}</div>
           <div fxLayout="row" class="totals-subtitle">Token Networks</div>
         </div>
       </div>
@@ -40,13 +40,13 @@
 
     <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
       <div fxLayout="row">
-        <img class="totals-logo" src="../../../assets/channel.svg">
+        <img class="totals-logo" src="../../../assets/channel.svg" />
       </div>
 
       <div fxLayout="row">
         <div fxLayout="column" fxLayoutAlign="center center">
           <div fxLayout="row" class="totals-title">
-            {{metrics.openChannels || 0}}
+            {{ metrics.openChannels || 0 }}
           </div>
           <div fxLayout="row" class="totals-subtitle">Open Channels</div>
         </div>
@@ -55,16 +55,15 @@
 
     <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
       <div fxLayout="row">
-        <img class="totals-logo" src="../../../assets/account.svg">
+        <img class="totals-logo" src="../../../assets/account.svg" />
       </div>
 
       <div fxLayout="row">
         <div fxLayout="column" fxLayoutAlign="center center">
-          <div fxLayout="row" class="totals-title">{{metrics.uniqueAccounts || 0}}</div>
+          <div fxLayout="row" class="totals-title">{{ metrics.uniqueAccounts || 0 }}</div>
           <div fxLayout="row" class="totals-subtitle">Unique Accounts</div>
         </div>
       </div>
     </div>
   </div>
-
 </div>

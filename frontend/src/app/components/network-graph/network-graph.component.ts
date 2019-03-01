@@ -1,4 +1,12 @@
-import { Component, HostListener, Input, OnChanges, OnInit, SimpleChange, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChange,
+  ViewChild
+} from '@angular/core';
 import { Link, NetworkGraph, Node } from '../../models/NetworkGraph';
 import * as d3 from 'd3';
 import { Simulation, SimulationLinkDatum, SimulationNodeDatum } from 'd3';
@@ -11,11 +19,9 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { NodeInfo } from '../../models/node-info';
 
-interface SimulationNode extends SimulationNodeDatum, Node {
-}
+interface SimulationNode extends SimulationNodeDatum, Node {}
 
-interface SimulationLink extends SimulationLinkDatum<SimulationNode>, Link {
-}
+interface SimulationLink extends SimulationLinkDatum<SimulationNode>, Link {}
 
 enum ElementType {
   NODE,
@@ -23,8 +29,7 @@ enum ElementType {
 }
 
 class FilterElement {
-  constructor(readonly type: ElementType, readonly  element: SimulationNode | SimulationLink) {
-  }
+  constructor(readonly type: ElementType, readonly element: SimulationNode | SimulationLink) {}
 
   node(): SimulationNode {
     return this.element as SimulationNode;
@@ -34,7 +39,6 @@ class FilterElement {
     return this.element as SimulationLink;
   }
 }
-
 
 @Component({
   selector: 'app-network-graph',
@@ -73,7 +77,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private simulation: Simulation<SimulationNode, SimulationLink>;
   private circleSize: (value: number) => number;
   private initialized = false;
-  private graphData: { nodes: SimulationNode[], links: SimulationLink[] } = {nodes: [], links: []};
+  private graphData: { nodes: SimulationNode[]; links: SimulationLink[] } = {
+    nodes: [],
+    links: []
+  };
   private tokenNetworks: string[];
   private nodeColor: d3.ScaleOrdinal<string, any>;
 
@@ -109,7 +116,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     this.initialized = false;
     this._showAllChannels = value;
     if (!value) {
-      this.svg.selectAll('.legend').remove().exit();
+      this.svg
+        .selectAll('.legend')
+        .remove()
+        .exit();
     } else {
       this.drawLegend();
     }
@@ -135,7 +145,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     if (element.type === ElementType.NODE) {
       trackProperty = (element.element as SimulationNode).id;
     } else if (element.type === ElementType.LINK) {
-      const link = (element.element as SimulationLink);
+      const link = element.element as SimulationLink;
       trackProperty = link.sourceAddress + link.targetAddress;
     }
     return trackProperty;
@@ -148,7 +158,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       if (element.type === ElementType.NODE) {
         displayText = (element.element as SimulationNode).id;
       } else if (element.type === ElementType.LINK) {
-        const link = (element.element as SimulationLink);
+        const link = element.element as SimulationLink;
         displayText = `${link.sourceAddress} - ${link.targetAddress}`;
       }
     }
@@ -162,7 +172,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
-
     if (!changes.hasOwnProperty('data')) {
       return;
     }
@@ -197,32 +206,37 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('width', this.width)
       .attr('height', this.height);
 
-    this.svg.selectAll('.legend').remove().exit();
+    this.svg
+      .selectAll('.legend')
+      .remove()
+      .exit();
 
     if (this._showAllChannels) {
       this.drawLegend();
     }
 
-    const translation = `translate(${(this.width - this.initialWidth) / 2},${(this.height - this.initialHeight) / 2})`;
+    const translation = `translate(${(this.width - this.initialWidth) / 2},${(this.height -
+      this.initialHeight) /
+      2})`;
     this.svg.selectAll('.nodes').attr('transform', translation);
     this.svg.selectAll('.links').attr('transform', translation);
     const info = this.svg.selectAll('.info');
     if (!info.empty()) {
       const boxX = parseInt(info.attr('box-x'), 10);
       const boxY = parseInt(info.attr('box-y'), 10);
-      const width = boxX + ((this.width - this.initialWidth) / 2);
-      const height = boxY + ((this.height - this.initialHeight) / 2);
+      const width = boxX + (this.width - this.initialWidth) / 2;
+      const height = boxY + (this.height - this.initialHeight) / 2;
       info.attr('transform', `translate(${width},${height})`);
     }
   }
 
   elementSelected(value: FilterElement) {
     if (value.type === ElementType.NODE) {
-      const selectedNode = (value.element as SimulationNode);
+      const selectedNode = value.element as SimulationNode;
       this.selectNode(selectedNode);
       this._selectionInfo = this.getChannels(selectedNode);
     } else if (value.type === ElementType.LINK) {
-      this.linkSelected((value.element as SimulationLink));
+      this.linkSelected(value.element as SimulationLink);
     }
   }
 
@@ -231,8 +245,12 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private _filter(value: string): FilterElement[] {
-    const nodeElements = this.graphData.nodes.map(node => new FilterElement(ElementType.NODE, node));
-    const linkElements = this.graphData.links.map(link => new FilterElement(ElementType.LINK, link));
+    const nodeElements = this.graphData.nodes.map(
+      node => new FilterElement(ElementType.NODE, node)
+    );
+    const linkElements = this.graphData.links.map(
+      link => new FilterElement(ElementType.LINK, link)
+    );
 
     const allElements: FilterElement[] = [];
     allElements.push(...nodeElements);
@@ -242,7 +260,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       if (element.type === ElementType.NODE) {
         match = (element.element as SimulationNode).id.startsWith(value);
       } else if (element.type === ElementType.LINK) {
-        const link = (element.element as SimulationLink);
+        const link = element.element as SimulationLink;
         match = link.sourceAddress.startsWith(value) || link.targetAddress.startsWith(value);
       }
       return match;
@@ -291,8 +309,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     }
 
     links.forEach(value => {
-      const matchSource = (simNode: Node) => simNode.id === value.sourceAddress && simNode.token.address === value.tokenAddress;
-      const matchTarget = (simNode: Node) => simNode.id === value.targetAddress && simNode.token.address === value.tokenAddress;
+      const matchSource = (simNode: Node) =>
+        simNode.id === value.sourceAddress && simNode.token.address === value.tokenAddress;
+      const matchTarget = (simNode: Node) =>
+        simNode.id === value.targetAddress && simNode.token.address === value.tokenAddress;
 
       const link: SimulationLink = {
         source: this.graphData.nodes.find(matchSource),
@@ -320,7 +340,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     let oldRange: number;
     if (nodes.length > 0) {
       const openChannels = nodes[nodes.length - 1].openChannels;
-      oldRange = openChannels > 1 ? (openChannels - 1) : 1;
+      oldRange = openChannels > 1 ? openChannels - 1 : 1;
     } else {
       oldRange = 1;
     }
@@ -330,7 +350,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       if (value === 0) {
         size = 5;
       } else {
-        size = (((value - 1) * 3) / oldRange) + 5;
+        size = ((value - 1) * 3) / oldRange + 5;
       }
       return size;
     };
@@ -343,7 +363,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     this.initialWidth = this.width;
     this.initialHeight = this.height;
 
-    this.svg = d3.select<SVGElement, NetworkGraph>(this.graph.nativeElement)
+    this.svg = d3
+      .select<SVGElement, NetworkGraph>(this.graph.nativeElement)
       .append('svg')
       .attr('width', this.width)
       .attr('height', this.height);
@@ -354,17 +375,20 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       this._selectionInfo = undefined;
     });
 
-    this.link = this.svg.append('g')
+    this.link = this.svg
+      .append('g')
       .attr('class', 'links')
       .selectAll('.link');
 
-    this.node = this.svg.append('g')
+    this.node = this.svg
+      .append('g')
       .attr('class', 'nodes')
       .attr('stroke-width', '1')
       .attr('stroke', '#fff')
       .selectAll('.node');
 
-    this.color = d3Scale.scaleOrdinal()
+    this.color = d3Scale
+      .scaleOrdinal()
       .domain(['opened', 'closed', 'settled'])
       .range([
         NetworkGraphComponent.OPEN_CHANNEL_COLOR,
@@ -374,16 +398,26 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private drawGraph() {
-    this.svg.selectAll('.no-network-data').remove().exit();
+    this.svg
+      .selectAll('.no-network-data')
+      .remove()
+      .exit();
 
     const simulationNodes = this.graphData.nodes;
     if (simulationNodes.length === 0) {
-      this.svg.selectAll('.node').remove().exit();
-      this.svg.selectAll('.link').remove().exit();
+      this.svg
+        .selectAll('.node')
+        .remove()
+        .exit();
+      this.svg
+        .selectAll('.link')
+        .remove()
+        .exit();
 
-      this.svg.append('g')
+      this.svg
+        .append('g')
         .classed('no-network-data', true)
-        .attr('transform', `translate(${(this.width / 2) - 110},${this.height / 2})`)
+        .attr('transform', `translate(${this.width / 2 - 110},${this.height / 2})`)
         .append('text')
         .text('No channels to visualize!')
         .style('fill', '#000')
@@ -391,11 +425,13 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       return;
     }
     this.tokenNetworks = d3.set(simulationNodes.map(value => value.token.address)).values();
-    this.nodeColor = d3Scale.scaleOrdinal()
+    this.nodeColor = d3Scale
+      .scaleOrdinal()
       .domain(this.tokenNetworks)
       .range(this.generateColors(this.tokenNetworks.length));
 
-    this.simulation = d3.forceSimulation<SimulationNode, SimulationLink>()
+    this.simulation = d3
+      .forceSimulation<SimulationNode, SimulationLink>()
       .force('link', d3.forceLink().id((node1: SimulationNode) => node1.id + node1.token.address))
       .force('charge', d3.forceManyBody().distanceMax(180))
       .force('center', d3.forceCenter(this.width / 2, this.height / 2))
@@ -403,7 +439,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
     const links = this.link.data(this.graphData.links, NetworkGraphComponent.linkCompare());
 
-    this.svg.selectAll('.link').remove().exit();
+    this.svg
+      .selectAll('.link')
+      .remove()
+      .exit();
 
     const link = links
       .enter()
@@ -427,7 +466,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
     const nodes = this.node.data(simulationNodes, NetworkGraphComponent.nodeCompare());
 
-    this.svg.selectAll('.node').remove().exit();
+    this.svg
+      .selectAll('.node')
+      .remove()
+      .exit();
 
     const node = nodes
       .enter()
@@ -435,10 +477,13 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       .attr('class', 'node')
       .attr('fill', (datum: Node) => this.nodeColor(datum.token.address))
       .attr('r', (datum: Node) => this.circleSize(datum.openChannels))
-      .call(d3.drag<any, any, any>()
-        .on('start', (datum: Node) => this.dragstarted(datum, this.simulation))
-        .on('drag', this.dragged)
-        .on('end', (datum: Node) => this.dragended(datum, this.simulation)))
+      .call(
+        d3
+          .drag<any, any, any>()
+          .on('start', (datum: Node) => this.dragstarted(datum, this.simulation))
+          .on('drag', this.dragged)
+          .on('end', (datum: Node) => this.dragended(datum, this.simulation))
+      )
       .merge(nodes);
 
     node.on('click', (selectedNode: Node) => {
@@ -476,9 +521,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
         .attr('x2', d => (d.target as SimulationNode).x)
         .attr('y2', d => (d.target as SimulationNode).y);
 
-      node
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y);
+      node.attr('cx', d => d.x).attr('cy', d => d.y);
     }
   }
 
@@ -486,20 +529,26 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     const legendRectSize = 12;
     const legendSpacing = 7;
     const legendHeight = legendRectSize + legendSpacing;
-    const legend = this.svg.selectAll('.legend')
+    const legend = this.svg
+      .selectAll('.legend')
       .data(this.color.domain())
       .enter()
       .append('g')
       .classed('legend', true)
-      .attr('transform', (_d, i: number) => `translate(${this.width - 100},${(i * legendHeight) + 20})`);
+      .attr(
+        'transform',
+        (_d, i: number) => `translate(${this.width - 100},${i * legendHeight + 20})`
+      );
 
-    legend.append('rect')
+    legend
+      .append('rect')
       .attr('width', legendRectSize)
       .attr('height', legendRectSize / 5)
       .style('fill', this.color)
       .style('stroke', this.color);
 
-    legend.append('text')
+    legend
+      .append('text')
       .attr('x', 20)
       .attr('y', 5)
       .text((d: string) => d)
@@ -510,8 +559,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private linkSelected(datum: SimulationLink) {
     this.highlightLink(datum);
 
-    const source = (datum.source as SimulationNodeDatum);
-    const target = (datum.target as SimulationNodeDatum);
+    const source = datum.source as SimulationNodeDatum;
+    const target = datum.target as SimulationNodeDatum;
 
     const x1 = source.x || 0;
     const x2 = target.x || 0;
@@ -521,7 +570,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     const data = [
       this.tooltipLine('Source:', datum.sourceAddress),
       this.tooltipLine('Target:', datum.targetAddress),
-      this.tooltipLine('Channel capacity:', `${datum.capacity.toFixed((source as Node).token.decimals)} tokens`)
+      this.tooltipLine(
+        'Channel capacity:',
+        `${datum.capacity.toFixed((source as Node).token.decimals)} tokens`
+      )
     ];
 
     const boxHeight = data.length * 15 + 20;
@@ -538,8 +590,17 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     return `<span class="tooltip-label">${label}</span> ${content}`;
   }
 
-  private drawInformationBox(boxX: number, boxY: number, boxWidth: number, boxHeight: number, data: string[]) {
-    this.svg.selectAll('.info').remove().exit();
+  private drawInformationBox(
+    boxX: number,
+    boxY: number,
+    boxWidth: number,
+    boxHeight: number,
+    data: string[]
+  ) {
+    this.svg
+      .selectAll('.info')
+      .remove()
+      .exit();
 
     const info = this.svg
       .append('g')
@@ -549,31 +610,35 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       });
 
     const translation = `translate(${boxX},${boxY})`;
-    info.attr('transform', translation)
+    info
+      .attr('transform', translation)
       .attr('box-x', boxX)
       .attr('box-y', boxY);
 
-    const foreignObject = info.append('foreignObject')
+    const foreignObject = info
+      .append('foreignObject')
       .attr('width', `${boxWidth}px`)
       .attr('height', `${boxHeight}px`)
       .style('fill', '#fff')
       .style('stroke', '#000')
       .style('stroke-width', '1px');
 
-    const appendText = (text) => `<div class="truncate">${text}</div>`;
+    const appendText = text => `<div class="truncate">${text}</div>`;
 
     let html = '';
     for (let i = 0; i < data.length; i++) {
       html += appendText(data[i]);
     }
 
-    foreignObject.append('xhtml:body')
+    foreignObject
+      .append('xhtml:body')
       .style('background', 'white')
       .html(`<div class="graph-tooltip">${html}</div>`);
   }
 
   private highlightLink(datum: SimulationLink) {
-    this.svg.selectAll('.link')
+    this.svg
+      .selectAll('.link')
       .attr('stroke-opacity', (link: Link) => {
         if (link === datum) {
           return NetworkGraphComponent.SELECTED_NODE_STROKE_OPACITY;
@@ -601,7 +666,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     const maxX = Math.max(x1, x2);
     const minX = Math.min(x1, x2);
 
-    let boxX = (((maxX - minX) / 2) + minX) - (boxWidth / 2);
+    let boxX = (maxX - minX) / 2 + minX - boxWidth / 2;
     boxX += (this.width - this.initialWidth) / 2;
     if (boxX < 0) {
       boxX = 10;
@@ -624,7 +689,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       boxY = smY - boxMargin - boxHeight;
     }
     const offset = this.height - this.initialHeight;
-    return boxY + (offset / 2);
+    return boxY + offset / 2;
   }
 
   // noinspection JSMethodCanBeStatic
@@ -662,24 +727,32 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private clearSelection() {
-    this.svg.selectAll('.node')
+    this.svg
+      .selectAll('.node')
       .attr('fill', (datum: Node) => this.nodeColor(datum.token.address))
       .attr('opacity', 1);
-    this.svg.selectAll('.link')
+    this.svg
+      .selectAll('.link')
       .attr('stroke-opacity', NetworkGraphComponent.DEFAULT_NODE_STROKE_OPACITY)
       .attr('z-index', 1);
 
-    this.svg.selectAll('.info').remove().exit();
+    this.svg
+      .selectAll('.info')
+      .remove()
+      .exit();
   }
 
   private selectNode(selectedNode: Node) {
     const neighbors: Node[] = this.getNeighbors(selectedNode);
-    this.svg.selectAll('.node')
-      .attr('fill', (node: Node) => this.ifNodeElse(selectedNode, node, neighbors, [
-        NetworkGraphComponent.SELECTED_COLOR,
-        NetworkGraphComponent.HIGHLIGHT_COLOR,
-        this.nodeColor(node.token.address)
-      ]))
+    this.svg
+      .selectAll('.node')
+      .attr('fill', (node: Node) =>
+        this.ifNodeElse(selectedNode, node, neighbors, [
+          NetworkGraphComponent.SELECTED_COLOR,
+          NetworkGraphComponent.HIGHLIGHT_COLOR,
+          this.nodeColor(node.token.address)
+        ])
+      )
       .attr('opacity', (node: Node) => {
         return this.ifNodeElse(selectedNode, node, neighbors, [
           NetworkGraphComponent.NODE_SELECTED_OPACITY,
@@ -687,11 +760,14 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
           NetworkGraphComponent.NODE_DEFAULT_OPACITY
         ]);
       });
-    this.svg.selectAll('.link')
-      .attr('stroke-opacity', (link: Link) => this.ifNeighborElse(selectedNode, link, [
-        NetworkGraphComponent.SELECTED_NODE_STROKE_OPACITY,
-        NetworkGraphComponent.DEFAULT_NODE_STROKE_OPACITY
-      ]))
+    this.svg
+      .selectAll('.link')
+      .attr('stroke-opacity', (link: Link) =>
+        this.ifNeighborElse(selectedNode, link, [
+          NetworkGraphComponent.SELECTED_NODE_STROKE_OPACITY,
+          NetworkGraphComponent.DEFAULT_NODE_STROKE_OPACITY
+        ])
+      )
       .attr('z-index', (link: Link) => this.ifNeighborElse(selectedNode, link, [10, 1]))
       .attr('stroke-width', (link: Link) => this.ifNeighborElse(selectedNode, link, [3, 2]));
 
@@ -725,15 +801,14 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private getNeighbors(node: Node): Node[] {
-    return this.graphData.links
-      .reduce((neighbors, link) => {
-        if (link.targetAddress === node.id && link.tokenAddress === node.token.address) {
-          neighbors.push(link.source);
-        } else if (link.sourceAddress === node.id && link.tokenAddress === node.token.address) {
-          neighbors.push(link.target);
-        }
-        return neighbors;
-      }, []);
+    return this.graphData.links.reduce((neighbors, link) => {
+      if (link.targetAddress === node.id && link.tokenAddress === node.token.address) {
+        neighbors.push(link.source);
+      } else if (link.sourceAddress === node.id && link.tokenAddress === node.token.address) {
+        neighbors.push(link.target);
+      }
+      return neighbors;
+    }, []);
   }
 
   // noinspection JSMethodCanBeStatic
@@ -772,7 +847,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   //noinspection JSMethodCanBeStatic
-  private dragstarted(node: SimulationNode, simulation: Simulation<SimulationNode, SimulationLink>) {
+  private dragstarted(
+    node: SimulationNode,
+    simulation: Simulation<SimulationNode, SimulationLink>
+  ) {
     if (!d3.event.active) {
       simulation.alphaTarget(0.3).restart();
     }
@@ -796,7 +874,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private generateColors(number: number): string[] {
-    const transform = (x, os, oe, ns, ne) => (((x - os) * (ne - ns)) / (oe - os)) + ns;
+    const transform = (x, os, oe, ns, ne) => ((x - os) * (ne - ns)) / (oe - os) + ns;
     const colors: string[] = [];
 
     for (let i = 0; i < number; i++) {

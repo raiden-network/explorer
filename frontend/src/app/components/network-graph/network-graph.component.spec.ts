@@ -8,9 +8,8 @@ describe('NetworkGraphComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NetworkGraphComponent ]
-    })
-    .compileComponents();
+      declarations: [NetworkGraphComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

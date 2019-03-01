@@ -6,12 +6,11 @@
 
 <div fxLayout="row" class="content statistics">
   <div fxLayout="column" fxFlex="1 1 50" fxLayoutAlign="center" fxLayoutGap="0.35rem">
-
     <div fxLayout="row">
       <div fxLayout="column">
         <div fxLayout="row" class="bold space">
-          <span>{{tokenNetwork.averageDepositPerParticipant | smallNumber}}</span>
-          <span>{{tokenNetwork.token.symbol}}</span>
+          <span>{{ tokenNetwork.averageDepositPerParticipant | smallNumber }}</span>
+          <span>{{ tokenNetwork.token.symbol }}</span>
         </div>
         <div fxLayout="row">Avg. deposit per participant</div>
       </div>
@@ -19,7 +18,7 @@
 
     <div fxLayout="row">
       <div fxLayout="column">
-        <div fxLayout="row" class="bold">{{tokenNetwork.channelsPerAccount | number}}</div>
+        <div fxLayout="row" class="bold">{{ tokenNetwork.channelsPerAccount | number }}</div>
         <div fxLayout="row">Avg. number of channels</div>
         <div fxLayout="row">per account</div>
       </div>
@@ -28,24 +27,27 @@
     <div fxLayout="row">
       <div fxLayout="column">
         <div fxLayout="row" class="bold space">
-          <span>{{tokenNetwork.averageDepositPerChannel | smallNumber}}</span>
-          <span>{{tokenNetwork.token.symbol}}</span>
+          <span>{{ tokenNetwork.averageDepositPerChannel | smallNumber }}</span>
+          <span>{{ tokenNetwork.token.symbol }}</span>
         </div>
         <div fxLayout="row">Avg. deposit per channel</div>
       </div>
     </div>
-
   </div>
-  <div fxLayout="column"
-       fxLayoutAlign="center center"
-       fxFlex="1 1 50"
-       fxLayoutGap="0.3rem"
-       class="cyan totals">
-    <div fxLayout="row"
-         class="bold space"
-         matTooltip="The total number of tokens currently deposited on the token network.">
-      <span>{{tokenNetwork.totalNetworkDeposits | smallNumber}}</span>
-      <span>{{tokenNetwork.token.symbol}}</span>
+  <div
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    fxFlex="1 1 50"
+    fxLayoutGap="0.3rem"
+    class="cyan totals"
+  >
+    <div
+      fxLayout="row"
+      class="bold space"
+      matTooltip="The total number of tokens currently deposited on the token network."
+    >
+      <span>{{ tokenNetwork.totalNetworkDeposits | smallNumber }}</span>
+      <span>{{ tokenNetwork.token.symbol }}</span>
     </div>
     <div fxLayout="row" class="center">Total Network Deposits</div>
   </div>

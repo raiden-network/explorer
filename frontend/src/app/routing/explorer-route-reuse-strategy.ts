@@ -2,7 +2,6 @@ import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from 
 import { NetworkInformationComponent } from '../components/network-information/network-information.component';
 
 export class ExplorerRouteReuseStrategy implements RouteReuseStrategy {
-
   handlers: { [key: string]: DetachedRouteHandle } = {};
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {

@@ -14,7 +14,6 @@ import { MediaObserver } from '@angular/flex-layout';
   styleUrls: ['./network-information.component.css']
 })
 export class NetworkInformationComponent implements OnInit, OnDestroy {
-
   private subscription: Subscription;
 
   constructor(
@@ -23,8 +22,7 @@ export class NetworkInformationComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     public readonly media$: MediaObserver,
     private routingService: TokenNetworkRoutingService
-  ) {
-  }
+  ) {}
 
   public get topParticipantsByChannelExpanded(): boolean {
     return this.sharedService.topParticipantsByChannelExpanded;
@@ -61,7 +59,8 @@ export class NetworkInformationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.route.params.pipe(map(params => params.token_address))
+    this.subscription = this.route.params
+      .pipe(map(params => params.token_address))
       .subscribe(address => {
         const index = +this.sharedService.loadTokenNetworkInformation(address);
         this.routingService.changed(index);

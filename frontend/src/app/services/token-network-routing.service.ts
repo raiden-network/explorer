@@ -5,9 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TokenNetworkRoutingService {
-
-  constructor() {
-  }
+  constructor() {}
 
   private _networkChange$ = new BehaviorSubject(0);
 

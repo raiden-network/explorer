@@ -1,13 +1,13 @@
 <div fxLayout="column" fxLayoutGap="20px">
-  <div fxLayout="row"
-       fxLayoutAlign="center"
-       class="title">
+  <div fxLayout="row" fxLayoutAlign="center" class="title">
     Network Visualization
   </div>
-  <a fxLayout="row"
-     fxLayoutAlign="center"
-     matTooltip="Mouse hover over nodes shows the node ID"
-     class="subtitle">
+  <a
+    fxLayout="row"
+    fxLayoutAlign="center"
+    matTooltip="Mouse hover over nodes shows the node ID"
+    class="subtitle"
+  >
     A visualization of the current state of the Raiden network
   </a>
 </div>
@@ -16,4 +16,5 @@
   id="network-graph"
   fxLayout="row"
   fxLayoutAlign="center"
-  [data]="graph"></app-network-graph>
+  [data]="graph"
+></app-network-graph>

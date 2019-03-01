@@ -8,13 +8,11 @@ import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config'
   styleUrls: ['./open-channel-list.component.css']
 })
 export class OpenChannelListComponent implements OnInit {
-
   @Input() height: number;
   @Input() info: NodeInfo;
   @Output() closed: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private config: NetMetricsConfig) {
-  }
+  constructor(private config: NetMetricsConfig) {}
 
   private _listHeight: number;
 

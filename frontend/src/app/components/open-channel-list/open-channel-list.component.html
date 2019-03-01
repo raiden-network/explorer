@@ -1,12 +1,12 @@
 <div class="channels" [style.height.px]="height">
   <div class="channels-header">
     <button mat-icon-button (click)="closed.emit(true)">
-      <img src="../../../assets/baseline-close-24px.svg">
+      <img src="../../../assets/baseline-close-24px.svg" />
     </button>
     <div class="title">Open Channels</div>
 
     <div class="node truncate">
-      <a target="_blank" href="{{etherscanUrl(info.node.id)}}">{{info.node.id}}</a>
+      <a target="_blank" href="{{ etherscanUrl(info.node.id) }}">{{ info.node.id }}</a>
     </div>
   </div>
 
@@ -16,27 +16,33 @@
         <h3 matLine>
           With
           <span class="truncate">
-          <a target="_blank"
-             href="{{etherscanUrl(channel.sourceAddress)}}"
-             *ngIf="channel.sourceAddress !== info.node.id; else show_target">
-            {{channel.sourceAddress}}
-          </a>
-
-          <ng-template #show_target>
-            <a class="truncate" target="_blank" href="{{etherscanUrl(channel.targetAddress)}}">
-              {{channel.targetAddress}}
+            <a
+              target="_blank"
+              href="{{ etherscanUrl(channel.sourceAddress) }}"
+              *ngIf="channel.sourceAddress !== info.node.id; else show_target"
+            >
+              {{ channel.sourceAddress }}
             </a>
-          </ng-template>
 
-        </span>
+            <ng-template #show_target>
+              <a class="truncate" target="_blank" href="{{ etherscanUrl(channel.targetAddress) }}">
+                {{ channel.targetAddress }}
+              </a>
+            </ng-template>
+          </span>
         </h3>
 
-        <div matLine class="channel-capacity"
-             matTooltip="Capacity {{channel.capacity | number: '1.' + info.node.token.decimals + '-' + info.node.token.decimals}} tokens">
-          Capacity: {{channel.capacity | smallNumber}} tokens
+        <div
+          matLine
+          class="channel-capacity"
+          matTooltip="Capacity {{
+            channel.capacity
+              | number: '1.' + info.node.token.decimals + '-' + info.node.token.decimals
+          }} tokens"
+        >
+          Capacity: {{ channel.capacity | smallNumber }} tokens
         </div>
       </mat-list-item>
     </mat-list>
-
   </div>
 </div>

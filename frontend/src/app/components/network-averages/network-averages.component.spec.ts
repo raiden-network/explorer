@@ -8,9 +8,8 @@ describe('NetworkAveragesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NetworkAveragesComponent ]
-    })
-    .compileComponents();
+      declarations: [NetworkAveragesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
