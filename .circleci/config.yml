@@ -38,6 +38,7 @@ jobs:
     steps:
       - attach_workspace: *attach_options
       - run: npm run lint
+      - run: npm run prettier:check
 
   build:
     executor: base-executor

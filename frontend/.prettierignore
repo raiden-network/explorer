@@ -1,0 +1,11 @@
+.idea
+dist
+node_modules
+src/assets
+src/favicon.ico
+.dockerignore
+.gitignore
+.prettierignore
+.editorconfig
+CHANGELOG.md
+package-lock.json

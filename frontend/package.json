@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "prettier:fix": "prettier --write \"**/*.*\"",
+    "prettier:check": "prettier --check \"**/*.*\""
   },
   "private": true,
   "dependencies": {
@@ -49,9 +51,11 @@
     "karma-coverage-istanbul-reporter": "~2.0.4",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "prettier": "1.16.4",
     "protractor": "^5.4.2",
     "ts-node": "~7.0.1",
     "tslint": "~5.12.1",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "~3.2.2"
   }
 }
