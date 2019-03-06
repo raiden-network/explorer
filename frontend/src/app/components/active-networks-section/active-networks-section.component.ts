@@ -191,7 +191,9 @@ export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDest
       const name = token.name.toLocaleLowerCase();
       const symbol = token.symbol.toLocaleLowerCase();
       const address = token.address.toLocaleLowerCase();
-      return name.startsWith(keyword) || symbol.startsWith(keyword) || address.startsWith(keyword);
+      return (
+        name.indexOf(keyword) >= 0 || symbol.startsWith(keyword) || address.startsWith(keyword)
+      );
     }
 
     return networks$.pipe(map(networks => networks.filter(network => matches(network.token))));
