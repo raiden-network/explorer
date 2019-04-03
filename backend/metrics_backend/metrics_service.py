@@ -4,10 +4,10 @@ import traceback
 from typing import Dict, Optional, List
 
 import gevent
+from gevent.hub import Hub
 from web3 import Web3
 from eth_utils import is_checksum_address
-from raiden_libs.gevent_error_handler import register_error_handler
-from raiden_libs.types import Address
+from metrics_backend.utils import Address
 from raiden_contracts.contract_manager import ContractManager
 from raiden_contracts.constants import (
     ChannelEvent,
@@ -24,6 +24,22 @@ from metrics_backend.utils.blockchain_listener import (
 from metrics_backend.utils.token import get_token_info
 
 log = logging.getLogger(__name__)
+IGNORE_ERROR = Hub.SYSTEM_ERROR + Hub.NOT_ERROR
+
+
+def register_error_handler(error_handler):
+    Hub._origin_handle_error = Hub.handle_error
+
+    msg = 'registering the same error handler twice will result in a infinite loop'
+    assert error_handler != Hub._origin_handle_error, msg
+
+    def custom_handle_error(self, context, type, value, tb):
+        if not issubclass(type, IGNORE_ERROR):
+            error_handler(context, (type, value, tb))
+
+        self._origin_handle_error(context, type, value, tb)
+
+    Hub.handle_error = custom_handle_error
 
 
 def error_handler(_, exc_info):
