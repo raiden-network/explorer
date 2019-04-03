@@ -3,7 +3,7 @@ from typing import Dict
 
 from eth_utils import is_checksum_address
 from dataclasses import dataclass
-from raiden_libs.types import Address, ChannelIdentifier
+from metrics_backend.utils import Address, ChannelIdentifier
 
 from metrics_backend.model import ChannelView
 

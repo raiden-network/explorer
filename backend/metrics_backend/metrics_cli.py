@@ -7,6 +7,11 @@ import logging
 import os
 import sys
 import json
+import warnings
+import requests
+import contextlib
+
+from functools import partialmethod
 
 import click
 import gevent
@@ -14,11 +19,10 @@ from eth_utils import is_checksum_address
 from web3 import HTTPProvider, Web3
 from web3.middleware import geth_poa_middleware
 from requests.exceptions import ConnectionError
-from raiden_libs.no_ssl_patch import no_ssl_verification
 from raiden_contracts.contract_manager import (
     ContractManager,
     contracts_precompiled_path,
-    get_contracts_deployed,
+    get_contracts_deployment_info,
 )
 from raiden_contracts.constants import CONTRACT_TOKEN_NETWORK_REGISTRY
 
@@ -33,6 +37,18 @@ OUTPUT_FILE = 'network-info.json'
 TEMP_FILE = 'tmp.json'
 OUTPUT_PERIOD = 10  # seconds
 REQUIRED_CONFIRMATIONS = 8  # ~2min with 15s blocks
+
+
+@contextlib.contextmanager
+def no_ssl_verification():
+    old_request = requests.Session.request
+    requests.Session.request = partialmethod(old_request, verify=False)
+
+    warnings.filterwarnings('ignore', 'Unverified HTTPS request')
+    yield
+    warnings.resetwarnings()
+
+    requests.Session.request = old_request
 
 
 @click.command()
@@ -101,17 +117,17 @@ def main(
         )
         sys.exit()
 
-    contracts_version = None if use_production_contracts else 'pre_limits'
+    contracts_version = '0.4.0' if use_production_contracts else '0.10.1'
     log.info(f'Using contracts version: {contracts_version}')
 
     with no_ssl_verification():
         valid_params_given = is_checksum_address(registry_address) and start_block >= 0
         if not valid_params_given:
             try:
-                contract_data = get_contracts_deployed(int(web3.net.version), contracts_version)
+                contract_data = get_contracts_deployment_info(int(web3.net.version), contracts_version)
                 token_network_registry_info = contract_data['contracts'][CONTRACT_TOKEN_NETWORK_REGISTRY]  # noqa
                 registry_address = token_network_registry_info['address']
-                start_block = max(0, token_network_registry_info['block_number'] - 100)
+                start_block = max(0, token_network_registry_info['block_number'])
             except ValueError:
                 log.error(
                     'Provided registry address or start block are not valid and '
