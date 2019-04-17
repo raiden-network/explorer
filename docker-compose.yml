@@ -146,6 +146,30 @@ services:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:kovan-limits.explorer.raiden.network; Path: /json"
 
+  frontend-goerli:
+    build:
+      context: ./frontend
+      args:
+        backend_url: https://goerli.explorer.raiden.network/json
+        poll_interval: 10000
+        etherscan_base_url: https://goerli.etherscan.io/address/
+        network_name: Goerli
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:goerli.explorer.raiden.network"
+
+  backend-goerli:
+    build:
+      context: ./backend
+    restart: always
+    environment:
+      - EXPLORER_ETH_RPC=http://geth.goerli.ethnodes.brainbot.com:8545
+      - EXPLORER_USE_PRODUCTION_CONTRACTS=false
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:goerli.explorer.raiden.network; Path: /json"
+
   traefik:
     image: traefik:1.7
     restart: always
