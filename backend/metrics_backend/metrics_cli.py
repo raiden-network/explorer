@@ -24,7 +24,7 @@ from raiden_contracts.contract_manager import (
     contracts_precompiled_path,
     get_contracts_deployment_info,
 )
-from raiden_contracts.constants import CONTRACT_TOKEN_NETWORK_REGISTRY
+from raiden_contracts.constants import CONTRACT_TOKEN_NETWORK_REGISTRY, CONTRACTS_VERSION
 
 from metrics_backend.api.rest import NetworkInfoAPI
 from metrics_backend.metrics_service import MetricsService
@@ -117,7 +117,7 @@ def main(
         )
         sys.exit()
 
-    contracts_version = '0.4.0' if use_production_contracts else '0.12.0'
+    contracts_version = '0.4.0' if use_production_contracts else CONTRACTS_VERSION
     log.info(f'Using contracts version: {contracts_version}')
 
     with no_ssl_verification():
