@@ -13,4 +13,4 @@ cachetools==2.1.0
 
 raiden-contracts==0.29.0
 eth-abi<=1.2.2
-eth-typing<=2
+eth-typing<2
