@@ -34,37 +34,15 @@ def create_registry_event_topics(contract_manager: ContractManager) -> List:
     return [encode_hex(event_abi_to_log_topic(new_network_abi))]
 
 
-def decode_event(abi: Dict, log: Dict):
-    """ Helper function to unpack event data using a provided ABI
+def decode_event(topic_to_event_abi: Dict[bytes, Dict], log_entry: Dict) -> Dict:
+    topic = log_entry["topics"][0]
+    event_abi = topic_to_event_abi[topic]
 
-    Args:
-        abi: The ABI of the contract, not the ABI of the event
-        log: The raw event data
-
-    Returns:
-        The decoded event
-    """
-    if isinstance(log['topics'][0], str):
-        log['topics'][0] = decode_hex(log['topics'][0])
-    elif isinstance(log['topics'][0], int):
-        log['topics'][0] = decode_hex(hex(log['topics'][0]))
-    event_id = bytes(log['topics'][0])
-    events = filter_by_type('event', abi)
-    topic_to_event_abi = {
-        event_abi_to_log_topic(event_abi): event_abi
-        for event_abi in events
-    }
-    try:
-        event_abi = topic_to_event_abi[event_id]
-    except KeyError:
-        return None
-    return get_event_data(event_abi, log)
+    return get_event_data(event_abi, log_entry)
 
 
 def get_events(
         web3: Web3,
-        contract_manager: ContractManager,
-        contract_name: str,
         contract_address: str,
         topics: List,
         from_block: Union[int, str] = 0,
@@ -106,7 +84,7 @@ class BlockchainListener(gevent.Greenlet):
             *,  # require all following arguments to be keyword arguments
             required_confirmations: int = 4,
             sync_chunk_size: int = 100_000,
-            poll_interval: int = 15,
+            poll_interval: int = 5,
             sync_start_block: int = 0,
     ) -> None:
         """Creates a new BlockchainListener
@@ -271,21 +249,20 @@ class BlockchainListener(gevent.Greenlet):
         for id, (topics, callback) in name_to_callback.items():
             events = get_events(
                 web3=self.web3,
-                contract_manager=self.contract_manager,
-                contract_name=self.contract_name,
                 contract_address=self.contract_address,
                 topics=topics,
                 **filter_params,
             )
 
+            events_abi = filter_by_type("event", self.contract_manager.get_contract_abi(self.contract_name))
+            topic_to_event_abi = {event_abi_to_log_topic(event_abi): event_abi for event_abi in events_abi}
             for raw_event in events:
                 decoded_event = decode_event(
-                    self.contract_manager.get_contract_abi(self.contract_name),
-                    raw_event,
+                    topic_to_event_abi=topic_to_event_abi,
+                    log_entry=raw_event,
                 )
-                if decoded_event:
-                    log.debug('Received confirmed event: \n%s', decoded_event)
-                    callback(decoded_event)
+                log.debug('Received confirmed event: \n%s', decoded_event)
+                callback(decoded_event)
 
     def _detected_chain_reorg(self, current_block: int):
         log.debug(

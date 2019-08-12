@@ -138,7 +138,7 @@ def main(
         try:
             service = MetricsService(
                 web3=web3,
-                contract_manager=ContractManager(contracts_precompiled_path()),
+                contract_manager=ContractManager(contracts_precompiled_path(contracts_version)),
                 registry_address=registry_address,
                 sync_start_block=start_block,
                 required_confirmations=confirmations,

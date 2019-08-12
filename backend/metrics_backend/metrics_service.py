@@ -61,7 +61,7 @@ class MetricsService(gevent.Greenlet):
         contract_manager: ContractManager,
         registry_address: Address,
         sync_start_block: int = 0,
-        required_confirmations: int = 8,  # ~2min
+        required_confirmations: int = 5,  # the default
     ) -> None:
         """ Creates a new pathfinding service
 
