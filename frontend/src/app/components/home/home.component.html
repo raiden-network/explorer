@@ -12,7 +12,7 @@
     [metrics]="metrics"
   ></app-active-networks-section>
 
-  <app-graph-section *ngIf="currentNetwork" [graph]="currentNetwork.graph"></app-graph-section>
+  <app-graph-section *ngIf="currentNetwork" [graph]="currentNetwork.graph" id="network"></app-graph-section>
 </div>
 
 <ng-template #error>
