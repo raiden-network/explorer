@@ -32,11 +32,16 @@ export interface TokenNetwork {
   readonly averageDepositPerParticipant: number;
   readonly totalNetworkDeposits: number;
   uniqueAccounts?: string[];
+  readonly channelsPerParticipants: UserAccountStatistics[];
 }
 
 export interface RaidenNetworkMetrics {
   readonly totalTokenNetworks: number;
   readonly openChannels: number;
+  readonly closedChannels: number;
+  readonly settledChannels: number;
+  readonly channelsPerAccount: number;
+  readonly topParticipantsByChannels: UserAccountStatistics[];
   readonly uniqueAccounts: number;
   readonly tokenNetworks: TokenNetwork[];
 }

@@ -107,14 +107,52 @@ export class NetMetricsService {
           .filter(this.unique);
 
         const totalOpenChannels = data
-          .map(value1 => value1.openedChannels)
-          .reduce((acc, openChannels) => acc + openChannels);
+          .map(network => network.openedChannels)
+          .reduce((acc, openedChannels) => acc + openedChannels);
+        const totalClosedChannels = data
+          .map(network => network.closedChannels)
+          .reduce((acc, closedChannels) => acc + closedChannels);
+        const totalSettledChannels = data
+          .map(network => network.settledChannels)
+          .reduce((acc, settledChannels) => acc + settledChannels);
+
+        const totalChannelsPerParticipants: UserAccountStatistics[] = Object.values(
+          data
+            .map(value => value.channelsPerParticipants)
+            .reduce((summedChannelsPerPart, channelsPerParticipant) => {
+              channelsPerParticipant.forEach(participant => {
+                if (summedChannelsPerPart[participant.address] === undefined) {
+                  summedChannelsPerPart[participant.address] = participant;
+                } else {
+                  summedChannelsPerPart[participant.address].channels += participant.channels;
+                }
+              });
+              return summedChannelsPerPart;
+            }, {})
+        );
+
+        const topParticipants = totalChannelsPerParticipants
+          .sort((a, b) => b.channels - a.channels)
+          .slice(0, 5);
+
+        const accountChannels = totalChannelsPerParticipants.reduce(
+          (acc, userAccount) => acc + userAccount.channels,
+          0
+        );
+        const channelsPerAccount =
+          totalChannelsPerParticipants.length === 0
+            ? 0
+            : accountChannels / totalChannelsPerParticipants.length;
 
         const raidenMetrics: RaidenNetworkMetrics = {
           totalTokenNetworks: data.length,
           openChannels: totalOpenChannels,
+          closedChannels: totalClosedChannels,
+          settledChannels: totalSettledChannels,
           uniqueAccounts: uniqueAccounts.length,
-          tokenNetworks: data.sort((a, b) => b.openedChannels - a.openedChannels)
+          tokenNetworks: data.sort((a, b) => b.openedChannels - a.openedChannels),
+          topParticipantsByChannels: topParticipants,
+          channelsPerAccount: channelsPerAccount
         };
 
         data.forEach(value => {
@@ -206,10 +244,10 @@ export class NetMetricsService {
       };
     });
 
-    const accountsWithOpenChannels = this.accountsWithOpenChannels(channelEntries);
-    const channelsPerAccount = this.calculateChannelsPerAccount(accountsWithOpenChannels);
+    const accountsWithChannels = this.accountsWithChannels(channelEntries);
+    const channelsPerAccount = this.calculateChannelsPerAccount(accountsWithChannels);
     const averagePerParticipant = this.calculateAverageDepositPerParticipant(
-      accountsWithOpenChannels,
+      accountsWithChannels,
       decimals
     );
 
@@ -256,12 +294,13 @@ export class NetMetricsService {
       averageDepositPerChannel: channelAverage || 0,
       averageDepositPerParticipant: averagePerParticipant || 0,
       uniqueAccounts: uniqueAccounts,
-      totalNetworkDeposits: TokenUtils.toDecimal(totalNetworkDeposits, decimals)
+      totalNetworkDeposits: TokenUtils.toDecimal(totalNetworkDeposits, decimals),
+      channelsPerParticipants: participants
     };
   }
 
   // noinspection JSMethodCanBeStatic
-  private calculateChannelsPerAccount(accountsWithOpenChannels: UserAccount[]) {
+  private calculateChannelsPerAccount(accountsWithOpenChannels: UserAccount[]): number {
     const openChannels = accountsWithOpenChannels.reduce(
       (acc, userAccount) => acc + userAccount.channels.length,
       0
@@ -274,7 +313,7 @@ export class NetMetricsService {
   private calculateAverageDepositPerParticipant(
     accountsWithOpenChannels: UserAccount[],
     decimals: number
-  ) {
+  ): number {
     const participants = accountsWithOpenChannels.reduce(
       (acc, account) => acc + account.channels.length,
       0
@@ -301,16 +340,14 @@ export class NetMetricsService {
     return participants === 0 ? 0 : deposits / participants;
   }
 
-  private accountsWithOpenChannels(channelEntries) {
-    return channelEntries
-      .map(
-        entry =>
-          ({
-            address: entry[0],
-            channels: entry[1].filter(channel => channel.status === 'opened')
-          } as UserAccount)
-      )
-      .filter(userAccount => userAccount.channels.length > 0);
+  private accountsWithChannels(channelEntries: [string, NMChannel[]][]): UserAccount[] {
+    return channelEntries.map(
+      entry =>
+        ({
+          address: entry[0],
+          channels: entry[1]
+        } as UserAccount)
+    );
   }
 
   //noinspection JSMethodCanBeStatic

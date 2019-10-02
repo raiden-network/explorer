@@ -1,9 +1,13 @@
 .information-buttons {
-  min-height: 120px;
+  background-color: #f8f8f8;
+  padding-bottom: 48px;
 }
 
-.mat-stroked-button {
+.mat-flat-button {
   width: 100%;
-  border-radius: 20px;
-  font-weight: 300;
+  height: 40px;
+  background-color: #00c7e8;
+  border-radius: 29px;
+  font-weight: 700;
+  font-size: 18px;
 }

@@ -5,12 +5,12 @@
 <div *ngIf="(metrics$ | async) as metrics; else error">
   <app-network-totals [network]="network" [metrics]="metrics"></app-network-totals>
 
-  <app-buttons></app-buttons>
-
   <app-active-networks-section
     (selectionChange)="selectedNetwork($event)"
     [metrics]="metrics"
   ></app-active-networks-section>
+
+  <app-buttons></app-buttons>
 
   <app-graph-section
     *ngIf="currentNetwork"

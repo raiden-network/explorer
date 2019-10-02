@@ -5,11 +5,11 @@
   <div fxLayout="column" fxFlex="1 1 40px" fxLayoutAlign="end">
     <button mat-icon-button (click)="toggleExpanded()">
       <img
-        *ngIf="!isExpanded; else expanded"
+        *ngIf="!isExpanded; else expanded_button"
         class="expandable-icon"
         src="../../../assets/down-arrow.svg"
       />
-      <ng-template #expanded>
+      <ng-template #expanded_button>
         <img class="expandable-icon" src="../../../assets/up-arrow.svg" />
       </ng-template>
     </button>

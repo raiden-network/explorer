@@ -1,69 +1,285 @@
-<div class="totals" fxLayout="column" fxLayoutAlign="center center">
-  <div fxLayout="row" [@flyInOut]="'in'">
-    <div fxLayout="column" fxLayoutGap="1.4rem">
-      <div fxLayout="row" fxLayoutAlign="center" class="totals-title">Raiden Explorer</div>
-
-      <div fxLayout="row" fxLayoutAlign="center" class="totals-subtitle">
-        <span *ngIf="network; else mainnet"> Metrics for the {{ network }} Raiden Network </span>
-        <ng-template #mainnet>
-          Metrics for the Raiden Network
-        </ng-template>
-      </div>
-    </div>
-  </div>
-
+<div *ngIf="network !== 'Mainnet'; else old" class="totals" fxLayout="column" fxFlex="0 1">
   <div
     [@flyInOut]="'in'"
-    fxFlexAlign="center center"
-    fxLayout="row"
-    fxLayoutGap.gt-sm="150px"
-    fxLayoutGap="8px"
-    fxLayoutGap.xs="4px"
-    class="totals-bar"
+    ngClass="totals-wrapper"
+    ngClass.lt-md="mobile-totals-wrapper"
+    fxLayout="column"
+    fxLayoutAlign="start start"
+    fxLayoutGap="66px"
+    fxLayoutGap.lt-md="45px"
   >
     <div
+      ngClass="metrics"
+      ngClass.lt-md="mobile-metrics"
       fxLayout="column"
-      fxLayoutAlign="center center"
-      fxLayoutGap="1rem"
-      *ngIf="metrics.totalTokenNetworks > 1"
+      fxLayoutGap="20px"
+      fxFlex="1 0"
     >
-      <div fxLayout="row">
-        <img class="totals-logo" src="../../../assets/network.svg" />
-      </div>
-      <div fxLayout="row">
-        <div fxLayout="column" fxLayoutAlign="center center">
-          <div fxLayout="row" class="totals-title">{{ metrics.totalTokenNetworks }}</div>
-          <div fxLayout="row" class="totals-subtitle">Token Networks</div>
+      <div>
+        <div ngClass="panel-title title cyan" ngClass.lt-md="panel-title mobile-title cyan">
+          {{ network }} Overview
         </div>
-      </div>
-    </div>
-
-    <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
-      <div fxLayout="row">
-        <img class="totals-logo" src="../../../assets/channel.svg" />
-      </div>
-
-      <div fxLayout="row">
-        <div fxLayout="column" fxLayoutAlign="center center">
-          <div fxLayout="row" class="totals-title">
-            {{ metrics.openChannels || 0 }}
+        <div
+          ngClass="panel-sub metrics-accounts"
+          ngClass.lt-md="panel-sub mobile-metrics-accounts"
+          fxLayout="row"
+          fxLayoutAlign="space-evenly center"
+          fxLayout.lt-md="column"
+          fxLayoutAlign.lt-md="space-evenly"
+        >
+          <div fxLayout="row" fxLayoutGap="15px" fxLayoutGap.lt-md="9px">
+            <span ngClass="metrics-value" ngClass.lt-md="mobile-font">{{
+              metrics.totalTokenNetworks
+            }}</span>
+            <div fxLayout="column" fxLayout.lt-md="row">
+              <span ngClass="metrics-description" ngClass.lt-md="mobile-font">Token </span>
+              <span ngClass="metrics-description" ngClass.lt-md="mobile-font">Networks</span>
+            </div>
           </div>
-          <div fxLayout="row" class="totals-subtitle">Open Channels</div>
+          <div fxLayout="row" fxLayoutGap="15px" fxLayoutGap.lt-md="9px">
+            <span ngClass="metrics-value" ngClass.lt-md="mobile-font">{{
+              metrics.uniqueAccounts || 0
+            }}</span>
+            <div fxLayout="column" fxLayout.lt-md="row">
+              <span ngClass="metrics-description" ngClass.lt-md="mobile-font">Unique </span>
+              <span ngClass="metrics-description" ngClass.lt-md="mobile-font">Accounts</span>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="15px" fxLayoutGap.lt-md="9px">
+            <span ngClass="metrics-value" ngClass.lt-md="mobile-font">{{
+              metrics.channelsPerAccount | number: '1.0-2'
+            }}</span>
+            <div fxLayout="column" fxLayout.lt-md="row">
+              <span ngClass="metrics-description" ngClass.lt-md="mobile-font">Avg. channels </span>
+              <span ngClass="metrics-description" ngClass.lt-md="mobile-font">per account</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        ngClass="panel metrics-channels"
+        ngClass.lt-md="panel mobile-metrics-channels"
+        fxLayout="row"
+        fxLayoutAlign="space-evenly"
+        fxFlex="1 0"
+      >
+        <app-donut-chart
+          *ngIf="!isMobile(); else mobile_channels_chart"
+          [data]="chart()"
+          [legend]="false"
+          [size]="220"
+          fxFlexAlign="center"
+        ></app-donut-chart>
+        <ng-template #mobile_channels_chart>
+          <app-donut-chart
+            [data]="chart()"
+            [legend]="false"
+            [size]="133"
+            fxFlexAlign="center"
+          ></app-donut-chart>
+        </ng-template>
+
+        <div
+          fxLayout="column"
+          fxLayoutAlign="space-evenly start"
+          fxLayoutAlign.lt-md="center"
+          fxLayoutGap.lt-md="11px"
+        >
+          <div
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+            fxLayoutGap.gt-sm="15px"
+            fxLayoutAlign.lt-md="start center"
+            fxLayoutGap.lt-md="0"
+          >
+            <div
+              ngClass="metrics-line line-open"
+              ngClass.lt-md="mobile-metrics-line line-open"
+            ></div>
+            <span
+              ngClass="metrics-value cyan"
+              ngClass.lt-md="mobile-font cyan"
+              fxFlexOffset="4px"
+              fxFlexOffset.lt-md="10px"
+              >{{ metrics.openChannels || 0 }}
+            </span>
+            <div fxLayout="column" fxLayout.lt-md="row">
+              <span ngClass="metrics-description cyan" ngClass.lt-md="mobile-font cyan">Open </span>
+              <span ngClass="metrics-description cyan" ngClass.lt-md="mobile-font cyan"
+                >channels</span
+              >
+            </div>
+          </div>
+          <div
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+            fxLayoutGap="15px"
+            fxLayoutAlign.lt-md="start center"
+            fxLayoutGap.lt-md="0"
+          >
+            <div
+              ngClass="metrics-line line-closed"
+              ngClass.lt-md="mobile-metrics-line line-closed"
+            ></div>
+            <span
+              ngClass="metrics-value closed"
+              ngClass.lt-md="mobile-font closed"
+              fxFlexOffset="4px"
+              fxFlexOffset.lt-md="10px"
+              >{{ metrics.closedChannels || 0 }}
+            </span>
+            <div fxLayout="column" fxLayout.lt-md="row">
+              <span ngClass="metrics-description closed" ngClass.lt-md="mobile-font closed"
+                >Closed
+              </span>
+              <span ngClass="metrics-description closed" ngClass.lt-md="mobile-font closed"
+                >channels</span
+              >
+            </div>
+          </div>
+          <div
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+            fxLayoutGap="15px"
+            fxLayoutAlign.lt-md="start center"
+            fxLayoutGap.lt-md="0"
+          >
+            <div
+              ngClass="metrics-line line-settled"
+              ngClass.lt-md="mobile-metrics-line line-settled"
+            ></div>
+            <span
+              ngClass="metrics-value settled"
+              ngClass.lt-md="mobile-font settled"
+              fxFlexOffset="4px"
+              fxFlexOffset.lt-md="10px"
+              >{{ metrics.settledChannels || 0 }}
+            </span>
+            <div fxLayout="column" fxLayout.lt-md="row">
+              <span ngClass="metrics-description settled" ngClass.lt-md="mobile-font settled"
+                >Settled
+              </span>
+              <span ngClass="metrics-description settled" ngClass.lt-md="mobile-font settled"
+                >channels</span
+              >
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
-      <div fxLayout="row">
-        <img class="totals-logo" src="../../../assets/account.svg" />
+    <div ngClass="top" ngClass.lt-md="mobile-top" fxLayout="column" fxFlex="1 0">
+      <div>
+        <div ngClass="panel-title title cyan" ngClass.lt-md="panel-title mobile-title cyan">
+          Top Participants
+        </div>
+      </div>
+      <div class="panel-sub" fxFlex="1 0">
+        <mat-list ngClass="top-list" ngClass.lt-md="mobile-top-list">
+          <div fxLayout="row" ngClass="top-description" ngClass.lt-md="mobile-top-description">
+            <div fxFlex="0 1 501px">Address</div>
+            <div class="top-number" fxFlex="0 0 97px">Channels</div>
+          </div>
+          <mat-list-item
+            *ngFor="
+              let participant of metrics.topParticipantsByChannels;
+              trackBy: trackByParticipant
+            "
+            fxLayout="row"
+            ngClass="top-item"
+            ngClass.lt-md="mobile-top-item"
+          >
+            <div fxFlex="0 1 501px">
+              <a
+                href="{{ etherscanUrl(participant.address) }}"
+                target="_blank"
+                ngClass="top-value clickable-address"
+                ngClass.lt-md="mobile-font white clickable-address"
+                >{{ isMobile() ? (participant.address | shortenAddress) : participant.address }}</a
+              >
+            </div>
+            <div
+              ngClass="top-value top-number"
+              ngClass.lt-md="mobile-font white top-number"
+              fxFlex="0 0 97px"
+            >
+              {{ participant.channels }}
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </div>
+  </div>
+  <div class="section-underline" fxFlex="0 0 15px"></div>
+</div>
+
+<!-- Remove the following when Alderaan released -->
+<ng-template #old>
+  <div class="totals-old" fxLayout="column" fxLayoutAlign="center center">
+    <div fxLayout="row" [@flyInOut]="'in'">
+      <div fxLayout="column" fxLayoutGap="1.4rem">
+        <div fxLayout="row" fxLayoutAlign="center" class="totals-title">Raiden Explorer</div>
+
+        <div fxLayout="row" fxLayoutAlign="center" class="totals-subtitle">
+          <span> Metrics for the Raiden Network </span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      [@flyInOut]="'in'"
+      fxFlexAlign="center center"
+      fxLayout="row"
+      fxLayoutGap.gt-sm="150px"
+      fxLayoutGap="8px"
+      fxLayoutGap.xs="4px"
+      class="totals-bar"
+    >
+      <div
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        fxLayoutGap="1rem"
+        *ngIf="metrics.totalTokenNetworks > 1"
+      >
+        <div fxLayout="row">
+          <img class="totals-logo" src="../../../assets/network.svg" />
+        </div>
+        <div fxLayout="row">
+          <div fxLayout="column" fxLayoutAlign="center center">
+            <div fxLayout="row" class="totals-title">{{ metrics.totalTokenNetworks }}</div>
+            <div fxLayout="row" class="totals-subtitle">Token Networks</div>
+          </div>
+        </div>
       </div>
 
-      <div fxLayout="row">
-        <div fxLayout="column" fxLayoutAlign="center center">
-          <div fxLayout="row" class="totals-title">{{ metrics.uniqueAccounts || 0 }}</div>
-          <div fxLayout="row" class="totals-subtitle">Unique Accounts</div>
+      <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
+        <div fxLayout="row">
+          <img class="totals-logo" src="../../../assets/channel.svg" />
+        </div>
+
+        <div fxLayout="row">
+          <div fxLayout="column" fxLayoutAlign="center center">
+            <div fxLayout="row" class="totals-title">
+              {{ metrics.openChannels || 0 }}
+            </div>
+            <div fxLayout="row" class="totals-subtitle">Open Channels</div>
+          </div>
+        </div>
+      </div>
+
+      <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
+        <div fxLayout="row">
+          <img class="totals-logo" src="../../../assets/account.svg" />
+        </div>
+
+        <div fxLayout="row">
+          <div fxLayout="column" fxLayoutAlign="center center">
+            <div fxLayout="row" class="totals-title">{{ metrics.uniqueAccounts || 0 }}</div>
+            <div fxLayout="row" class="totals-subtitle">Unique Accounts</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</ng-template>

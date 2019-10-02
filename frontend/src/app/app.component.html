@@ -1,119 +1,115 @@
-<div class="topnav" fxLayout="row" fxLayoutAlign="center" fxLayoutGap="30px">
-  <div fxLayout="column" fxLayoutAlign="center">
-    <img class="raiden-logo" src="../assets/favicon.png" />
+<div class="topnav" #topnav>
+  <div class="wrapper" fxLayout="row" fxLayoutAlign="center center">
+    <img class="raiden-logo" src="../assets/logo.svg" />
+    <div fxLayout="column" fxFlex="1 1 auto"></div>
+    <div fxLayout="row" fxLayoutGap="45px" *ngIf="!isMobile(); else toggle_menu_button">
+      <a href="https://developer.raiden.network/" target="_blank" class="navigation-link">
+        Developer →
+      </a>
+      <a href="https://github.com/raiden-network/raiden/" target="_blank" class="navigation-link">
+        Github →
+      </a>
+      <a
+        href="https://raiden-network.readthedocs.io/en/stable/"
+        target="_blank"
+        class="navigation-link"
+      >
+        Docs →
+      </a>
+    </div>
+    <ng-template #toggle_menu_button>
+      <button
+        class="menu-button"
+        [class.menu-opened]="menuOpen"
+        type="button"
+        aria-label="Toggle navigation menu"
+        mat-icon-button
+        (click)="menuOpen = !menuOpen"
+      >
+        <mat-icon [style.stroke]="menuOpen ? '#FFFFFF' : '#2EC7E5'" svgIcon="burger"></mat-icon>
+      </button>
+    </ng-template>
   </div>
-  <div fxLayout="column" fxFlex="1 1 auto"></div>
-  <div fxLayout="column" fxLayoutAlign="center">
+
+  <div
+    [@flyInOut]="'in'"
+    class="mobile-menu"
+    fxLayout="column"
+    fxLayoutAlign="start center"
+    fxLayoutGap="40px"
+    *ngIf="menuOpen"
+  >
+    <a href="https://developer.raiden.network/" target="_blank" class="navigation-link">
+      Developer →
+    </a>
+    <a href="https://github.com/raiden-network/raiden/" target="_blank" class="navigation-link">
+      Github →
+    </a>
     <a
       href="https://raiden-network.readthedocs.io/en/stable/"
       target="_blank"
       class="navigation-link"
     >
-      Documentation
-    </a>
-  </div>
-  <div fxLayout="column" fxLayoutAlign="center">
-    <a href="https://github.com/raiden-network" target="_blank" class="navigation-link">
-      Github
+      Docs →
     </a>
   </div>
 </div>
+
 <div>
   <router-outlet></router-outlet>
 </div>
-<div class="footer" fxLayout="row" fxLayoutAlign="center">
-  <div fxLayout="column" fxLayoutGap="15px" fxFlex="960px" fxFlex.lt-md="100%">
-    <div
-      fxLayout="row"
-      fxLayout.xs="column"
-      fxLayoutAlign="end"
-      ngClass.xs="mobile"
-      fxFlexAlign.xs="start"
-      fxLayoutGap.xs="20px"
-    >
-      <div class="contactlist" fxLayout="column" fxFlex.lt-sm="33%" fxFlex="180px">
-        <div fxLayout="row" class="heading">DEVELOPMENT</div>
-        <div fxLayout="row">
-          <a href="http://www.github.com/raiden-network/raiden/?fref=ts">Raiden Network Github</a>
-        </div>
-        <div fxLayout="row">
-          <a href="http://raiden-network.readthedocs.io/en/stable/">Raiden Network Docs</a>
-        </div>
-        <div fxLayout="row">
-          <a href="https://github.com/raiden-network/microraiden">µRaiden Github</a>
-        </div>
-        <div fxLayout="row"><a href="http://microraiden.readthedocs.io">µRaiden Docs</a></div>
-        <div fxLayout="row"><a href="https://demo.micro.raiden.network">µRaiden Demos</a></div>
-      </div>
-      <div class="sociallist" fxLayout="column" fxFlex.lt-sm="33%" fxFlex="180px">
-        <div fxLayout="row" class="heading" style="">COMMUNITY</div>
-        <div fxLayout="row" style="padding-top: 15px;">
-          <a rel="noopener noreferrer" href="https://twitter.com/raiden_network" target="_blank">
-            <div class="inline-block" style="display: inline-block;">
-              <div class="table-cell" style="padding-right: 1rem; display: table-cell;">
-                <img src="../assets/social/twitter.svg" style="height: 15px;" />
-              </div>
-              <div class="table-cell" style="display: table-cell;">Twitter</div>
-            </div>
-          </a>
-        </div>
 
-        <div fxLayout="row" style="padding-top: 15px;">
-          <a
-            rel="noopener noreferrer"
-            href="https://www.reddit.com/r/raidennetwork/"
-            target="_blank"
-          >
-            <div class="inline-block" style="display: inline-block;">
-              <div class="table-cell" style="padding-right: 1rem; display: table-cell;">
-                <img src="../assets/social/reddit.svg" style="height: 15px; " />
-              </div>
-              <div class="table-cell" style="display: table-cell;">Reddit</div>
-            </div>
-          </a>
-        </div>
-
-        <div fxLayout="row" style="padding-top: 15px;">
-          <a
-            rel="noopener noreferrer"
-            href="https://www.youtube.com/channel/UCoUP_hnjUddEvbxmtNCcApg"
-            target="_blank"
-          >
-            <div class="inline-block" style="display: inline-block;">
-              <div class="table-cell" style="padding-right: 1rem; display: table-cell;">
-                <img src="../assets/social/tv.svg" style="height: 15px;" />
-              </div>
-              <div class="table-cell" style="display: table-cell;">Youtube</div>
-            </div>
-          </a>
-        </div>
-
-        <div fxLayout="row" style="padding-top: 15px;">
-          <a
-            rel="noopener noreferrer"
-            href="https://gitter.im/raiden-network/raiden"
-            target="_blank"
-          >
-            <div class="inline-block" style="display: inline-block;">
-              <div class="table-cell" style="padding-right: 1rem; display: table-cell;">
-                <img src="../assets/social/message-circle.svg" style="height: 15px; " />
-              </div>
-              <div class="table-cell" style="display: table-cell;">Dev Chat</div>
-            </div>
-          </a>
-        </div>
-      </div>
-      <div class="contactlist" fxLayout="column" fxFlex.lt-sm="33%" fxFlex="180px">
-        <div fxLayout="row" class="heading">ORGANIZATION</div>
-        <div fxLayout="row">
-          <a target="_blank" href="https://angel.co/brainbot-group/jobs">We're hiring!</a>
-        </div>
-        <div fxLayout="row">
-          <a rel="noopener noreferrer" href="https://token.raiden.network/privacy.html">
-            Imprint &amp; Privacy Policy
-          </a>
-        </div>
-      </div>
+<div class="section-underline"></div>
+<div class="section-footer">
+  <div
+    ngClass="footer-inner wrapper"
+    ngClass.xs="mobile-footer-inner wrapper"
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutAlign="space-between start"
+    fxLayoutAlign.xs="space-around center"
+  >
+    <div ngClass="footer" ngClass.xs="mobile-footer">
+      <strong class="bold-footer">Development<br /></strong
+      ><a href="https://github.com/raiden-network/raiden/" target="_blank" class="footer-link"
+        >Raiden Network Github<br /></a
+      ><a
+        href="https://raiden-network.readthedocs.io/en/stable/"
+        target="_blank"
+        class="footer-link"
+        >Raiden Network Docs<br /></a
+      ><a
+        href="https://explorer.raiden.network/tokens/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+        target="_blank"
+        class="footer-link"
+        >Raiden Explorer</a
+      >
+    </div>
+    <div ngClass="footer" ngClass.xs="mobile-footer">
+      <strong class="bold-footer">Community<br /></strong
+      ><a href="https://twitter.com/raiden_network" target="_blank" class="footer-link"
+        >Twitter<br /></a
+      ><a href="https://medium.com/raiden-network" target="_blank" class="footer-link"
+        >Medium<br /></a
+      ><a href="https://www.reddit.com/r/raidennetwork/" target="_blank" class="footer-link"
+        >Reddit<br /></a
+      ><a
+        href="https://www.youtube.com/channel/UCoUP_hnjUddEvbxmtNCcApg"
+        target="_blank"
+        class="footer-link"
+        >Youtube</a
+      ><br /><a href="https://gitter.im/raiden-network/raiden" target="_blank" class="footer-link"
+        >Dev chat</a
+      ><br />
+    </div>
+    <div ngClass="footer" ngClass.xs="mobile-footer">
+      <strong class="bold-footer">Organization<br /></strong
+      ><a href="https://raiden.network" target="_blank" class="footer-link">Raiden Network<br /></a
+      ><a href="https://angel.co/brainbot-group/jobs" target="_blank" class="footer-link"
+        ><strong>‍</strong>We're hiring!<br /></a
+      ><a href="https://raiden.network/privacy.html" target="_blank" class="footer-link"
+        >Privacy Policy <br />&amp; Legal&nbsp;Imprint</a
+      >
     </div>
   </div>
 </div>

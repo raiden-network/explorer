@@ -28,7 +28,8 @@ import {
   MatProgressSpinnerModule,
   MatRippleModule,
   MatSlideToggleModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatIconModule
 } from '@angular/material';
 import { environment } from '../environments/environment';
 import { SmallNumberPipe } from './pipes/small-number.pipe';
@@ -45,6 +46,7 @@ import { TotalChannelsByDepositComponent } from './components/total-channels-by-
 import { TopParticipantsByChannelComponent } from './components/top-participants-by-channel/top-participants-by-channel.component';
 import { ExplorerRouteReuseStrategy } from './routing/explorer-route-reuse-strategy';
 import { DebounceClickDirective } from './directives/debounce-click.directive';
+import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/tokens', pathMatch: 'full' },
@@ -89,7 +91,8 @@ export class ExplorerHammerConfig extends HammerGestureConfig {
     NetworkAveragesComponent,
     TotalChannelsByDepositComponent,
     TopParticipantsByChannelComponent,
-    DebounceClickDirective
+    DebounceClickDirective,
+    ShortenAddressPipe
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -107,7 +110,8 @@ export class ExplorerHammerConfig extends HammerGestureConfig {
     BrowserModule,
     CommonModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatIconModule
   ],
   providers: [
     SharedService,

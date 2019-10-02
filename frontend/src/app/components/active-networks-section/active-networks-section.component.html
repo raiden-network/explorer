@@ -5,7 +5,7 @@
     matTooltip="The networks that have at least one open channel."
     *ngIf="metrics.totalTokenNetworks > 1"
   >
-    <div class="title">Active Networks</div>
+    <div class="title">Networks</div>
   </div>
 
   <div fxLayout="row" fxLayoutAlign="center" *ngIf="metrics.totalTokenNetworks > 1">
@@ -86,14 +86,14 @@
     <div
       [@routerTransition]="routeTrigger$ | async"
       fxLayout="column"
-      fxFlex.gt-sm="0 0 960px"
+      fxFlex.gt-sm="0 0 933px"
       fxFlex.lt-sm="1 1 auto"
       ngClass.xs="mobile-margin"
       class="network-information"
       (swipeleft)="next()"
       (swiperight)="previous()"
     >
-      <div class="header-gradient"></div>
+      <div class="header"></div>
 
       <div fxLayout="row">
         <router-outlet></router-outlet>
