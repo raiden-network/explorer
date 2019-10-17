@@ -19,7 +19,7 @@
 }
 
 .clickable-address {
-  color: #06ccf4;
+  color: #2ec7e5;
   text-decoration: none;
 }
 
@@ -29,10 +29,6 @@
 
 .token-symbol {
   font-size: 0.9rem;
-}
-
-.cyan {
-  color: #06ccf4;
 }
 
 .header {

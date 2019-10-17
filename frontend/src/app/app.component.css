@@ -4,85 +4,92 @@ body {
 }
 
 .topnav {
-  height: 70px;
-  background-color: white;
-  margin-left: 20px;
-  margin-right: 40px;
+  height: 56px;
+  width: 100%;
+  background: linear-gradient(90deg, #323232 0%, #000000 100%);
+  position: absolute;
+  z-index: 1;
 }
 
-.topnav a {
+.mobile-menu {
+  padding: 20px 0;
+  width: 100%;
+  background: linear-gradient(90deg, #323232 0%, #000000 100%);
+  z-index: -1;
+}
+
+a {
   text-decoration: none;
-  font-weight: 300;
-  color: black;
+  font-weight: 400;
+  color: #ffffff;
 }
 
-.topnav a:hover {
-  color: #bababa;
-  -webkit-transition: all 1s ease;
-  -moz-transition: all 1s ease;
-  -o-transition: all 1s ease;
-  -ms-transition: all 1s ease;
-  transition: all 1s ease;
-}
-
-.topnav img {
-  max-height: 40px;
+a:hover {
+  color: #8c8c8c;
 }
 
 .raiden-logo {
-  min-width: 23px;
+  height: 31px;
 }
 
 .navigation-link {
   float: right;
-  font-size: 15px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.section-footer {
+  width: 100%;
+  background-color: #1e1e1e;
+}
+
+.footer-inner {
+  padding-bottom: 90px;
+}
+
+.mobile-footer-inner {
+  padding: 15px 60px 60px 60px;
 }
 
 .footer {
-  margin-top: 2rem;
-  padding: 1rem;
-  background: black;
+  text-align: left;
+  margin-top: 70px;
+  line-height: 28px;
+  font-size: 18px;
 }
 
-.footer a {
-  color: white;
-  text-decoration: none;
+.mobile-footer {
+  margin-top: 15px;
+  line-height: 28px;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  font-size: 18px;
 }
 
-.heading {
-  margin-bottom: 10px;
-  padding-top: 15px;
-  color: rgb(189, 189, 189);
-  letter-spacing: 2px;
-  font-family: 'Roboto Mono', sans-serif;
-  font-size: 13px;
+.center {
+  padding-right: 50px;
+  padding-left: 0px;
 }
 
-.contactlist {
-  font-size: 14px;
+.bold-footer {
+  color: #00c7e8;
+  font-weight: 700;
 }
 
-.contactlist div {
-  padding-top: 15px;
+.menu-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 56px;
+  min-width: 0;
+  border-radius: 0;
 }
 
-.contactlist div a {
-  text-decoration: none !important;
-}
-
-.sociallist {
-  font-size: 14px;
-}
-
-.contactlist a,
-.sociallist a {
-  -webkit-transition: all 0.35s;
-  -moz-transition: all 0.35s;
-  transition: all 0.35s;
-  color: #9b9b9b;
-}
-
-.mobile {
-  padding-left: 15px;
-  padding-right: 15px;
+.menu-opened {
+  background-color: #2ec7e5;
 }

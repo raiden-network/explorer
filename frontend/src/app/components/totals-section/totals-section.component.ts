@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { RaidenNetworkMetrics } from '../../models/TokenNetwork';
+import { RaidenNetworkMetrics, UserAccountStatistics } from '../../models/TokenNetwork';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import { ChannelData } from '../donut-chart/donut-chart.component';
+import { NetMetricsConfig } from 'src/app/services/net.metrics/net.metrics.config';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-network-totals',
@@ -36,7 +39,46 @@ export class TotalsSectionComponent implements OnInit {
   @Input() network: string;
   @Input() metrics: RaidenNetworkMetrics;
 
-  constructor() {}
+  constructor(private config: NetMetricsConfig, private mediaObserver: MediaObserver) {}
 
   ngOnInit() {}
+
+  chart(): ChannelData[] {
+    const chartData: ChannelData[] = [];
+
+    if (this.metrics.openChannels) {
+      chartData.push({
+        status: 'opened',
+        channels: this.metrics.openChannels
+      });
+    }
+
+    if (this.metrics.closedChannels) {
+      chartData.push({
+        status: 'closed',
+        channels: this.metrics.closedChannels
+      });
+    }
+
+    if (this.metrics.settledChannels) {
+      chartData.push({
+        status: 'settled',
+        channels: this.metrics.settledChannels
+      });
+    }
+    return chartData;
+  }
+
+  etherscanUrl(address: string): string {
+    return `${this.config.configuration.etherscan_base_url}${address}`;
+  }
+
+  //noinspection JSMethodCanBeStatic
+  trackByParticipant(participant: UserAccountStatistics): string {
+    return participant.address;
+  }
+
+  isMobile(): boolean {
+    return this.mediaObserver.isActive('lt-md');
+  }
 }

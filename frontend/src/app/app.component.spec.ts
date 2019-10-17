@@ -1,10 +1,11 @@
 import { async, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent]
+      declarations: [AppComponent, ShortenAddressPipe]
     }).compileComponents();
   }));
   it('should create the app', async(() => {

@@ -27,9 +27,9 @@ export interface ChannelData {
 })
 export class DonutChartComponent implements OnInit, OnChanges {
   @Input() data: ChannelData[];
+  @Input() legend = true;
+  @Input() size = 120;
   @ViewChild('chart') chart;
-  private width: number;
-  private height: number;
 
   private svg: any; // TODO replace all `any` by the right type
 
@@ -42,7 +42,9 @@ export class DonutChartComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.initSvg();
     this.drawChart(this.data);
-    setTimeout(() => this.drawLegend(), 1);
+    if (this.legend) {
+      setTimeout(() => this.drawLegend(), 1);
+    }
   }
 
   ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
@@ -71,18 +73,15 @@ export class DonutChartComponent implements OnInit, OnChanges {
       .pie<ChannelData>()
       .value(d => d.channels)
       .sort(null)
-      .padAngle(0.03);
+      .padAngle(0.04);
 
-    this.width = 120;
-    this.height = 120;
-
-    const outerRadius = this.width / 2;
-    const innerRadius = 50;
+    const outerRadius = this.size / 2;
+    const innerRadius = this.size * 0.4;
 
     this.color = d3Scale
       .scaleOrdinal()
       .domain(['opened', 'closed', 'settled'])
-      .range(['#06ccf4', '#000000', '#d8d8d8']);
+      .range(['#2ec7e5', '#bedceb', '#0a6e87']);
 
     this.arc = d3Shape
       .arc<ChannelData>()
@@ -92,11 +91,11 @@ export class DonutChartComponent implements OnInit, OnChanges {
     this.svg = d3
       .select(this.chart.nativeElement)
       .append('svg')
-      .attr('width', this.width)
-      .attr('height', this.height)
+      .attr('width', this.size)
+      .attr('height', this.size)
       .attr('class', 'shadow')
       .append('g')
-      .attr('transform', `translate(${this.width / 2},${this.height / 2})`);
+      .attr('transform', `translate(${this.size / 2},${this.size / 2})`);
   }
 
   private drawChart(data: ChannelData[]) {
