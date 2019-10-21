@@ -1,3 +1,5 @@
+@import '~src/style/variables';
+
 /* roboto-300 - latin */
 @font-face {
   font-family: 'Roboto';
@@ -183,4 +185,16 @@ tr td {
 
 .panel-sub .mat-list-item-content {
   padding: 0 !important;
+}
+
+.table-content .mat-list-item-content {
+  padding-right: $content-padding !important;
+  padding-left: $content-padding !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .table-content .mat-list-item-content {
+    padding-right: $content-padding-mobile !important;
+    padding-left: $content-padding-mobile !important;
+  }
 }

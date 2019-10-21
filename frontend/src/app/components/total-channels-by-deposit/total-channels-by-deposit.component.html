@@ -20,42 +20,40 @@
 <mat-divider *ngIf="isExpanded"></mat-divider>
 
 <mat-list class="table-content darker-box-background" *ngIf="isExpanded">
-  <div fxLayout="row" class="group-title table-header content">
-    <div fxLayout="column" fxFlex="auto">Participants</div>
-    <div fxLayout="column" fxFlexAlign="right">Deposit</div>
+  <div fxLayout="row" fxLayoutAlign="space-between" class="group-title table-header content">
+    <div fxLayout="column">Participants</div>
+    <div fxLayout="column">Deposit</div>
   </div>
   <mat-list-item
-    fxLayout="row"
     class="list-item"
     *ngFor="let channel of tokenNetwork.topChannelsByDeposit; trackBy: trackByFn"
-    fxLayoutGap="8px"
   >
-    <div
-      class="truncate small-text"
-      fxFlex="1 1 auto"
-      fxLayoutAlign="center start"
-      fxLayout="column"
-    >
-      <a
-        href="{{ etherscanUrl(channel.participant1) }}"
-        target="_blank"
-        class="clickable-address dark"
-        >{{ channel.participant1 }}</a
-      >
-      <a
-        href="{{ etherscanUrl(channel.participant2) }}"
-        target="_blank"
-        class="clickable-address dark"
-        >{{ channel.participant2 }}</a
-      >
-    </div>
-    <div
-      class="table-number bold small-text"
-      fxFlex="50px"
-      fxLayoutAlign="center end"
-      fxLayout="column"
-    >
-      {{ channel.deposit1 + channel.deposit2 | smallNumber }}
+    <div class="item-wrapper" fxLayout="row" fxLayoutAlign="space-between">
+      <div class="truncate small-text" fxLayoutAlign="center start" fxLayout="column">
+        <a
+          href="{{ etherscanUrl(channel.participant1) }}"
+          target="_blank"
+          class="clickable-address dark"
+          >{{
+            channel.deposit1 + channel.deposit2 > 9999999999999 || isMobile()
+              ? (channel.participant1 | shortenAddress)
+              : channel.participant1
+          }}</a
+        >
+        <a
+          href="{{ etherscanUrl(channel.participant2) }}"
+          target="_blank"
+          class="clickable-address dark"
+          >{{
+            channel.deposit1 + channel.deposit2 > 9999999999999 || isMobile()
+              ? (channel.participant2 | shortenAddress)
+              : channel.participant2
+          }}</a
+        >
+      </div>
+      <div class="table-number bold small-text" fxLayoutAlign="center end" fxLayout="column">
+        {{ channel.deposit1 + channel.deposit2 | smallNumber }}
+      </div>
     </div>
   </mat-list-item>
 </mat-list>

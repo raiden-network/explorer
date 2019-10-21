@@ -19,24 +19,30 @@
 <mat-divider *ngIf="isExpanded"></mat-divider>
 
 <mat-list *ngIf="isExpanded" class="table-content">
-  <div fxLayout="row" class="group-title table-header content">
-    <div fxLayout="column" fxFlex="1 1 auto">Participant</div>
-    <div fxLayout="column" fxFlexAlign="right">Channels</div>
+  <div fxLayout="row" fxLayoutAlign="space-between" class="group-title table-header content">
+    <div fxLayout="column">Participant</div>
+    <div fxLayout="column">Channels</div>
   </div>
   <mat-list-item
     class="list-item"
     *ngFor="let participant of tokenNetwork.topParticipantsByChannels; trackBy: trackByParticipant"
   >
-    <div class="truncate small-text" fxFlex="88" fxLayoutAlign="center start" fxLayout="column">
-      <a
-        href="{{ etherscanUrl(participant.address) }}"
-        target="_blank"
-        class="clickable-address dark"
-        >{{ participant.address }}</a
-      >
-    </div>
-    <div class="table-number bold small-text" fxFlex="12" fxLayout="column">
-      {{ participant.channels }}
+    <div class="item-wrapper" fxLayout="row" fxLayoutAlign="space-between">
+      <div class="truncate small-text" fxLayoutAlign="center start" fxLayout="column">
+        <a
+          href="{{ etherscanUrl(participant.address) }}"
+          target="_blank"
+          class="clickable-address dark"
+          >{{
+            participant.channels > 9999999999999 || isMobile()
+              ? (participant.address | shortenAddress)
+              : participant.address
+          }}</a
+        >
+      </div>
+      <div class="table-number bold small-text" fxLayout="column">
+        {{ participant.channels }}
+      </div>
     </div>
   </mat-list-item>
 </mat-list>
