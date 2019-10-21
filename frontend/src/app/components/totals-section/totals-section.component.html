@@ -2,7 +2,8 @@
   <div
     [@flyInOut]="'in'"
     ngClass="totals-wrapper"
-    ngClass.lt-md="mobile-totals-wrapper"
+    ngClass.lt-md="small-totals-wrapper"
+    ngClass.lt-sm="mobile-totals-wrapper"
     fxLayout="column"
     fxLayoutAlign="start start"
     fxLayoutGap="66px"
@@ -13,7 +14,7 @@
       ngClass.lt-md="mobile-metrics"
       fxLayout="column"
       fxLayoutGap="20px"
-      fxFlex="1 0"
+      fxFlex.gt-sm="1 0"
     >
       <div>
         <div ngClass="panel-title title cyan" ngClass.lt-md="panel-title mobile-title cyan">
@@ -31,7 +32,7 @@
             <span ngClass="metrics-value" ngClass.lt-md="mobile-font">{{
               metrics.totalTokenNetworks
             }}</span>
-            <div fxLayout="column" fxLayout.lt-md="row">
+            <div fxLayout="column" fxLayoutAlign="space-between" fxLayout.lt-md="row">
               <span ngClass="metrics-description" ngClass.lt-md="mobile-font">Token </span>
               <span ngClass="metrics-description" ngClass.lt-md="mobile-font">Networks</span>
             </div>
@@ -40,7 +41,7 @@
             <span ngClass="metrics-value" ngClass.lt-md="mobile-font">{{
               metrics.uniqueAccounts || 0
             }}</span>
-            <div fxLayout="column" fxLayout.lt-md="row">
+            <div fxLayout="column" fxLayoutAlign="space-between" fxLayout.lt-md="row">
               <span ngClass="metrics-description" ngClass.lt-md="mobile-font">Unique </span>
               <span ngClass="metrics-description" ngClass.lt-md="mobile-font">Accounts</span>
             </div>
@@ -49,7 +50,7 @@
             <span ngClass="metrics-value" ngClass.lt-md="mobile-font">{{
               metrics.channelsPerAccount | number: '1.0-2'
             }}</span>
-            <div fxLayout="column" fxLayout.lt-md="row">
+            <div fxLayout="column" fxLayoutAlign="space-between" fxLayout.lt-md="row">
               <span ngClass="metrics-description" ngClass.lt-md="mobile-font">Avg. channels </span>
               <span ngClass="metrics-description" ngClass.lt-md="mobile-font">per account</span>
             </div>
@@ -60,31 +61,27 @@
       <div
         ngClass="panel metrics-channels"
         ngClass.lt-md="panel mobile-metrics-channels"
-        fxLayout="row"
-        fxLayoutAlign="space-evenly"
-        fxFlex="1 0"
+        fxLayout="row wrap"
+        fxLayoutAlign="space-evenly center"
+        fxFlex.gt-sm="1 0"
       >
         <app-donut-chart
           *ngIf="!isMobile(); else mobile_channels_chart"
           [data]="chart()"
           [legend]="false"
           [size]="220"
-          fxFlexAlign="center"
         ></app-donut-chart>
         <ng-template #mobile_channels_chart>
-          <app-donut-chart
-            [data]="chart()"
-            [legend]="false"
-            [size]="133"
-            fxFlexAlign="center"
-          ></app-donut-chart>
+          <app-donut-chart [data]="chart()" [legend]="false" [size]="133"></app-donut-chart>
         </ng-template>
 
         <div
+          class="metrics-channels-numbers"
           fxLayout="column"
-          fxLayoutAlign="space-evenly start"
+          fxLayoutAlign="space-between start"
           fxLayoutAlign.lt-md="center"
           fxLayoutGap.lt-md="11px"
+          fxFlexAlign="stretch"
         >
           <div
             fxLayout="row"
@@ -104,7 +101,7 @@
               fxFlexOffset.lt-md="10px"
               >{{ metrics.openChannels || 0 }}
             </span>
-            <div fxLayout="column" fxLayout.lt-md="row">
+            <div fxLayout="column" fxLayoutAlign="space-between" fxLayout.lt-md="row">
               <span ngClass="metrics-description cyan" ngClass.lt-md="mobile-font cyan">Open </span>
               <span ngClass="metrics-description cyan" ngClass.lt-md="mobile-font cyan"
                 >channels</span
@@ -129,7 +126,7 @@
               fxFlexOffset.lt-md="10px"
               >{{ metrics.closedChannels || 0 }}
             </span>
-            <div fxLayout="column" fxLayout.lt-md="row">
+            <div fxLayout="column" fxLayoutAlign="space-between" fxLayout.lt-md="row">
               <span ngClass="metrics-description closed" ngClass.lt-md="mobile-font closed"
                 >Closed
               </span>
@@ -156,7 +153,7 @@
               fxFlexOffset.lt-md="10px"
               >{{ metrics.settledChannels || 0 }}
             </span>
-            <div fxLayout="column" fxLayout.lt-md="row">
+            <div fxLayout="column" fxLayoutAlign="space-between" fxLayout.lt-md="row">
               <span ngClass="metrics-description settled" ngClass.lt-md="mobile-font settled"
                 >Settled
               </span>
@@ -175,7 +172,7 @@
           Top Participants
         </div>
       </div>
-      <div class="panel-sub" fxFlex="1 0">
+      <div class="panel-sub" fxFlex.gt-sm="1 0">
         <mat-list ngClass="top-list" ngClass.lt-md="mobile-top-list">
           <div fxLayout="row" ngClass="top-description" ngClass.lt-md="mobile-top-description">
             <div fxFlex="0 1 501px">Address</div>

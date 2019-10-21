@@ -10,10 +10,11 @@ import { MatIconRegistry } from '@angular/material';
   styleUrls: ['./app.component.css'],
   animations: [
     trigger('flyInOut', [
-      state('in', style({ transform: 'translateY(0)' })),
+      state('in', style({ transform: 'translateY(0)', opacity: 1 })),
       transition('void => *', [
         style({
-          transform: 'translateY(-100%)'
+          transform: 'translateY(-100%)',
+          opacity: 0
         }),
         animate('0.2s ease-in')
       ]),
@@ -21,7 +22,8 @@ import { MatIconRegistry } from '@angular/material';
         animate(
           '0.2s ease-out',
           style({
-            transform: 'translateY(-100%)'
+            transform: 'translateY(-100%)',
+            opacity: 0
           })
         )
       ])
