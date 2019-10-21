@@ -25,7 +25,6 @@
 
 .table-number {
   text-align: end;
-  width: 3rem;
 }
 
 .group-title {
@@ -76,4 +75,8 @@
 
 .list-item {
   height: $table-row-height;
+}
+
+.item-wrapper {
+  width: 100%;
 }

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UserAccountStatistics, TokenNetwork } from '../../models/TokenNetwork';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-top-participants-by-channel',
@@ -12,7 +13,7 @@ export class TopParticipantsByChannelComponent implements OnInit {
   @Input() isExpanded: boolean;
   @Output() expandedChanged: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private config: NetMetricsConfig) {}
+  constructor(private config: NetMetricsConfig, private mediaObserver: MediaObserver) {}
 
   ngOnInit() {}
 
@@ -27,5 +28,9 @@ export class TopParticipantsByChannelComponent implements OnInit {
   //noinspection JSMethodCanBeStatic
   trackByParticipant(participant: UserAccountStatistics): string {
     return participant.address;
+  }
+
+  isMobile(): boolean {
+    return this.mediaObserver.isActive('lt-md');
   }
 }

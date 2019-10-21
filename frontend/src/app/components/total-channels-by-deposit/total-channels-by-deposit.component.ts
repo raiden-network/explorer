@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
 import { Channel, TokenNetwork } from '../../models/TokenNetwork';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-total-channels-by-deposit',
@@ -12,7 +13,7 @@ export class TotalChannelsByDepositComponent implements OnInit {
   @Input() isExpanded: boolean;
   @Output() expandedChanged: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private config: NetMetricsConfig) {}
+  constructor(private config: NetMetricsConfig, private mediaObserver: MediaObserver) {}
 
   ngOnInit() {}
 
@@ -27,5 +28,9 @@ export class TotalChannelsByDepositComponent implements OnInit {
   //noinspection JSMethodCanBeStatic
   trackByFn(channel: Channel): string {
     return channel.participant1 + channel.participant2;
+  }
+
+  isMobile(): boolean {
+    return this.mediaObserver.isActive('lt-md');
   }
 }
