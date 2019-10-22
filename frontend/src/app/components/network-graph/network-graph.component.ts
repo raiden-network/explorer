@@ -60,12 +60,15 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private static NODE_HIGHLIGHT_OPACITY = 1;
   private static NODE_DEFAULT_OPACITY = 0.6;
 
+  private static MAX_NODES_ON_INIT = 500;
+
   @Input() data: NetworkGraph;
   @ViewChild('graph') graph;
 
   readonly filterControl: FormControl = new FormControl();
   readonly filteredOptions$: Observable<FilterElement[]>;
 
+  graphVisible = false;
   private width: number;
   private height: number;
   private initialWidth: number;
@@ -186,13 +189,31 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       return;
     }
 
-    this.prepareGraphData();
-    this.updateGraph();
+    const nodes = this.getNodes();
+    if (nodes.length > NetworkGraphComponent.MAX_NODES_ON_INIT) {
+      this.graphVisible = false;
+      this.resetGraph();
+    } else {
+      this.graphVisible = true;
+      this.prepareGraphData(nodes);
+      this.updateGraph();
+    }
   }
 
   ngOnInit() {
-    this.prepareGraphData();
     this.initSvg();
+    const nodes = this.getNodes();
+    if (nodes.length <= NetworkGraphComponent.MAX_NODES_ON_INIT) {
+      this.graphVisible = true;
+      this.prepareGraphData(nodes);
+      this.updateGraph();
+    }
+  }
+
+  showGraph() {
+    this.graphVisible = true;
+    this.clearSelection();
+    this.prepareGraphData(this.getNodes());
     this.updateGraph();
   }
 
@@ -276,19 +297,22 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private filterChanged() {
-    this.clearSelection();
-    this.prepareGraphData();
+    this.graphVisible = true;
+    this.prepareGraphData(this.getNodes());
     this.updateGraph();
   }
 
-  private prepareGraphData() {
-    this.graphData.nodes = [];
-    this.graphData.links = [];
-
+  private getNodes() {
     let nodes = this.data.nodes;
     if (!this._showAllChannels) {
       nodes = nodes.filter(value => value.openChannels > 0);
     }
+    return nodes;
+  }
+
+  private prepareGraphData(nodes: Node[]) {
+    this.graphData.nodes = [];
+    this.graphData.links = [];
 
     nodes.forEach(value => {
       const node: SimulationNode = {
@@ -397,23 +421,28 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       ]);
   }
 
-  private drawGraph() {
+  private resetGraph() {
+    this.clearSelection();
+    this.filterControl.setValue(null);
+    this._selectionInfo = undefined;
     this.svg
       .selectAll('.no-network-data')
       .remove()
       .exit();
+    this.svg
+      .selectAll('.node')
+      .remove()
+      .exit();
+    this.svg
+      .selectAll('.link')
+      .remove()
+      .exit();
+  }
 
+  private drawGraph() {
+    this.resetGraph();
     const simulationNodes = this.graphData.nodes;
     if (simulationNodes.length === 0) {
-      this.svg
-        .selectAll('.node')
-        .remove()
-        .exit();
-      this.svg
-        .selectAll('.link')
-        .remove()
-        .exit();
-
       this.svg
         .append('g')
         .classed('no-network-data', true)

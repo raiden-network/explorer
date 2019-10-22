@@ -23,3 +23,22 @@
 .graph {
   margin-bottom: 75px;
 }
+
+.network-section {
+  border: 1px solid #d3d3d3;
+}
+
+.warning {
+  position: absolute;
+  width: 100%;
+  padding: 0 40px;
+  text-align: center;
+}
+
+.mat-stroked-button {
+  height: 40px;
+  color: #00c7e8;
+  border-radius: 29px;
+  font-weight: 700;
+  font-size: 18px;
+}
