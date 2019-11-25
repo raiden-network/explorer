@@ -8,7 +8,7 @@ export interface Link {
   readonly capacity: number;
 }
 
-export class Node {
+export interface Node {
   readonly id: string;
   readonly openChannels: number;
   readonly closedChannels: number;

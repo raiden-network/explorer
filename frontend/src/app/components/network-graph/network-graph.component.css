@@ -42,3 +42,9 @@
   font-weight: 700;
   font-size: 18px;
 }
+
+.info-box {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
