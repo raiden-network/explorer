@@ -76,31 +76,19 @@
       </mat-slide-toggle>
     </div>
   </div>
-  <div fxLayout="column" fxLayoutAlign="center" #graph class="network-section">
+  <app-active-channel-list
+    *ngIf="selectionInfo && containerWidth >= 900"
+    (closed)="channelListClosed()"
+    [info]="selectionInfo"
+    [height]="containerHeight"
+  ></app-active-channel-list>
+  <div>
     <div
-      *ngIf="!graphVisible"
-      class="warning"
-      fxFlexAlign="center"
-      fxLayout="column"
-      fxLayoutAlign="center center"
-      fxLayoutGap="30px"
-    >
-      <span>The graph for this network is big and could slow the page down.</span>
-      <button
-        mat-stroked-button
-        color="primary"
-        fxLayout="column"
-        fxLayoutAlign="center"
-        (click)="showGraph()"
-      >
-        Show visualization
-      </button>
-    </div>
-    <app-active-channel-list
-      *ngIf="selectionInfo && containerWidth >= 900"
-      (closed)="channelListClosed()"
-      [info]="selectionInfo"
-      [height]="containerHeight"
-    ></app-active-channel-list>
+      #overlay
+      class="info-box"
+      [style.height.px]="containerHeight"
+      [style.width.px]="containerWidth"
+    ></div>
   </div>
+  <div fxLayout="column" fxLayoutAlign="center" #graph class="network-section"></div>
 </div>
