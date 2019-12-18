@@ -10,7 +10,7 @@ from gevent.pywsgi import WSGIServer
 from cachetools import TTLCache, cachedmethod
 
 from metrics_backend.metrics_service import MetricsService
-from metrics_backend.utils.serialisation import token_network_to_dict
+from metrics_backend.utils.serialisation import token_network_to_dict, metrics_to_dict
 
 
 class NetworkInfoResource(Resource):
@@ -20,11 +20,12 @@ class NetworkInfoResource(Resource):
 
     @cachedmethod(attrgetter('_cache'))
     def get(self):
-        result = [
+        overall_metrics = metrics_to_dict(self.metrics_service.state)
+        networks = [
             token_network_to_dict(network)
             for network in self.metrics_service.token_networks.values()
         ]
-        return {'result': result}, 200
+        return {'overall_metrics': overall_metrics, 'networks': networks}, 200
 
 
 class NetworkInfoAPI:

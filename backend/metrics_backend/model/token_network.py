@@ -28,6 +28,7 @@ class TokenNetwork:
         self.address = token_network_address
         self.token_info = token_info
         self.channels: Dict[ChannelIdentifier, ChannelView] = dict()
+        self.participants: Dict[Address, Dict[str, int]] = dict()
 
     def handle_channel_opened_event(
         self,
@@ -44,6 +45,9 @@ class TokenNetwork:
 
         view = ChannelView(channel_identifier, participant1, participant2)
         self.channels[channel_identifier] = view
+
+        self._add_opened_channel_to_participant(participant1)
+        self._add_opened_channel_to_participant(participant2)
 
     def handle_channel_new_deposit_event(
         self,
@@ -73,7 +77,11 @@ class TokenNetwork:
         Corresponds to the ChannelClosed event."""
 
         try:
-            self.channels[channel_identifier].update_state(ChannelView.State.CLOSED)
+            channel = self.channels[channel_identifier]
+            channel.update_state(ChannelView.State.CLOSED)
+        
+            self._add_closed_channel_to_participant(channel.participant1)
+            self._add_closed_channel_to_participant(channel.participant2)
         except KeyError:
             log.error(
                 "Received ChannelClosed event for unknown channel '{}'".format(
@@ -87,10 +95,36 @@ class TokenNetwork:
         Corresponds to the ChannelSettled event."""
 
         try:
-            self.channels[channel_identifier].update_state(ChannelView.State.SETTLED)
+            channel = self.channels[channel_identifier]
+            channel.update_state(ChannelView.State.SETTLED)
+        
+            self._add_settled_channel_to_participant(channel.participant1)
+            self._add_settled_channel_to_participant(channel.participant2)
         except KeyError:
             log.error(
                 "Received ChannelSettle event for unknown channel '{}'".format(
                     channel_identifier
                 )
             )
+    
+    def get_channel(self, channel_identifier: ChannelIdentifier):
+        if not channel_identifier in self.channels.keys():
+            return None
+        else:
+            return self.channels[channel_identifier]
+
+    def _add_opened_channel_to_participant(self, participant: Address):
+        if not participant in self.participants:
+            self.participants[participant] = dict()
+            self.participants[participant]['opened'] = 0
+            self.participants[participant]['closed'] = 0
+            self.participants[participant]['settled'] = 0
+        self.participants[participant]['opened'] += 1
+    
+    def _add_closed_channel_to_participant(self, participant: Address):
+        self.participants[participant]['opened'] -= 1
+        self.participants[participant]['closed'] += 1
+    
+    def _add_settled_channel_to_participant(self, participant: Address):
+        self.participants[participant]['closed'] -= 1
+        self.participants[participant]['settled'] += 1
