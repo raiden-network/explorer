@@ -15,7 +15,7 @@ from raiden_contracts.constants import (
     CONTRACT_HUMAN_STANDARD_TOKEN,
     CONTRACT_TOKEN_NETWORK_REGISTRY,
 )
-from metrics_backend.model import TokenNetwork
+from metrics_backend.model import TokenNetwork, MetricsState
 from metrics_backend.utils.blockchain_listener import (
     BlockchainListener,
     create_registry_event_topics,
@@ -63,7 +63,7 @@ class MetricsService(gevent.Greenlet):
         sync_start_block: int = 0,
         required_confirmations: int = 5,  # the default
     ) -> None:
-        """ Creates a new pathfinding service
+        """ Creates a new metrics service
 
         Args:
             contract_manager: A contract manager
@@ -77,6 +77,8 @@ class MetricsService(gevent.Greenlet):
         self.is_running = gevent.event.Event()
         self.token_networks: Dict[Address, TokenNetwork] = {}
         self.token_network_listeners: List[BlockchainListener] = []
+
+        self.state = MetricsState()
 
         log.info('Starting TokenNetworkRegistry Listener (required confirmations: {})...'.format(
             self.required_confirmations,
@@ -157,6 +159,7 @@ class MetricsService(gevent.Greenlet):
             participant2,
         ))
 
+        self.state.handle_channel_opened_event(participant1, participant2)
         token_network.handle_channel_opened_event(
             channel_identifier,
             participant1,
@@ -199,6 +202,14 @@ class MetricsService(gevent.Greenlet):
             channel_identifier,
         ))
 
+        channel = token_network.get_channel(channel_identifier)
+        log.info(channel)
+        if channel is not None:
+            self.state.handle_channel_closed_event(
+                channel.participant1,
+                channel.participant2,
+            )
+        
         token_network.handle_channel_closed_event(channel_identifier)
 
     def handle_channel_settled(self, event: Dict):
@@ -214,6 +225,7 @@ class MetricsService(gevent.Greenlet):
             channel_identifier,
         ))
 
+        self.state.handle_channel_settled_event()
         token_network.handle_channel_settled_event(channel_identifier)
 
     def handle_token_network_created(self, event):
@@ -247,6 +259,8 @@ class MetricsService(gevent.Greenlet):
 
         token_network = TokenNetwork(token_network_address, token_infos)
         self.token_networks[token_network_address] = token_network
+
+        self.state.handle_token_network_created()
 
         log.info('Creating token network for %s, token=%r', token_network_address, token_infos)
         token_network_listener = BlockchainListener(
