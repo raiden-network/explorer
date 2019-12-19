@@ -12,33 +12,30 @@ import { NetMetricsConfig } from './net.metrics.config';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NMAPIResponse } from '../../models/NMAPIResponse';
-import { NMChannel, NMNetwork } from '../../models/NMNetwork';
+import { NMNetwork } from '../../models/NMNetwork';
+import * as NMMetricsSchema from '../../models/NMMetrics.schema';
 import * as NMNetworkSchema from '../../models/NMNetwork.schema';
 import { NetworkGraph } from '../../models/NetworkGraph';
 import { Observable, of, timer } from 'rxjs';
 import {
   RaidenNetworkMetrics,
   TokenNetwork,
-  UserAccount,
-  UserAccountStatistics
+  UserAccountStatistics,
+  Channel
 } from '../../models/TokenNetwork';
 import { SharedService } from './shared.service';
 import { Message } from './message';
 import { TokenUtils } from '../../utils/token.utils';
+import { NMMetrics } from 'src/app/models/NMMetrics';
+import * as Ajv from 'ajv';
 
-declare let require: any;
-
-const Ajv = require('ajv');
-
-const schema = NMNetworkSchema.schema;
+const metricsSchema = NMMetricsSchema.schema;
+const networkSchema = NMNetworkSchema.schema;
 const ajv = new Ajv({ allErrors: true });
 
 @Injectable()
 export class NetMetricsService {
   readonly metrics$: Observable<RaidenNetworkMetrics>;
-  private unique = function(value, index, self) {
-    return self.indexOf(value) === index;
-  };
 
   public constructor(
     private http: HttpClient,
@@ -57,26 +54,30 @@ export class NetMetricsService {
    * Get data from server endpoint, then run setCurrentMetrics()
    */
   private getMetrics(): Observable<RaidenNetworkMetrics> {
-    const metrics = this.http.get<NMAPIResponse>(this.nmConfig.configuration.backend_url).pipe(
-      map(value => value.result),
-      retryWhen(errors =>
-        errors.pipe(
-          delay(this.nmConfig.configuration.poll_interval),
-          take(3)
-        )
-      ),
-      share()
-    );
+    const networkMetrics = this.http
+      .get<NMAPIResponse>(this.nmConfig.configuration.backend_url)
+      .pipe(
+        retryWhen(errors =>
+          errors.pipe(
+            delay(this.nmConfig.configuration.poll_interval),
+            take(3)
+          )
+        ),
+        share()
+      );
 
-    const networkMetrics: Observable<TokenNetwork[]> = metrics.pipe(
-      map((networks: NMNetwork[]) => {
-        return networks.map(network => {
-          const valid = ajv.validate(schema, network);
-          if (!valid) {
-            throw new Error(`Malformed API data: ${this.ajvErrorsToString(ajv.errors)}`);
-          }
+    return networkMetrics.pipe(
+      map((response: NMAPIResponse) => {
+        const metricsResponse = response.overall_metrics;
+        this.validateData(metricsSchema, metricsResponse);
+        const metrics = this.createOverallMetrics(metricsResponse);
+
+        metrics.tokenNetworks = response.networks.map(network => {
+          this.validateData(networkSchema, network);
           return this.createTokenNetwork(network);
         });
+
+        return metrics;
       }),
       catchError(err => {
         let message: Message;
@@ -95,97 +96,33 @@ export class NetMetricsService {
         return of(err.message);
       })
     );
+  }
 
-    return networkMetrics.pipe(
-      map(data => {
-        const uniqueAccounts = data
-          .map(value => value.uniqueAccounts)
-          .reduce((acc: string[], users: string[]) => {
-            acc.push(...users);
-            return acc;
-          }, [])
-          .filter(this.unique);
-
-        const totalOpenChannels = data
-          .map(network => network.openedChannels)
-          .reduce((acc, openedChannels) => acc + openedChannels);
-        const totalClosedChannels = data
-          .map(network => network.closedChannels)
-          .reduce((acc, closedChannels) => acc + closedChannels);
-        const totalSettledChannels = data
-          .map(network => network.settledChannels)
-          .reduce((acc, settledChannels) => acc + settledChannels);
-
-        const totalChannelsPerParticipants: UserAccountStatistics[] = Object.values(
-          data
-            .map(value => value.channelsPerParticipants)
-            .reduce((summedChannelsPerPart, channelsPerParticipant) => {
-              channelsPerParticipant.forEach(participant => {
-                if (summedChannelsPerPart[participant.address] === undefined) {
-                  summedChannelsPerPart[participant.address] = participant;
-                } else {
-                  summedChannelsPerPart[participant.address].channels += participant.channels;
-                }
-              });
-              return summedChannelsPerPart;
-            }, {})
-        );
-
-        const topParticipants = totalChannelsPerParticipants
-          .sort((a, b) => b.channels - a.channels)
-          .slice(0, 5);
-
-        const accountChannels = totalChannelsPerParticipants.reduce(
-          (acc, userAccount) => acc + userAccount.channels,
-          0
-        );
-        const channelsPerAccount =
-          totalChannelsPerParticipants.length === 0
-            ? 0
-            : accountChannels / totalChannelsPerParticipants.length;
-
-        const raidenMetrics: RaidenNetworkMetrics = {
-          totalTokenNetworks: data.length,
-          openChannels: totalOpenChannels,
-          closedChannels: totalClosedChannels,
-          settledChannels: totalSettledChannels,
-          uniqueAccounts: uniqueAccounts.length,
-          tokenNetworks: data.sort((a, b) => b.openedChannels - a.openedChannels),
-          topParticipantsByChannels: topParticipants,
-          channelsPerAccount: channelsPerAccount
-        };
-
-        data.forEach(value => {
-          value.uniqueAccounts = undefined;
-        });
-
-        return raidenMetrics;
-      })
-    );
+  private createOverallMetrics(data: NMMetrics): RaidenNetworkMetrics {
+    return {
+      totalTokenNetworks: data.num_token_networks,
+      openChannels: data.num_channels_opened,
+      closedChannels: data.num_channels_closed,
+      settledChannels: data.num_channels_settled,
+      averageChannelsPerParticipant: data.avg_channels_per_node,
+      topParticipantsByChannels: data.top_nodes_by_channels.reverse(),
+      uniqueAccounts: data.num_nodes_with_open_channels
+    };
   }
 
   private createNetworkGraph(network: NMNetwork): NetworkGraph {
     const graph: NetworkGraph = { nodes: [], links: [] };
-    const getChannels = (id: string, status: string) =>
-      network.channels.filter((value: NMChannel) => {
-        return (value.participant1 === id || value.participant2 === id) && value.status === status;
-      });
-
     const token = network.token;
 
-    network.nodes.forEach(id => {
-      const openChannels = getChannels(id, 'opened').length;
-      const closedChannels = getChannels(id, 'closed').length;
-      const settledChannels = getChannels(id, 'settled').length;
-
+    for (const [address, channels] of Object.entries(network.nodes)) {
       graph.nodes.push({
-        id,
-        openChannels,
-        closedChannels,
-        settledChannels,
+        id: address,
+        openChannels: channels.opened,
+        closedChannels: channels.closed,
+        settledChannels: channels.settled,
         token: token
       });
-    });
+    }
 
     for (const channel of network.channels) {
       let capacity = channel.deposit1 + channel.deposit2;
@@ -199,72 +136,17 @@ export class NetMetricsService {
         capacity: capacity
       });
     }
+
     return graph;
   }
 
   private createTokenNetwork(network: NMNetwork): TokenNetwork {
     const graph = this.createNetworkGraph(network);
 
-    const channels = network.channels;
     const decimals = network.token.decimals;
 
-    const openedChannels = channels.filter(value => value.status === 'opened');
-    const closedChannels = channels.filter(value => value.status === 'closed');
-    const settledChannels = channels.filter(value => value.status === 'settled');
-
-    const uniqueAccounts = openedChannels
-      .map(value => [value.participant1, value.participant2])
-      .reduceRight((previousValue, currentValue) => previousValue.concat(currentValue), [])
-      .filter(this.unique);
-
-    const channelsByPart: { [participant: string]: NMChannel[] } = openedChannels.reduce(
-      (channelsPerPart, channel) => {
-        const participantChannels = (participant: string) => {
-          let element: NMChannel[] | null = channelsPerPart[participant];
-          if (!element) {
-            element = [];
-            channelsPerPart[participant] = element;
-          }
-          return element;
-        };
-
-        participantChannels(channel.participant1).push(channel);
-        participantChannels(channel.participant2).push(channel);
-        return channelsPerPart;
-      },
-      {}
-    );
-
-    const channelEntries = Object.entries(channelsByPart);
-
-    const participants: UserAccountStatistics[] = channelEntries.map(value => {
-      return {
-        address: value[0],
-        channels: value[1].length
-      };
-    });
-
-    const accountsWithChannels = this.accountsWithChannels(channelEntries);
-    const channelsPerAccount = this.calculateChannelsPerAccount(accountsWithChannels);
-    const averagePerParticipant = this.calculateAverageDepositPerParticipant(
-      accountsWithChannels,
-      decimals
-    );
-
-    const topParticipants = participants.sort((a, b) => b.channels - a.channels).slice(0, 5);
-
-    const deposit = openedChannels.reduce((accumulator, channel) => {
-      const deposit1 = TokenUtils.toDecimal(channel.deposit1, decimals);
-      const deposit2 = TokenUtils.toDecimal(channel.deposit2, decimals);
-      return accumulator + deposit1 + deposit2;
-    }, 0);
-    const channelAverage = deposit / openedChannels.length;
-
-    const totalNetworkDeposits = openedChannels
-      .map(value => value.deposit1 + value.deposit2)
-      .reduce((accumulator, channelDeposit) => accumulator + channelDeposit, 0);
-
-    const topChannelsByDeposit = openedChannels
+    const topChannelsByDeposit: Channel[] = network.channels
+      .filter(value => value.status === 'opened')
       .sort((a, b) => {
         const bDeposit1 = TokenUtils.toDecimal(b.deposit1, decimals);
         const bDeposit2 = TokenUtils.toDecimal(b.deposit2, decimals);
@@ -272,82 +154,47 @@ export class NetMetricsService {
         const aDeposit2 = TokenUtils.toDecimal(a.deposit2, decimals);
         return bDeposit1 + bDeposit2 - (aDeposit1 + aDeposit2);
       })
-      .filter(value => value.deposit1 + value.deposit2 > 0)
       .slice(0, 5)
+      .filter(value => value.deposit1 + value.deposit2 > 0)
       .map(value =>
-        Object.assign(value, {
+        Object.assign({}, value, {
           deposit1: TokenUtils.toDecimal(value.deposit1, decimals),
           deposit2: TokenUtils.toDecimal(value.deposit2, decimals)
         })
       );
 
+    const accountsWithOpenChannels: UserAccountStatistics[] = Object.entries(network.nodes)
+      .filter(([address, channels]) => channels.opened > 0)
+      .map(([address, channels]) => {
+        return { address: address, channels: channels.opened };
+      });
+
+    const topParticipants = accountsWithOpenChannels
+      .sort((a, b) => b.channels - a.channels)
+      .slice(0, 5);
+
     return {
       token: network.token,
       graph: graph,
-      topParticipantsByChannels: topParticipants,
-      openedChannels: openedChannels.length,
-      closedChannels: closedChannels.length,
-      settledChannels: settledChannels.length,
-      channelsPerAccount: channelsPerAccount,
-      participants: uniqueAccounts.length,
+      openedChannels: network.num_channels_opened,
+      closedChannels: network.num_channels_closed,
+      settledChannels: network.num_channels_settled,
+      participants: accountsWithOpenChannels.length,
       topChannelsByDeposit: topChannelsByDeposit,
-      averageDepositPerChannel: channelAverage || 0,
-      averageDepositPerParticipant: averagePerParticipant || 0,
-      uniqueAccounts: uniqueAccounts,
-      totalNetworkDeposits: TokenUtils.toDecimal(totalNetworkDeposits, decimals),
-      channelsPerParticipants: participants
+      topParticipantsByChannels: topParticipants,
+      averageDepositPerChannel: TokenUtils.toDecimal(network.avg_deposit_per_channel, decimals),
+      averageDepositPerParticipant: TokenUtils.toDecimal(network.avg_deposit_per_node, decimals),
+      averageChannelsPerParticipant: network.avg_channels_per_node,
+      totalNetworkDeposits: TokenUtils.toDecimal(network.total_deposits, decimals)
     };
   }
 
-  // noinspection JSMethodCanBeStatic
-  private calculateChannelsPerAccount(accountsWithOpenChannels: UserAccount[]): number {
-    const openChannels = accountsWithOpenChannels.reduce(
-      (acc, userAccount) => acc + userAccount.channels.length,
-      0
-    );
-    return accountsWithOpenChannels.length === 0
-      ? 0
-      : openChannels / accountsWithOpenChannels.length;
-  }
-
-  private calculateAverageDepositPerParticipant(
-    accountsWithOpenChannels: UserAccount[],
-    decimals: number
-  ): number {
-    const participants = accountsWithOpenChannels.reduce(
-      (acc, account) => acc + account.channels.length,
-      0
-    );
-
-    const deposits = accountsWithOpenChannels
-      .map(value => {
-        const address = value.address;
-        const accountChannels = value.channels;
-        return accountChannels.reduce((accumulator, channel) => {
-          let participantDeposit: number;
-
-          if (address === channel.participant1) {
-            participantDeposit = TokenUtils.toDecimal(channel.deposit1, decimals);
-          } else {
-            participantDeposit = TokenUtils.toDecimal(channel.deposit2, decimals);
-          }
-
-          return accumulator + participantDeposit;
-        }, 0);
-      })
-      .reduce((accumulator, participantsDeposits) => accumulator + participantsDeposits, 0);
-
-    return participants === 0 ? 0 : deposits / participants;
-  }
-
-  private accountsWithChannels(channelEntries: [string, NMChannel[]][]): UserAccount[] {
-    return channelEntries.map(
-      entry =>
-        ({
-          address: entry[0],
-          channels: entry[1]
-        } as UserAccount)
-    );
+  private validateData(schema: any, data: any) {
+    if (!ajv.validate(schema, data)) {
+      const errMessage = `Malformed API data: ${this.ajvErrorsToString(ajv.errors)}`;
+      console.error(errMessage);
+      throw new Error(errMessage);
+    }
   }
 
   //noinspection JSMethodCanBeStatic
