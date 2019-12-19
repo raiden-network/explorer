@@ -17,13 +17,15 @@
           <span>{{ tokenNetwork.averageDepositPerParticipant | smallNumber }}</span>
           <span>{{ tokenNetwork.token.symbol }}</span>
         </div>
-        <div fxLayout="row">Avg. deposit per participant</div>
+        <div fxLayout="row">Avg. deposit per account</div>
       </div>
     </div>
 
     <div fxLayout="row">
       <div fxLayout="column">
-        <div fxLayout="row" class="bold">{{ tokenNetwork.channelsPerAccount | number }}</div>
+        <div fxLayout="row" class="bold">
+          {{ tokenNetwork.averageChannelsPerParticipant | number }}
+        </div>
         <div fxLayout="row">Avg. channels per account</div>
       </div>
     </div>
