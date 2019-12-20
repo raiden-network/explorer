@@ -15,7 +15,7 @@ from raiden_contracts.constants import (
     CONTRACT_HUMAN_STANDARD_TOKEN,
     CONTRACT_TOKEN_NETWORK_REGISTRY,
 )
-from metrics_backend.model import TokenNetwork, MetricsState
+from metrics_backend.model import TokenNetwork, PaymentNetworkMetrics
 from metrics_backend.utils.blockchain_listener import (
     BlockchainListener,
     create_registry_event_topics,
@@ -78,7 +78,7 @@ class MetricsService(gevent.Greenlet):
         self.token_networks: Dict[Address, TokenNetwork] = {}
         self.token_network_listeners: List[BlockchainListener] = []
 
-        self.state = MetricsState()
+        self.state = PaymentNetworkMetrics()
 
         log.info('Starting TokenNetworkRegistry Listener (required confirmations: {})...'.format(
             self.required_confirmations,

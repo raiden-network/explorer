@@ -9,11 +9,11 @@ from metrics_backend.utils import Address
 log = logging.getLogger(__name__)
 
 
-class MetricsState:
+class PaymentNetworkMetrics:
     """ Manages the overall metrics. """
 
     def __init__(self) -> None:
-        """ Initializes the metrics state. """
+        """ Initializes the overall metrics. """
 
         self.num_token_networks = 0
         self.num_channels_opened = 0
