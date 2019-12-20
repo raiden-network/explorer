@@ -18,6 +18,12 @@ class TokenInfo:
     symbol: str
     decimals: int
 
+@dataclass 
+class ParticipantsChannels:
+    opened: int
+    closed: int
+    settled: int
+
 
 class TokenNetwork:
     """ Manages a token network for pathfinding. """
@@ -28,7 +34,7 @@ class TokenNetwork:
         self.address = token_network_address
         self.token_info = token_info
         self.channels: Dict[ChannelIdentifier, ChannelView] = dict()
-        self.participants: Dict[Address, Dict[str, int]] = dict()
+        self.participants: Dict[Address, ParticipantsChannels] = dict()
 
     def handle_channel_opened_event(
         self,
@@ -115,16 +121,13 @@ class TokenNetwork:
 
     def _add_opened_channel_to_participant(self, participant: Address):
         if not participant in self.participants:
-            self.participants[participant] = dict()
-            self.participants[participant]['opened'] = 0
-            self.participants[participant]['closed'] = 0
-            self.participants[participant]['settled'] = 0
-        self.participants[participant]['opened'] += 1
+            self.participants[participant] = ParticipantsChannels(0, 0, 0)
+        self.participants[participant].opened += 1
     
     def _add_closed_channel_to_participant(self, participant: Address):
-        self.participants[participant]['opened'] -= 1
-        self.participants[participant]['closed'] += 1
+        self.participants[participant].opened -= 1
+        self.participants[participant].closed += 1
     
     def _add_settled_channel_to_participant(self, participant: Address):
-        self.participants[participant]['closed'] -= 1
-        self.participants[participant]['settled'] += 1
+        self.participants[participant].closed -= 1
+        self.participants[participant].settled += 1
