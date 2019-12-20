@@ -1,5 +1,6 @@
 import logging
 from typing import Dict
+from collections import defaultdict
 
 from eth_utils import is_checksum_address
 from metrics_backend.utils import Address
@@ -18,7 +19,7 @@ class MetricsState:
         self.num_channels_opened = 0
         self.num_channels_closed = 0
         self.num_channels_settled = 0
-        self.open_channels_by_participant: Dict[Address, int] = dict()
+        self.open_channels_by_participant: Dict[Address, int] = defaultdict(lambda: 0)
 
     def handle_channel_opened_event(
         self,
@@ -53,16 +54,8 @@ class MetricsState:
         self.num_token_networks += 1
 
     def _add_opened_channel_to_participant(self, participant: Address):
-        if not participant in self.open_channels_by_participant:
-            self.open_channels_by_participant[participant] = 0
         self.open_channels_by_participant[participant] += 1
     
     def _remove_opened_channel_from_participant(self, participant: Address):
-        try:
+        if not self.open_channels_by_participant[participant] == 0:
             self.open_channels_by_participant[participant] -= 1
-        except KeyError:
-            log.error(
-                "Received ChannelClosed event for unknown participant '{}'".format(
-                    participant
-                )
-            )
