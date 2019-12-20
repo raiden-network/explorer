@@ -30,16 +30,35 @@ class ChannelView:
         self._deposit_p2 = 0
         self.state = ChannelView.State.OPENED
 
+        self._total_deposit_p1 = 0
+        self._total_deposit_p2 = 0
+        self._total_withdraw_p1 = 0
+        self._total_withdraw_p2 = 0
+
     def update_deposit(
         self,
         participant: Address,
-        deposit: int = None,
+        new_total_deposit: int = None,
     ):
-        if deposit is not None:
+        if new_total_deposit is not None:
             if participant == self.participant1:
-                self._deposit_p1 = deposit
+                self._deposit_p1 += new_total_deposit - self._total_deposit_p1
+                self._total_deposit_p1 = new_total_deposit
             elif participant == self.participant2:
-                self._deposit_p2 = deposit
+                self._deposit_p2 += new_total_deposit - self._total_deposit_p2
+                self._total_deposit_p2 = new_total_deposit
+
+    def withdraw(
+        self,
+        participant: Address,
+        new_total_withdraw: int,
+    ):
+        if participant == self.participant1:
+            self._deposit_p1 -= new_total_withdraw - self._total_withdraw_p1
+            self._total_withdraw_p1 = new_total_withdraw
+        elif participant == self.participant2:
+            self._deposit_p2 -= new_total_withdraw - self._total_withdraw_p2
+            self._total_withdraw_p2 = new_total_withdraw
 
     def update_state(self, new_state: State):
         if new_state is not None:

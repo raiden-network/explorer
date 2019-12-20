@@ -136,6 +136,8 @@ class MetricsService(gevent.Greenlet):
             self.handle_channel_opened(event)
         elif event_name == ChannelEvent.DEPOSIT:
             self.handle_channel_new_deposit(event)
+        elif event_name == ChannelEvent.WITHDRAW:
+            self.handle_channel_withdraw(event)
         elif event_name == ChannelEvent.CLOSED:
             self.handle_channel_closed(event)
         elif event_name == ChannelEvent.SETTLED:
@@ -187,6 +189,29 @@ class MetricsService(gevent.Greenlet):
             channel_identifier,
             participant_address,
             total_deposit
+        )
+
+    def handle_channel_withdraw(self, event: Dict):
+        token_network = self._get_token_network(event['address'])
+
+        if token_network is None:
+            return
+
+        channel_identifier = event['args']['channel_identifier']
+        participant_address = event['args']['participant']
+        total_withdraw = event['args']['total_withdraw']
+
+        log.info('Received ChannelWithdraw event for token network {} (#{} - {} for {})'.format(
+            token_network.address,
+            channel_identifier,
+            total_withdraw,
+            participant_address
+        ))
+
+        token_network.handle_channel_withdraw_event(
+            channel_identifier,
+            participant_address,
+            total_withdraw
         )
 
     def handle_channel_closed(self, event: Dict):
