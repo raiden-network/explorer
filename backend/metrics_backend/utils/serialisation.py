@@ -1,7 +1,7 @@
 from typing import Dict, List
 from functools import reduce
 
-from metrics_backend.model import TokenNetwork, ChannelView, MetricsState
+from metrics_backend.model import TokenNetwork, ChannelView, PaymentNetworkMetrics
 from metrics_backend.utils import Address
 
 
@@ -96,10 +96,10 @@ def token_network_to_dict(token_network: TokenNetwork) -> Dict:
         nodes=token_network.participants,
     )
 
-def metrics_to_dict(metrics_state: MetricsState) -> Dict:
+def metrics_to_dict(payment_network_metrics: PaymentNetworkMetrics) -> Dict:
     """ Returns a JSON serialized version of the overall metrics. """
     
-    open_channels_by_participant = metrics_state.open_channels_by_participant
+    open_channels_by_participant = payment_network_metrics.open_channels_by_participant
 
     summed_open_channels = reduce(
         lambda acc, channels:acc + channels,
@@ -126,10 +126,10 @@ def metrics_to_dict(metrics_state: MetricsState) -> Dict:
     )[-5:]
 
     return dict(
-        num_token_networks=metrics_state.num_token_networks,
-        num_channels_opened=metrics_state.num_channels_opened,
-        num_channels_closed=metrics_state.num_channels_closed,
-        num_channels_settled=metrics_state.num_channels_settled,
+        num_token_networks=payment_network_metrics.num_token_networks,
+        num_channels_opened=payment_network_metrics.num_channels_opened,
+        num_channels_closed=payment_network_metrics.num_channels_closed,
+        num_channels_settled=payment_network_metrics.num_channels_settled,
         num_nodes_with_open_channels=num_nodes_with_open_channels,
         avg_channels_per_node=avg_channels_per_node,
         top_nodes_by_channels=top_nodes_by_channels
