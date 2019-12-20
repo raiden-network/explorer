@@ -1,7 +1,12 @@
 from typing import Dict, List
 from functools import reduce
 
-from metrics_backend.model import TokenNetwork, ChannelView, PaymentNetworkMetrics
+from metrics_backend.model import (
+    TokenNetwork,
+    ChannelView,
+    PaymentNetworkMetrics,
+    ParticipantsChannels,
+)
 from metrics_backend.utils import Address
 
 
@@ -16,11 +21,11 @@ def _state_to_str(state: ChannelView.State) -> str:
         return 'unknown'
 
 def _calculate_channels_per_node(
-    channels_by_participants: Dict[Address, Dict[str, int]],
+    channels_by_participants: Dict[Address, ParticipantsChannels],
     num_participants: int,
 ) -> float:
     num_channels = reduce(
-        lambda acc, channels:acc + channels['opened'],
+        lambda acc, channels:acc + channels.opened,
         channels_by_participants.values(),
         0,
     )
@@ -33,6 +38,7 @@ def token_network_to_dict(token_network: TokenNetwork) -> Dict:
     num_channels_settled = 0
 
     channels = []
+    nodes: Dict[Address, Dict[str, int]] = dict()
     total_deposits = 0
 
     for channel_id, view in token_network.channels.items():
@@ -54,9 +60,16 @@ def token_network_to_dict(token_network: TokenNetwork) -> Dict:
             num_channels_closed += 1
         elif view.state == ChannelView.State.SETTLED:
             num_channels_settled += 1
+    
+    for address, participants_channels in token_network.participants.items():
+        nodes[address] = dict(
+            opened=participants_channels.opened,
+            closed=participants_channels.closed,
+            settled=participants_channels.settled,
+        )
 
     num_nodes_with_open_channels = reduce(
-        lambda acc, channels:acc + (1 if channels['opened'] > 0 else 0),
+        lambda acc, channels:acc + (1 if channels.opened > 0 else 0),
         token_network.participants.values(),
         0,
     )
@@ -93,7 +106,7 @@ def token_network_to_dict(token_network: TokenNetwork) -> Dict:
         avg_deposit_per_node=avg_deposit_per_node,
         avg_channels_per_node=avg_channels_per_node,
         channels=channels,
-        nodes=token_network.participants,
+        nodes=nodes,
     )
 
 def metrics_to_dict(payment_network_metrics: PaymentNetworkMetrics) -> Dict:
