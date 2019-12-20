@@ -75,6 +75,28 @@ class TokenNetwork:
                     channel_identifier
                 )
             )
+    
+    def handle_channel_withdraw_event(
+        self,
+        channel_identifier: ChannelIdentifier,
+        withdrawing_participant: Address,
+        total_withdraw: int
+    ):
+        """ Register a new withdraw for the withdrawing participant.
+
+        Corresponds to the ChannelWithdraw event."""
+
+        assert is_checksum_address(withdrawing_participant)
+
+        if not channel_identifier in self.channels:
+            log.error(
+                "Received ChannelWithdraw event for unknown channel '{}'".format(
+                    channel_identifier
+                )
+            )
+            return
+
+        self.channels[channel_identifier].withdraw(withdrawing_participant, total_withdraw)
 
     def handle_channel_closed_event(self, channel_identifier: ChannelIdentifier):
         """ Close a channel. This doesn't mean that the channel is settled yet, but it cannot
