@@ -1,7 +1,7 @@
 Click==7.0
 
 web3==4.8.2
-eth-utils==1.4.1
+eth-utils==1.8.1
 
 flask==1.0.2
 flask_restful==0.3.7
