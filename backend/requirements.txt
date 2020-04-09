@@ -11,6 +11,6 @@ requests==2.21.0
 dataclasses==0.6.0
 cachetools==2.1.0
 
-raiden-contracts==0.37.0b3
+raiden-contracts==0.36.2
 eth-abi<=1.2.2
 eth-typing<2
