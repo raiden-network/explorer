@@ -3,9 +3,10 @@ import sys
 import requests
 from typing import Callable, Dict, Union, List, Tuple
 
+from eth_abi.codec import ABICodec
 from web3 import Web3
-from web3.contract import get_event_data
-from web3.utils.abi import filter_by_type
+from web3._utils.events import get_event_data
+from web3._utils.abi import filter_by_type
 from eth_utils import to_checksum_address, encode_hex, decode_hex
 from eth_utils.abi import event_abi_to_log_topic
 import gevent
@@ -15,7 +16,7 @@ from raiden_contracts.constants import (
     CONTRACT_TOKEN_NETWORK_REGISTRY,
     EVENT_TOKEN_NETWORK_CREATED,
 )
-
+from web3.types import FilterParams
 
 log = logging.getLogger(__name__)
 
@@ -34,11 +35,11 @@ def create_registry_event_topics(contract_manager: ContractManager) -> List:
     return [encode_hex(event_abi_to_log_topic(new_network_abi))]
 
 
-def decode_event(topic_to_event_abi: Dict[bytes, Dict], log_entry: Dict) -> Dict:
+def decode_event(codec: ABICodec, topic_to_event_abi: Dict[bytes, Dict], log_entry: Dict) -> Dict:
     topic = log_entry["topics"][0]
     event_abi = topic_to_event_abi[topic]
 
-    return get_event_data(event_abi, log_entry)
+    return get_event_data(codec, event_abi, log_entry)
 
 
 def get_events(
@@ -62,12 +63,12 @@ def get_events(
     Returns:
         All matching events
     """
-    filter_params = {
+    filter_params = FilterParams({
         'fromBlock': from_block,
         'toBlock': to_block,
         'address': to_checksum_address(contract_address),
         'topics': topics,
-    }
+    })
 
     return web3.eth.getLogs(filter_params)
 
@@ -258,6 +259,7 @@ class BlockchainListener(gevent.Greenlet):
             topic_to_event_abi = {event_abi_to_log_topic(event_abi): event_abi for event_abi in events_abi}
             for raw_event in events:
                 decoded_event = decode_event(
+                    codec=self.web3.codec,
                     topic_to_event_abi=topic_to_event_abi,
                     log_entry=raw_event,
                 )
@@ -287,7 +289,7 @@ class BlockchainListener(gevent.Greenlet):
                 # if the hash of our head changed, there was a chain reorg
                 current_unconfirmed_hash = self.web3.eth.getBlock(
                     self.unconfirmed_head_number,
-                ).hash
+                )["hash"]
                 if current_unconfirmed_hash != self.unconfirmed_head_hash:
                     self._detected_chain_reorg(current_block)
             # block number decreased, there was a chain reorg
@@ -297,7 +299,7 @@ class BlockchainListener(gevent.Greenlet):
             # now we have to check that the confirmed_head_hash stayed the same
             # otherwise the program aborts
             try:
-                current_head_hash = self.web3.eth.getBlock(self.confirmed_head_number).hash
+                current_head_hash = self.web3.eth.getBlock(self.confirmed_head_number)["hash"]
                 if current_head_hash != self.confirmed_head_hash:
                     log.critical(
                         'Events considered confirmed have been reorganized. '

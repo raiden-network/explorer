@@ -109,7 +109,7 @@ def main(
     try:
         log.info(f'Starting Web3 client for node at {eth_rpc}')
         web3 = Web3(HTTPProvider(eth_rpc))
-        web3.middleware_stack.inject(geth_poa_middleware, layer=0)
+        web3.middleware_onion.inject(geth_poa_middleware, layer=0)
     except ConnectionError:
         log.error(
             'Can not connect to the Ethereum client. Please check that it is running and that '
@@ -124,7 +124,7 @@ def main(
         valid_params_given = is_checksum_address(registry_address) and start_block >= 0
         if not valid_params_given:
             try:
-                contract_data = get_contracts_deployment_info(int(web3.net.version), contracts_version)
+                contract_data = get_contracts_deployment_info(web3.eth.chainId, contracts_version)
                 token_network_registry_info = contract_data['contracts'][CONTRACT_TOKEN_NETWORK_REGISTRY]  # noqa
                 registry_address = token_network_registry_info['address']
                 start_block = max(0, token_network_registry_info['block_number'])

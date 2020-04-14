@@ -49,10 +49,14 @@ clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr htmlcov/
 
+install-dev:
+    pip install -U -r requirements-dev.txt
+    pip install -e .
+
 lint: ## check style with flake8
 	flake8 metrics_backend
 
-typecheck: ## static analysis with mypy
+mypy: ## static analysis with mypy
 	mypy --ignore-missing-imports metrics_backend
 
 test: ## run tests quickly with the default Python
