@@ -49,9 +49,9 @@ clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr htmlcov/
 
-install-dev:
-    pip install -U -r requirements-dev.txt
-    pip install -e .
+install-dev:  ## install dependencies
+	pip install -U -r requirements-dev.txt
+	pip install -e .
 
 lint: ## check style with flake8
 	flake8 metrics_backend
