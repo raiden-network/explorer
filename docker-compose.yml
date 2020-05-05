@@ -74,30 +74,6 @@ services:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:rinkeby.explorer.raiden.network; Path: /json"
 
-  frontend-rinkeby-limits:
-    build:
-      context: ./frontend
-      args:
-        backend_url: https://rinkeby-limits.explorer.raiden.network/json
-        poll_interval: 10000
-        etherscan_base_url: https://rinkeby.etherscan.io/address/
-        network_name: Rinkeby
-    restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:rinkeby-limits.explorer.raiden.network"
-
-  backend-rinkeby-limits:
-    build:
-      context: ./backend
-    restart: always
-    environment:
-      - EXPLORER_ETH_RPC=http://geth.rinkeby.ethnodes.brainbot.com:8545
-      - EXPLORER_USE_PRODUCTION_CONTRACTS=true
-    labels:
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:rinkeby-limits.explorer.raiden.network; Path: /json"
-
   frontend-goerli:
     build:
       context: ./frontend
@@ -136,8 +112,8 @@ services:
       - backend
       - backend-ropsten
       - backend-rinkeby
-      - backend-rinkeby-limits
+      - backend-goerli
       - frontend
       - frontend-ropsten
       - frontend-rinkeby
-      - frontend-rinkeby-limits
+      - frontend-goerli
