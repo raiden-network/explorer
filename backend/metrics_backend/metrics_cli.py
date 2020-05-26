@@ -115,7 +115,7 @@ def main(
         )
         sys.exit()
 
-    contracts_version = '0.4.0' if use_production_contracts else CONTRACTS_VERSION
+    contracts_version = '0.37.0' if use_production_contracts else CONTRACTS_VERSION
     log.info(f'Using contracts version: {contracts_version}')
 
     with no_ssl_verification():

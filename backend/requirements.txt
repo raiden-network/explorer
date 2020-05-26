@@ -10,5 +10,5 @@ gevent==1.5.0
 requests==2.23.0
 cachetools==4.1.0
 
-raiden-contracts==0.37.0b3
+raiden-contracts==0.37.0
 mypy-extensions
