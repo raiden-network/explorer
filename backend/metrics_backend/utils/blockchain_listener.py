@@ -84,7 +84,7 @@ class BlockchainListener(gevent.Greenlet):
             contract_address: str,
             *,  # require all following arguments to be keyword arguments
             required_confirmations: int = 4,
-            sync_chunk_size: int = 100_000,
+            sync_chunk_size: int = 1_000,
             poll_interval: int = 5,
             sync_start_block: int = 0,
     ) -> None:
@@ -189,7 +189,7 @@ class BlockchainListener(gevent.Greenlet):
                 self.confirmed_head_number,
                 new_confirmed_head_number,
             )
-            log.debug(
+            log.info(
                 'Filtering for confirmed events: %s-%s @%d ...',
                 filters_confirmed['from_block'],
                 filters_confirmed['to_block'],

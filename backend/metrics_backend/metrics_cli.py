@@ -1,4 +1,5 @@
 from gevent import monkey, config  # isort:skip # noqa
+config.resolver = ['dnspython', 'ares', 'block']
 monkey.patch_all()  # isort:skip # noqa
 
 import logging
