@@ -1,4 +1,4 @@
-<div *ngIf="network !== 'Mainnet'; else old" class="totals" fxLayout="column" fxFlex="0 1">
+<div class="totals" fxLayout="column" fxFlex="0 1">
   <div
     [@flyInOut]="'in'"
     ngClass="totals-wrapper"
@@ -209,73 +209,3 @@
   </div>
   <div class="section-underline" fxFlex="0 0 15px"></div>
 </div>
-
-<!-- Remove the following when Alderaan released -->
-<ng-template #old>
-  <div class="totals-old" fxLayout="column" fxLayoutAlign="center center">
-    <div fxLayout="row" [@flyInOut]="'in'">
-      <div fxLayout="column" fxLayoutGap="1.4rem">
-        <div fxLayout="row" fxLayoutAlign="center" class="totals-title">Raiden Explorer</div>
-
-        <div fxLayout="row" fxLayoutAlign="center" class="totals-subtitle">
-          <span> Metrics for the Raiden Network </span>
-        </div>
-      </div>
-    </div>
-
-    <div
-      [@flyInOut]="'in'"
-      fxFlexAlign="center center"
-      fxLayout="row"
-      fxLayoutGap.gt-sm="150px"
-      fxLayoutGap="8px"
-      fxLayoutGap.xs="4px"
-      class="totals-bar"
-    >
-      <div
-        fxLayout="column"
-        fxLayoutAlign="center center"
-        fxLayoutGap="1rem"
-        *ngIf="metrics.totalTokenNetworks > 1"
-      >
-        <div fxLayout="row">
-          <img class="totals-logo" src="../../../assets/network.svg" />
-        </div>
-        <div fxLayout="row">
-          <div fxLayout="column" fxLayoutAlign="center center">
-            <div fxLayout="row" class="totals-title">{{ metrics.totalTokenNetworks }}</div>
-            <div fxLayout="row" class="totals-subtitle">Token Networks</div>
-          </div>
-        </div>
-      </div>
-
-      <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
-        <div fxLayout="row">
-          <img class="totals-logo" src="../../../assets/channel.svg" />
-        </div>
-
-        <div fxLayout="row">
-          <div fxLayout="column" fxLayoutAlign="center center">
-            <div fxLayout="row" class="totals-title">
-              {{ metrics.openChannels || 0 }}
-            </div>
-            <div fxLayout="row" class="totals-subtitle">Open Channels</div>
-          </div>
-        </div>
-      </div>
-
-      <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem">
-        <div fxLayout="row">
-          <img class="totals-logo" src="../../../assets/account.svg" />
-        </div>
-
-        <div fxLayout="row">
-          <div fxLayout="column" fxLayoutAlign="center center">
-            <div fxLayout="row" class="totals-title">{{ metrics.uniqueAccounts || 0 }}</div>
-            <div fxLayout="row" class="totals-subtitle">Unique Accounts</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</ng-template>
