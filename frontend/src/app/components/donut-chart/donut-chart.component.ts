@@ -29,7 +29,7 @@ export class DonutChartComponent implements OnInit, OnChanges {
   @Input() data: ChannelData[];
   @Input() legend = true;
   @Input() size = 120;
-  @ViewChild('chart') chart;
+  @ViewChild('chart', { static: true }) chart;
 
   private svg: any; // TODO replace all `any` by the right type
 

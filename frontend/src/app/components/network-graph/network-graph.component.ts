@@ -68,8 +68,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private static LINK_HIGHLIGHT_STROKE_WIDTH = 3;
 
   @Input() data: NetworkGraph;
-  @ViewChild('graph') graph;
-  @ViewChild('overlay') overlay;
+  @ViewChild('graph', { static: true }) graph;
+  @ViewChild('overlay', { static: true }) overlay;
 
   readonly filterControl: FormControl = new FormControl();
   readonly filteredOptions$: Observable<FilterElement[]>;
