@@ -19,18 +19,16 @@ import { CommonModule } from '@angular/common';
 import { DonutChartComponent } from './components/donut-chart/donut-chart.component';
 import { NetworkGraphComponent } from './components/network-graph/network-graph.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatListModule,
-  MatProgressSpinnerModule,
-  MatRippleModule,
-  MatSlideToggleModule,
-  MatTooltipModule,
-  MatIconModule
-} from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRippleModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { environment } from '../environments/environment';
 import { SmallNumberPipe } from './pipes/small-number.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
