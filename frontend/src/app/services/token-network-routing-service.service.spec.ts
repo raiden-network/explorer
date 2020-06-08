@@ -6,7 +6,7 @@ describe('TokenNetworkRoutingService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: TokenNetworkRoutingService = TestBed.get(TokenNetworkRoutingService);
+    const service = TestBed.inject(TokenNetworkRoutingService);
     expect(service).toBeTruthy();
   });
 });
