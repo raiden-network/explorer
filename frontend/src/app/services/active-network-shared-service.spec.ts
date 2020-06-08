@@ -6,7 +6,7 @@ describe('ActiveNetworkSharedService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ActiveNetworkSharedService = TestBed.get(ActiveNetworkSharedService);
+    const service = TestBed.inject(ActiveNetworkSharedService);
     expect(service).toBeTruthy();
   });
 });
