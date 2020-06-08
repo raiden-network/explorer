@@ -31,7 +31,7 @@ import { MatIconRegistry } from '@angular/material';
   ]
 })
 export class AppComponent implements OnInit {
-  @ViewChild('topnav')
+  @ViewChild('topnav', { static: true })
   public topnav: ElementRef;
 
   menuOpen = false;
