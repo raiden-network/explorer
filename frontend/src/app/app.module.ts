@@ -3,7 +3,7 @@ import {
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig
 } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule, Injectable } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
@@ -65,6 +65,7 @@ export function ConfigFactory(config: NetMetricsConfig) {
   return () => config.load(environment.configurationFile);
 }
 
+@Injectable()
 export class ExplorerHammerConfig extends HammerGestureConfig {
   overrides = <any>{
     pinch: { enable: false },
