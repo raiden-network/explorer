@@ -72,10 +72,12 @@ export class NetMetricsService {
         this.validateData(metricsSchema, metricsResponse);
         const metrics = this.createOverallMetrics(metricsResponse);
 
-        metrics.tokenNetworks = response.networks.map(network => {
-          this.validateData(networkSchema, network);
-          return this.createTokenNetwork(network);
-        });
+        metrics.tokenNetworks = response.networks
+          .map(network => {
+            this.validateData(networkSchema, network);
+            return this.createTokenNetwork(network);
+          })
+          .sort((a, b) => b.openedChannels - a.openedChannels);
 
         return metrics;
       }),
