@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from '@angular/router';
 import { NetworkInformationComponent } from '../components/network-information/network-information.component';
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class ExplorerRouteReuseStrategy implements RouteReuseStrategy {
