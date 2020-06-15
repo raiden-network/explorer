@@ -97,6 +97,32 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:goerli.explorer.raiden.network; Path: /json"
+      
+  frontend-demoenv:
+    build:
+      context: ./frontend
+      args:
+        backend_url: https://demoenv.explorer.raiden.network/json
+        poll_interval: 10000
+        etherscan_base_url: https://goerli.etherscan.io/address/
+        network_name: Goerli
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:demoenv.explorer.raiden.network"
+
+  backend-demoenv:
+    build:
+      context: ./backend
+    restart: always
+    environment:
+      - EXPLORER_ETH_RPC=http://parity.goerli.ethnodes.brainbot.com:8545
+      - EXPLORER_USE_PRODUCTION_CONTRACTS=false
+      - EXPLORER_USE_DEMOENV_CONTRACTS=true
+      - EXPLORER_REGISTRY_ADDRESS="0x5a5CF4A63022F61F1506D1A2398490c2e8dfbb98"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:demoenv.explorer.raiden.network; Path: /json"
 
   traefik:
     image: traefik:1.7
@@ -113,7 +139,9 @@ services:
       - backend-ropsten
       - backend-rinkeby
       - backend-goerli
+      - backend-demoenv
       - frontend
       - frontend-ropsten
       - frontend-rinkeby
       - frontend-goerli
+      - frontend-demoenv
