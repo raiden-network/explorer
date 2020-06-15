@@ -36,6 +36,8 @@ OUTPUT_FILE = 'network-info.json'
 TEMP_FILE = 'tmp.json'
 OUTPUT_PERIOD = 10  # seconds
 REQUIRED_CONFIRMATIONS = 8  # ~2min with 15s blocks
+PRODUCTION_CONTRACTS_VERSION = '0.37.0'
+DEMOENV_CONTRACTS_VERSION = '0.37.0'
 
 
 @contextlib.contextmanager
@@ -86,6 +88,12 @@ def no_ssl_verification():
     type=bool,
     help='Use the production version of the contracts'
 )
+@click.option(
+    '--use-demoenv-contracts',
+    default=False,
+    type=bool,
+    help='Use the demo environment version of the contracts'
+)
 def main(
     eth_rpc,
     registry_address,
@@ -93,6 +101,7 @@ def main(
     port,
     confirmations,
     use_production_contracts,
+    use_demoenv_contracts
 ):
     # setup logging
     logging.basicConfig(
@@ -116,7 +125,16 @@ def main(
         )
         sys.exit()
 
-    contracts_version = '0.37.0' if use_production_contracts else CONTRACTS_VERSION
+    if use_production_contracts and use_demoenv_contracts:
+        log.error('Both production and demo environment versions of the contracts are set to true.')
+        sys.exit()
+
+    if use_production_contracts:
+        contracts_version = PRODUCTION_CONTRACTS_VERSION
+    elif use_demoenv_contracts:
+        contracts_version = DEMOENV_CONTRACTS_VERSION
+    else:
+        contracts_version = CONTRACTS_VERSION
     log.info(f'Using contracts version: {contracts_version}')
 
     with no_ssl_verification():
