@@ -467,7 +467,10 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
     this.simulation = d3
       .forceSimulation<SimulationNode, SimulationLink>()
-      .force('link', d3.forceLink().id((node1: SimulationNode) => node1.id + node1.token.address))
+      .force(
+        'link',
+        d3.forceLink().id((node1: SimulationNode) => node1.id + node1.token.address)
+      )
       .force('charge', d3.forceManyBody().distanceMax(180))
       .force('center', d3.forceCenter(this.width / 2, this.height / 2));
 

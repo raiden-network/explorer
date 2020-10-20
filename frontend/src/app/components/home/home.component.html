@@ -2,7 +2,7 @@
   <mat-spinner></mat-spinner>
 </div>
 
-<div *ngIf="(metrics$ | async) as metrics; else error">
+<div *ngIf="metrics$ | async as metrics; else error">
   <app-network-totals [network]="network" [metrics]="metrics"></app-network-totals>
 
   <app-active-networks-section
@@ -21,12 +21,7 @@
 
 <ng-template #error>
   <div class="warning-wrapper" [@flyInOut]="'in'">
-    <div
-      class="warning-div"
-      fxLayout="column"
-      fxFlex="0 0 60"
-      *ngIf="(messages$ | async) as message"
-    >
+    <div class="warning-div" fxLayout="column" fxFlex="0 0 60" *ngIf="messages$ | async as message">
       <h2 fxLayout="row">{{ message.title }}</h2>
       <p fxLayout="row">{{ message.description }}</p>
     </div>

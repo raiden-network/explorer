@@ -47,7 +47,7 @@
       >
         <mat-option
           class="network-suggestion"
-          *ngFor="let option of (filteredOptions$ | async); trackBy: trackByFn"
+          *ngFor="let option of filteredOptions$ | async; trackBy: trackByFn"
           [value]="option"
         >
           <span class="blocky">

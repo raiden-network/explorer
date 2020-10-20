@@ -57,12 +57,7 @@ export class NetMetricsService {
     const networkMetrics = this.http
       .get<NMAPIResponse>(this.nmConfig.configuration.backend_url)
       .pipe(
-        retryWhen(errors =>
-          errors.pipe(
-            delay(this.nmConfig.configuration.poll_interval),
-            take(3)
-          )
-        ),
+        retryWhen(errors => errors.pipe(delay(this.nmConfig.configuration.poll_interval), take(3))),
         share()
       );
 

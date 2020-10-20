@@ -36,7 +36,7 @@
         >
           <mat-option
             class="element-suggestion"
-            *ngFor="let option of (filteredOptions$ | async); trackBy: trackByFn"
+            *ngFor="let option of filteredOptions$ | async; trackBy: trackByFn"
             [value]="option"
           >
             <span class="blocky" *ngIf="isNode(option); else channel">
