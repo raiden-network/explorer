@@ -686,7 +686,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
       this.tooltipLine('Target:', datum.targetAddress),
       this.tooltipLine(
         'Channel capacity:',
-        `${datum.capacity.toFixed((source as Node).token.decimals)} tokens`
+        `${datum.capacity.toFixed((source as Node).token.decimals)} ${
+          (source as Node).token.symbol
+        }`
       )
     ];
 
