@@ -38,9 +38,9 @@
           matTooltip="Capacity {{
             channel.capacity
               | number: '1.' + info.node.token.decimals + '-' + info.node.token.decimals
-          }} tokens"
+          }} {{ info.node.token.symbol }}"
         >
-          Capacity: {{ channel.capacity | smallNumber }} tokens
+          Capacity: {{ channel.capacity | smallNumber }} {{ info.node.token.symbol }}
         </div>
       </mat-list-item>
     </mat-list>
