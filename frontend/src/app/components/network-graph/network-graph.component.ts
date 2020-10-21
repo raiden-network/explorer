@@ -1,8 +1,11 @@
 import {
+  AfterContentInit,
+  AfterViewInit,
   Component,
   HostListener,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   SimpleChange,
   ViewChild
@@ -15,10 +18,11 @@ import * as deepEqual from 'deep-equal';
 import { jab } from 'd3-cam02';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { delay, filter, map, startWith, tap } from 'rxjs/operators';
 import { Viewport, Layer } from 'concretejs';
 import { NodeInfo } from '../../models/node-info';
+import { ActivatedRoute } from '@angular/router';
 
 interface SimulationNode extends SimulationNodeDatum, Node {
   key: number;
@@ -50,7 +54,7 @@ class FilterElement {
   templateUrl: './network-graph.component.html',
   styleUrls: ['./network-graph.component.css']
 })
-export class NetworkGraphComponent implements OnInit, OnChanges {
+export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   private static HIGHLIGHT_COLOR = '#536DFE';
   private static SELECTED_COLOR = '#00E676';
   private static DEFAULT_COLOR = '#3F51B5';
@@ -99,7 +103,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   private nextKey = 0;
   private keyToDatum = {};
 
-  constructor(private config: NetMetricsConfig) {
+  private subscription: Subscription;
+
+  constructor(private config: NetMetricsConfig, private route: ActivatedRoute) {
     this.filteredOptions$ = this.filterControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value))
@@ -122,7 +128,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   private _showAllChannels = false;
 
-  // noinspection JSUnusedGlobalSymbols
   public get showAllChannels(): boolean {
     return this._showAllChannels;
   }
@@ -147,11 +152,11 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   public clearFilter() {
-    this.filterControl.setValue(null);
+    this.filterControl.setValue('');
     this.clearSelection();
+    this.drawCanvas();
   }
 
-  // noinspection JSMethodCanBeStatic
   trackByFn(element: FilterElement): string {
     let trackProperty = '';
     if (element.type === ElementType.NODE) {
@@ -163,7 +168,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     return trackProperty;
   }
 
-  // noinspection JSMethodCanBeStatic
   displayFn(element: FilterElement | null): string {
     let displayText = '';
     if (element) {
@@ -178,7 +182,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     return displayText;
   }
 
-  // noinspection JSMethodCanBeStatic
   isNode(element: FilterElement): boolean {
     return ElementType.NODE === element.type;
   }
@@ -204,6 +207,28 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.initCanvas();
     this.showGraph();
+  }
+
+  ngAfterViewInit() {
+    this.subscription = this.route.queryParamMap
+      .pipe(
+        map(params => params.get('node')),
+        map(nodeAddress =>
+          this._filter(nodeAddress).filter(element => element.type === ElementType.NODE)
+        ),
+        filter(results => results.length === 1),
+        map(results => results[0]),
+        tap(() => document.querySelector('#network-graph').scrollIntoView()),
+        delay(0)
+      )
+      .subscribe(element => {
+        this.filterControl.setValue(element);
+        this.elementSelected(element);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -306,7 +331,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     const isNode = (u: any): u is SimulationNode => u && u['id'];
 
     this.canvas.on('mousemove', () => {
-      d3.event.stopPropagation();
       this.drawHitCanvas();
       const key = this.viewport.getIntersection(d3.event.offsetX, d3.event.offsetY);
       const datum = this.keyToDatum[key];
@@ -325,21 +349,19 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     });
 
     this.canvas.on('mousedown', () => {
-      d3.event.stopPropagation();
       this.drawHitCanvas();
       const key = this.viewport.getIntersection(d3.event.offsetX, d3.event.offsetY);
       const datum = this.keyToDatum[key];
 
       if (datum === undefined) {
         this.clearSelection();
-        this.filterControl.setValue(null);
+        this.filterControl.setValue('');
         this._selectionInfo = undefined;
         this.drawCanvas();
       }
     });
 
     this.canvas.on('click', () => {
-      d3.event.stopPropagation();
       this.drawHitCanvas();
       const key = this.viewport.getIntersection(d3.event.offsetX, d3.event.offsetY);
       const datum = this.keyToDatum[key];
@@ -623,7 +645,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   private resetGraph() {
     this.clearSelection();
-    this.filterControl.setValue(null);
+    this.filterControl.setValue('');
     this._selectionInfo = undefined;
     this.base.selectAll('.no-network-data').remove();
 
@@ -890,14 +912,14 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private getChannels(node: Node): NodeInfo {
-    const filter = channel => {
+    const filterChannels = channel => {
       const opened = channel.status === 'opened';
       const sameTokenNetwork = channel.tokenAddress === node.token.address;
       const isSource = channel.sourceAddress === node.id;
       const isTarget = channel.targetAddress === node.id;
       return opened && sameTokenNetwork && (isTarget || isSource);
     };
-    const links = this.graphData.links.filter(filter);
+    const links = this.graphData.links.filter(filterChannels);
     return new NodeInfo(node, links);
   }
 
@@ -912,7 +934,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     }, []);
   }
 
-  // noinspection JSMethodCanBeStatic
   private isNeighbor(node: Node, link: Link): boolean {
     const sameNetwork = node.token.address === link.tokenAddress;
     const sourceMatches = sameNetwork && node.id === link.sourceAddress;
@@ -942,7 +963,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     return neighbors.find(current => this.isSameNode(node, current));
   }
 
-  // noinspection JSMethodCanBeStatic
   private isSameNode(node1: Node, node2: Node): boolean {
     return node1.token.address === node2.token.address && node1.id === node2.id;
   }
@@ -973,7 +993,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     return NetworkGraphComponent.DEFAULT_COLOR;
   }
 
-  // noinspection JSMethodCanBeStatic
   private formatHex(v: number) {
     return ('00' + Math.round(v).toString(16)).substr(-2);
   }
