@@ -1,4 +1,4 @@
-<div class="graph" fxLayout="column">
+<div class="graph" id="network-graph" fxLayout="column">
   <div
     fxLayout.gt-xs="row"
     fxLayout="column"
@@ -20,11 +20,11 @@
         />
         <button
           mat-button
-          *ngIf="filterControl.value"
           matSuffix
           mat-icon-button
           aria-label="Clear"
           (click)="clearFilter()"
+          [style.visibility]="filterControl.value ? 'visible' : 'hidden'"
         >
           <img src="../../../assets/baseline-clear-24px.svg" />
         </button>

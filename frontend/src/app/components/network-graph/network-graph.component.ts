@@ -93,6 +93,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   };
   private tokenNetworks: string[];
   private nodeColor: d3.ScaleOrdinal<string, any>;
+  private highlightedLink: SimulationLink;
+  private highlightedNode: SimulationNode;
+
   private nextKey = 0;
   private keyToDatum = {};
 
@@ -505,6 +508,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
       this.nodes.attr('cx', (d: SimulationNode) => d.x).attr('cy', (d: SimulationNode) => d.y);
       this.drawCanvas();
+      this.drawNodeInfoBox();
+      this.drawLinkInfoBox();
     };
 
     this.simulation.nodes(simulationNodes).on('tick', ticked);
@@ -672,7 +677,15 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
 
   private selectLink(datum: SimulationLink) {
     this.highlightLink(datum);
+    this.highlightedLink = datum;
+    this.drawLinkInfoBox();
+  }
 
+  private drawLinkInfoBox() {
+    if (!this.highlightedLink) {
+      return;
+    }
+    const datum = this.highlightedLink;
     const source = datum.source as SimulationNodeDatum;
     const target = datum.target as SimulationNodeDatum;
 
@@ -725,10 +738,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private drawInformationBox(boxX: number, boxY: number, boxWidth: number, data: string[]) {
-    this.infoBoxOverlay
-      .selectAll('.info')
-      .exit()
-      .remove();
+    this.infoBoxOverlay.selectAll('.info').remove();
 
     const info = this.infoBoxOverlay.append('div').classed('info', true);
 
@@ -777,7 +787,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     return boxY;
   }
 
-  // noinspection JSMethodCanBeStatic
   private nodeInfo(d: Node): string[] {
     const strings: string[] = [];
 
@@ -812,6 +821,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
   }
 
   private clearSelection() {
+    this.highlightedLink = undefined;
+    this.highlightedNode = undefined;
     this.nodes
       .attr('fill', (datum: Node) => this.nodeColor(datum.token.address))
       .attr('opacity', NetworkGraphComponent.NODE_SELECTED_OPACITY);
@@ -821,8 +832,38 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
     this.infoBoxOverlay.selectAll('.info').remove();
   }
 
-  private selectNode(selectedNode: Node) {
+  private selectNode(selectedNode: SimulationNode) {
+    this.highlightNode(selectedNode);
+    this.highlightedNode = selectedNode;
+    this.drawNodeInfoBox();
+  }
+
+  private drawNodeInfoBox() {
+    if (!this.highlightedNode) {
+      return;
+    }
+    const selectedNode = this.highlightedNode;
     const neighbors: Node[] = this.getNeighbors(selectedNode);
+
+    const info = this.nodeInfo(selectedNode);
+
+    const boxHeight = info.length * 15 + 10;
+    const boxWidth = 320;
+
+    const neighborY = (neighbors as SimulationNodeDatum[]).map(value => value.y).sort();
+
+    const boxX = this.getBoxX(selectedNode.x, selectedNode.x, boxWidth);
+
+    const minY = Math.min(selectedNode.y, neighborY[0]);
+    const maxY = Math.max(selectedNode.y, neighborY[neighborY.length - 1]);
+    const boxY = this.getBoxY(minY, maxY, 10, boxHeight);
+
+    this.drawInformationBox(boxX, boxY, boxWidth, info);
+  }
+
+  private highlightNode(selectedNode: SimulationNode) {
+    const neighbors: Node[] = this.getNeighbors(selectedNode);
+
     this.nodes
       .attr('fill', (node: Node) =>
         this.ifNodeElse(selectedNode, node, neighbors, [
@@ -846,22 +887,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges {
         ])
       )
       .attr('stroke-width', (link: Link) => this.ifNeighborElse(selectedNode, link, [3, 2]));
-
-    const simNode = selectedNode as SimulationNodeDatum;
-    const info = this.nodeInfo(selectedNode);
-
-    const boxHeight = info.length * 15 + 10;
-    const boxWidth = 320;
-
-    const neighborY = (neighbors as SimulationNodeDatum[]).map(value => value.y).sort();
-
-    const boxX = this.getBoxX(simNode.x, simNode.x, boxWidth);
-
-    const minY = Math.min(simNode.y, neighborY[0]);
-    const maxY = Math.max(simNode.y, neighborY[neighborY.length - 1]);
-    const boxY = this.getBoxY(minY, maxY, 10, boxHeight);
-
-    this.drawInformationBox(boxX, boxY, boxWidth, info);
   }
 
   private getChannels(node: Node): NodeInfo {
