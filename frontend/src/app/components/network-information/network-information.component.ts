@@ -59,8 +59,8 @@ export class NetworkInformationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.route.params
-      .pipe(map(params => params.token_address))
+    this.subscription = this.route.paramMap
+      .pipe(map(params => params.get('token_address')))
       .subscribe(address => {
         const index = +this.sharedService.loadTokenNetworkInformation(address);
         this.routingService.changed(index);
