@@ -213,9 +213,14 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     this.subscription = this.route.queryParamMap
       .pipe(
         map(params => params.get('node')),
-        map(nodeAddress =>
-          this._filter(nodeAddress).filter(element => element.type === ElementType.NODE)
-        ),
+        filter(value => !!value),
+        map(query => {
+          const results = this._filter(query).filter(element => element.type === ElementType.NODE);
+          if (results.length !== 1) {
+            this.showQueryError(query);
+          }
+          return results;
+        }),
         filter(results => results.length === 1),
         map(results => results[0]),
         tap(() => document.querySelector('#network-graph').scrollIntoView()),
@@ -482,6 +487,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
         .attr('y', this.height / 2)
         .append('text')
         .text('No channels to visualize!');
+      this.drawCanvas();
       return;
     }
     this.tokenNetworks = d3.set(simulationNodes.map(value => value.token.address)).values();
@@ -551,8 +557,14 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     noData.each((d: any, i: number, elements: SVGGElement[]) => {
       const text = d3.select(elements[i]);
       infoContext.font = '20px sans-serif';
+      infoContext.textBaseline = 'top';
+      const textWidth = infoContext.measureText(text.text()).width;
+      const x = Number(text.attr('x'));
+      const y = Number(text.attr('y'));
+      infoContext.fillStyle = '#ffffff';
+      infoContext.fillRect(x, y, textWidth, 20);
       infoContext.fillStyle = '#000000';
-      infoContext.fillText(text.text(), Number(text.attr('x')), Number(text.attr('y')));
+      infoContext.fillText(text.text(), x, y);
     });
 
     const legend = this.base.selectAll('.legend');
@@ -842,6 +854,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
   }
 
   private clearSelection() {
+    this.base.selectAll('.query-error').remove();
     this.selectedLink = undefined;
     this.selectedNode = undefined;
     this.nodes
@@ -962,6 +975,29 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
 
   private isSameNode(node1: Node, node2: Node): boolean {
     return node1.token.address === node2.token.address && node1.id === node2.id;
+  }
+
+  private showQueryError(query: string) {
+    this.base.selectAll('.query-error').remove();
+    this.base
+      .append('g')
+      .classed('no-network-data', true)
+      .classed('query-error', true)
+      .attr('x', this.width / 2 - 80)
+      .attr('y', this.height / 2 + 20)
+      .append('text')
+      .text('No node for query:');
+    this.base
+      .append('g')
+      .classed('no-network-data', true)
+      .classed('query-error', true)
+      .attr('x', this.width / 2 - 80)
+      .attr('y', this.height / 2 + 40)
+      .append('text')
+      .text(query);
+    this.drawCanvas();
+    document.querySelector('#network-graph').scrollIntoView();
+    console.error(`There is no node to highlight for query parameter: ${query}`);
   }
 
   private generateColors(number: number): string[] {
