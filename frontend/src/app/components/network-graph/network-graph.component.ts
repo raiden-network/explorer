@@ -97,8 +97,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
   };
   private tokenNetworks: string[];
   private nodeColor: d3.ScaleOrdinal<string, any>;
-  private highlightedLink: SimulationLink;
-  private highlightedNode: SimulationNode;
+  private selectedLink: SimulationLink;
+  private selectedNode: SimulationNode;
 
   private nextKey = 0;
   private keyToDatum = {};
@@ -697,19 +697,18 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
       .text((d: string) => d);
   }
 
-  private selectLink(datum: SimulationLink) {
-    this.highlightLink(datum);
-    this.highlightedLink = datum;
+  private selectLink(link: SimulationLink) {
+    this.highlightLink(link);
+    this.selectedLink = link;
     this.drawLinkInfoBox();
   }
 
   private drawLinkInfoBox() {
-    if (!this.highlightedLink) {
+    if (!this.selectedLink) {
       return;
     }
-    const datum = this.highlightedLink;
-    const source = datum.source as SimulationNodeDatum;
-    const target = datum.target as SimulationNodeDatum;
+    const source = this.selectedLink.source as SimulationNodeDatum;
+    const target = this.selectedLink.target as SimulationNodeDatum;
 
     const x1 = source.x || 0;
     const x2 = target.x || 0;
@@ -717,11 +716,11 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     const y2 = target.y || 0;
 
     const data = [
-      this.tooltipLine('Source:', datum.sourceAddress),
-      this.tooltipLine('Target:', datum.targetAddress),
+      this.tooltipLine('Source:', this.selectedLink.sourceAddress),
+      this.tooltipLine('Target:', this.selectedLink.targetAddress),
       this.tooltipLine(
         'Channel capacity:',
-        `${datum.capacity.toFixed((source as Node).token.decimals)} ${
+        `${this.selectedLink.capacity.toFixed((source as Node).token.decimals)} ${
           (source as Node).token.symbol
         }`
       )
@@ -737,17 +736,17 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     this.drawInformationBox(boxX, boxY, boxWidth, data);
   }
 
-  private highlightLink(datum: SimulationLink) {
+  private highlightLink(selectedLink: SimulationLink) {
     this.links
       .attr('stroke-opacity', (link: Link) => {
-        if (link === datum) {
+        if (link === selectedLink) {
           return NetworkGraphComponent.NODE_SELECTED_STROKE_OPACITY;
         } else {
           return NetworkGraphComponent.NODE_DEFAULT_STROKE_OPACITY;
         }
       })
       .attr('stroke-width', (link: Link) => {
-        if (link === datum) {
+        if (link === selectedLink) {
           return NetworkGraphComponent.LINK_HIGHLIGHT_STROKE_WIDTH;
         } else {
           return NetworkGraphComponent.LINK_DEFAULT_STROKE_WIDTH;
@@ -843,8 +842,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
   }
 
   private clearSelection() {
-    this.highlightedLink = undefined;
-    this.highlightedNode = undefined;
+    this.selectedLink = undefined;
+    this.selectedNode = undefined;
     this.nodes
       .attr('fill', (datum: Node) => this.nodeColor(datum.token.address))
       .attr('opacity', NetworkGraphComponent.NODE_SELECTED_OPACITY);
@@ -854,30 +853,28 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     this.infoBoxOverlay.selectAll('.info').remove();
   }
 
-  private selectNode(selectedNode: SimulationNode) {
-    this.highlightNode(selectedNode);
-    this.highlightedNode = selectedNode;
+  private selectNode(node: SimulationNode) {
+    this.highlightNode(node);
+    this.selectedNode = node;
     this.drawNodeInfoBox();
   }
 
   private drawNodeInfoBox() {
-    if (!this.highlightedNode) {
+    if (!this.selectedNode) {
       return;
     }
-    const selectedNode = this.highlightedNode;
-    const neighbors: Node[] = this.getNeighbors(selectedNode);
-
-    const info = this.nodeInfo(selectedNode);
+    const neighbors: Node[] = this.getNeighbors(this.selectedNode);
+    const info = this.nodeInfo(this.selectedNode);
 
     const boxHeight = info.length * 15 + 10;
     const boxWidth = 320;
 
     const neighborY = (neighbors as SimulationNodeDatum[]).map(value => value.y).sort();
 
-    const boxX = this.getBoxX(selectedNode.x, selectedNode.x, boxWidth);
+    const boxX = this.getBoxX(this.selectedNode.x, this.selectedNode.x, boxWidth);
 
-    const minY = Math.min(selectedNode.y, neighborY[0]);
-    const maxY = Math.max(selectedNode.y, neighborY[neighborY.length - 1]);
+    const minY = Math.min(this.selectedNode.y, neighborY[0]);
+    const maxY = Math.max(this.selectedNode.y, neighborY[neighborY.length - 1]);
     const boxY = this.getBoxY(minY, maxY, 10, boxHeight);
 
     this.drawInformationBox(boxX, boxY, boxWidth, info);
