@@ -431,21 +431,26 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
         simNode.id === value.sourceAddress && simNode.token.address === value.tokenAddress;
       const matchTarget = (simNode: Node) =>
         simNode.id === value.targetAddress && simNode.token.address === value.tokenAddress;
-      const key = this.getNextKey();
 
-      const link: SimulationLink = {
-        source: this.graphData.nodes.find(matchSource),
-        target: this.graphData.nodes.find(matchTarget),
-        sourceAddress: value.sourceAddress,
-        targetAddress: value.targetAddress,
-        status: value.status,
-        capacity: value.capacity,
-        tokenAddress: value.tokenAddress,
-        key: key
-      };
+      const source = this.graphData.nodes.find(matchSource);
+      const target = this.graphData.nodes.find(matchTarget);
 
-      this.keyToDatum[key] = link;
-      this.graphData.links.push(link);
+      if (source && target) {
+        const key = this.getNextKey();
+        const link: SimulationLink = {
+          source: source,
+          target: target,
+          sourceAddress: value.sourceAddress,
+          targetAddress: value.targetAddress,
+          status: value.status,
+          capacity: value.capacity,
+          tokenAddress: value.tokenAddress,
+          key: key
+        };
+
+        this.keyToDatum[key] = link;
+        this.graphData.links.push(link);
+      }
     });
   }
 
