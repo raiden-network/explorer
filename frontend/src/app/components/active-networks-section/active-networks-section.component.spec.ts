@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ActiveNetworksSectionComponent } from './active-networks-section.component';
 
@@ -6,11 +6,13 @@ describe('ActiveNetworksSectionComponent', () => {
   let component: ActiveNetworksSectionComponent;
   let fixture: ComponentFixture<ActiveNetworksSectionComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ActiveNetworksSectionComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ActiveNetworksSectionComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ActiveNetworksSectionComponent);

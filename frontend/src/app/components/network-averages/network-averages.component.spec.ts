@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NetworkAveragesComponent } from './network-averages.component';
 
@@ -6,11 +6,13 @@ describe('NetworkAveragesComponent', () => {
   let component: NetworkAveragesComponent;
   let fixture: ComponentFixture<NetworkAveragesComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [NetworkAveragesComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [NetworkAveragesComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkAveragesComponent);
