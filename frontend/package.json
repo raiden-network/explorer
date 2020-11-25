@@ -10,7 +10,7 @@
     "e2e": "ng e2e",
     "prettier": "prettier --write --config ./.prettierrc './**/*.{ts,tsx,html,css,scss,json,js}'",
     "prettier:check": "prettier --check --config ./.prettierrc './**/*.{ts,tsx,html,css,scss,json,js}'",
-    "postinstall": "ngcc"
+    "postinstall": "ngcc --tsconfig ./src/tsconfig.app.json"
   },
   "private": true,
   "dependencies": {
