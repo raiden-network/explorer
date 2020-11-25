@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TopParticipantsByChannelComponent } from './top-participants-by-channel.component';
 
@@ -6,11 +6,13 @@ describe('TopParticipantsByChannelComponent', () => {
   let component: TopParticipantsByChannelComponent;
   let fixture: ComponentFixture<TopParticipantsByChannelComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [TopParticipantsByChannelComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TopParticipantsByChannelComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TopParticipantsByChannelComponent);

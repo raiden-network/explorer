@@ -94,7 +94,7 @@ export class ExplorerHammerConfig extends HammerGestureConfig {
     ShortenAddressPipe
   ],
   imports: [
-    RouterModule.forRoot(appRoutes),
+    RouterModule.forRoot(appRoutes, { relativeLinkResolution: 'legacy' }),
     FlexLayoutModule,
     MatSlideToggleModule,
     MatButtonModule,
