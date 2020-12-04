@@ -2,31 +2,34 @@ from gevent import monkey, config  # isort:skip # noqa
 config.resolver = ['dnspython', 'ares', 'block']
 monkey.patch_all()  # isort:skip # noqa
 
+import contextlib
+import json
 import logging
 import os
 import sys
-import json
 import warnings
-import requests
-import contextlib
-
 from functools import partialmethod
 
 import click
 import gevent
+import requests
 from eth_utils import is_checksum_address
-from web3 import HTTPProvider, Web3
-from web3.middleware import geth_poa_middleware
-from requests.exceptions import ConnectionError
+from raiden_contracts.constants import (
+    CONTRACT_TOKEN_NETWORK_REGISTRY,
+    CONTRACTS_VERSION
+)
 from raiden_contracts.contract_manager import (
     ContractManager,
     contracts_precompiled_path,
-    get_contracts_deployment_info,
+    get_contracts_deployment_info
 )
-from raiden_contracts.constants import CONTRACT_TOKEN_NETWORK_REGISTRY, CONTRACTS_VERSION
+from requests.exceptions import ConnectionError
+from web3 import HTTPProvider, Web3
+from web3.middleware import geth_poa_middleware
 
 from metrics_backend.api.rest import NetworkInfoAPI
 from metrics_backend.metrics_service import MetricsService
+from metrics_backend.presence_service import PresenceService
 from metrics_backend.utils.serialisation import token_network_to_dict
 
 log = logging.getLogger(__name__)
@@ -38,6 +41,7 @@ OUTPUT_PERIOD = 10  # seconds
 REQUIRED_CONFIRMATIONS = 5
 PRODUCTION_CONTRACTS_VERSION = '0.37.0'
 DEMOENV_CONTRACTS_VERSION = '0.37.0'
+DEMOENV_MATRIX_SERVER = 'https://transport.demo001.env.raiden.network'
 
 
 @contextlib.contextmanager
@@ -83,16 +87,16 @@ def no_ssl_verification():
     help='Number of block confirmations to wait for'
 )
 @click.option(
-    '--use-production-contracts',
+    '--use-production-environment',
     default=True,
     type=bool,
-    help='Use the production version of the contracts'
+    help='Use the production version of the contracts and transport server'
 )
 @click.option(
-    '--use-demoenv-contracts',
+    '--use-demoenv',
     default=False,
     type=bool,
-    help='Use the demo environment version of the contracts'
+    help='Use the demo environment version of the contracts and transport server'
 )
 def main(
     eth_rpc,
@@ -100,8 +104,8 @@ def main(
     start_block,
     port,
     confirmations,
-    use_production_contracts,
-    use_demoenv_contracts
+    use_production_environment,
+    use_demoenv
 ):
     # setup logging
     logging.basicConfig(
@@ -125,13 +129,13 @@ def main(
         )
         sys.exit()
 
-    if use_production_contracts and use_demoenv_contracts:
-        log.error('Both production and demo environment versions of the contracts are set to true.')
+    if use_production_environment and use_demoenv:
+        log.error('Both production and demo environment are set to true.')
         sys.exit()
 
-    if use_production_contracts:
+    if use_production_environment:
         contracts_version = PRODUCTION_CONTRACTS_VERSION
-    elif use_demoenv_contracts:
+    elif use_demoenv:
         contracts_version = DEMOENV_CONTRACTS_VERSION
     else:
         contracts_version = CONTRACTS_VERSION
@@ -153,7 +157,7 @@ def main(
                 sys.exit(1)
 
         try:
-            service = MetricsService(
+            metrics_service = MetricsService(
                 web3=web3,
                 contract_manager=ContractManager(contracts_precompiled_path(contracts_version)),
                 registry_address=registry_address,
@@ -161,22 +165,37 @@ def main(
                 required_confirmations=confirmations,
             )
 
+            matrix_server = None
+            if use_demoenv:
+                matrix_server = DEMOENV_MATRIX_SERVER
+            presence_service = PresenceService(
+                f'EXPLORER_{web3.eth.chainId}',
+                web3.eth.chainId,
+                use_production_environment,
+                matrix_server
+            )
+
             # re-enable once deployment works
             # gevent.spawn(write_topology_task, service)
 
-            api = NetworkInfoAPI(service)
+            api = NetworkInfoAPI(metrics_service)
             api.run(port=port)
             print(f'Running metrics endpoint at http://localhost:{port}/json')
 
             print('Raiden Status Page backend running...')
-            service.run()
+            metrics_service.start()
+            presence_service.start()
+            gevent.joinall([metrics_service, presence_service])
 
         except (KeyboardInterrupt, SystemExit):
             print('Exiting...')
         finally:
-            if service:
+            if metrics_service:
                 log.info('Stopping Raiden Metrics Backend')
-                service.stop()
+                metrics_service.stop()
+            if presence_service:
+                log.info('Stopping Raiden Presence Backend')
+                presence_service.stop()
 
     return 0
 
