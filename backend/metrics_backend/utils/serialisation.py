@@ -1,11 +1,12 @@
-from typing import Dict, List
 from functools import reduce
+from typing import Dict, List
 
+from eth_utils.address import to_canonical_address
 from metrics_backend.model import (
-    TokenNetwork,
     ChannelView,
-    PaymentNetworkMetrics,
     ParticipantsChannels,
+    PaymentNetworkMetrics,
+    TokenNetwork
 )
 from metrics_backend.utils import Address
 
@@ -31,7 +32,10 @@ def _calculate_channels_per_node(
     )
     return num_channels / num_participants if num_participants > 0 else 0
 
-def token_network_to_dict(token_network: TokenNetwork) -> Dict:
+def token_network_to_dict(
+    token_network: TokenNetwork,
+    nodes_presence_status: Dict[bytes, bool]
+) -> Dict:
     """ Returns a JSON serialized version of the token network. """
     num_channels_opened = 0
     num_channels_closed = 0
@@ -62,7 +66,9 @@ def token_network_to_dict(token_network: TokenNetwork) -> Dict:
             num_channels_settled += 1
     
     for address, participants_channels in token_network.participants.items():
+        online_status = nodes_presence_status.get(to_canonical_address(address), False)
         nodes[address] = dict(
+            online=online_status,
             opened=participants_channels.opened,
             closed=participants_channels.closed,
             settled=participants_channels.settled,

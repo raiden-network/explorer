@@ -178,7 +178,7 @@ def main(
             # re-enable once deployment works
             # gevent.spawn(write_topology_task, service)
 
-            api = NetworkInfoAPI(metrics_service)
+            api = NetworkInfoAPI(metrics_service, presence_service)
             api.run(port=port)
             print(f'Running metrics endpoint at http://localhost:{port}/json')
 
