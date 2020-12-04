@@ -20,8 +20,6 @@ from raiden.utils.cli import get_matrix_servers
 from raiden.utils.signer import LocalSigner, Signer
 from raiden_contracts.utils.type_aliases import ChainID
 
-from metrics_backend.utils import Address
-
 log = logging.getLogger(__name__)
 
 
@@ -50,7 +48,7 @@ class PresenceService(gevent.Greenlet):
 
         self.is_running = gevent.event.Event()
 
-        self.nodes_presence_status: Dict[Address, bool] = {}
+        self.nodes_presence_status: Dict[bytes, bool] = {}
         log.info('Using address %s for matrix login', self.signer.address_hex)
 
     def _run(self):
