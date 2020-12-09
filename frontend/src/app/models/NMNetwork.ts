@@ -8,6 +8,7 @@ export interface NMChannel {
 }
 
 export interface NMNode {
+  readonly online: boolean;
   readonly opened: number;
   readonly closed: number;
   readonly settled: number;

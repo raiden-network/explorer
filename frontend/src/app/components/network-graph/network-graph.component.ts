@@ -55,21 +55,30 @@ class FilterElement {
   styleUrls: ['./network-graph.component.css']
 })
 export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-  private static HIGHLIGHT_COLOR = '#536DFE';
-  private static SELECTED_COLOR = '#00E676';
-  private static DEFAULT_COLOR = '#3F51B5';
+  // private static DEFAULT_ONLINE_COLOR = '#536DFE';
+  // private static HIGHLIGHT_ONLINE_COLOR = '#00E676';
+  // private static HIGHLIGHT_NEIGHBOR_ONLINE_COLOR = '#003D20';
+  // private static DEFAULT_OFFLINE_COLOR = '#536DFE';
+  // private static HIGHTLIGHT_OFFLINE_COLOR = '#FF495C';
+  // private static HIGHLIGHT_NEIGHBOR_OFFLINE_COLOR = '#8F000E';
+  // private static DEFAULT_COLOR = '#256EFF';
+  private static DEFAULT_ONLINE_COLOR = '#00B35C';
+  private static HIGHLIGHT_ONLINE_COLOR = '#00E676';
+  private static HIGHLIGHT_NEIGHBOR_ONLINE_COLOR = '#006635';
+  private static DEFAULT_OFFLINE_COLOR = '#CC3B4A';
+  private static HIGHTLIGHT_OFFLINE_COLOR = '#FF495C';
+  private static HIGHLIGHT_NEIGHBOR_OFFLINE_COLOR = '#80252E';
 
   private static OPEN_CHANNEL_COLOR = '#4CAF50';
   private static CLOSED_CHANNEL_COLOR = '#F44336';
   private static SETTLED_CHANNEL_COLOR = '#673AB7';
 
-  private static NODE_DEFAULT_STROKE_OPACITY = 0.3;
-  private static NODE_SELECTED_STROKE_OPACITY = 1;
-  private static NODE_SELECTED_OPACITY = 1;
   private static NODE_HIGHLIGHT_OPACITY = 1;
   private static NODE_DEFAULT_OPACITY = 0.6;
-  private static LINK_DEFAULT_STROKE_WIDTH = 2;
   private static LINK_HIGHLIGHT_STROKE_WIDTH = 3;
+  private static LINK_DEFAULT_STROKE_WIDTH = 2;
+  private static LINK_HIGHLIGHT_STROKE_OPACITY = 1;
+  private static LINK_DEFAULT_STROKE_OPACITY = 0.3;
 
   @Input() data: NetworkGraph;
   @ViewChild('graph', { static: true }) graph;
@@ -96,7 +105,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     links: []
   };
   private tokenNetworks: string[];
-  private nodeColor: d3.ScaleOrdinal<string, any>;
   private selectedLink: SimulationLink;
   private selectedNode: SimulationNode;
 
@@ -407,14 +415,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
 
     nodes.forEach(value => {
       const key = this.getNextKey();
-      const node: SimulationNode = {
-        id: value.id,
-        openChannels: value.openChannels,
-        closedChannels: value.closedChannels,
-        settledChannels: value.settledChannels,
-        token: value.token,
-        key: key
-      };
+      const node = Object.assign({ key: key }, value);
 
       this.keyToDatum[key] = node;
       this.graphData.nodes.push(node);
@@ -495,11 +496,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
       this.drawCanvas();
       return;
     }
-    this.tokenNetworks = d3.set(simulationNodes.map(value => value.token.address)).values();
-    this.nodeColor = d3Scale
-      .scaleOrdinal()
-      .domain(this.tokenNetworks)
-      .range(this.generateColors(this.tokenNetworks.length));
 
     this.simulation = d3
       .forceSimulation<SimulationNode, SimulationLink>()
@@ -517,7 +513,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
       .append('line')
       .attr('class', 'link')
       .attr('stroke', (datum: SimulationLink) => this.color(datum.status))
-      .attr('stroke-opacity', NetworkGraphComponent.NODE_DEFAULT_STROKE_OPACITY)
+      .attr('stroke-opacity', NetworkGraphComponent.LINK_DEFAULT_STROKE_OPACITY)
       .attr('stroke-width', NetworkGraphComponent.LINK_DEFAULT_STROKE_WIDTH)
       .merge(this.links);
 
@@ -527,9 +523,13 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
       .enter()
       .append('circle')
       .attr('class', 'node')
-      .attr('fill', (datum: SimulationNode) => this.nodeColor(datum.token.address))
+      .attr('fill', (datum: SimulationNode) =>
+        datum.online
+          ? NetworkGraphComponent.DEFAULT_ONLINE_COLOR
+          : NetworkGraphComponent.DEFAULT_OFFLINE_COLOR
+      )
       .attr('r', (datum: SimulationNode) => this.circleSize(datum.openChannels))
-      .attr('opacity', NetworkGraphComponent.NODE_SELECTED_OPACITY)
+      .attr('opacity', NetworkGraphComponent.NODE_HIGHLIGHT_OPACITY)
       .merge(this.nodes);
 
     const ticked = () => {
@@ -757,9 +757,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     this.links
       .attr('stroke-opacity', (link: Link) => {
         if (link === selectedLink) {
-          return NetworkGraphComponent.NODE_SELECTED_STROKE_OPACITY;
+          return NetworkGraphComponent.LINK_HIGHLIGHT_STROKE_OPACITY;
         } else {
-          return NetworkGraphComponent.NODE_DEFAULT_STROKE_OPACITY;
+          return NetworkGraphComponent.LINK_DEFAULT_STROKE_OPACITY;
         }
       })
       .attr('stroke-width', (link: Link) => {
@@ -835,6 +835,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     const token = d.token;
     strings.push(
       `<strong>${d.id}</strong>`,
+      `Status: ${d.online ? 'online' : 'offline'}`,
       '',
       `<strong>Token</strong>`,
       this.tooltipLine('Address:', token.address)
@@ -863,10 +864,14 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     this.selectedLink = undefined;
     this.selectedNode = undefined;
     this.nodes
-      .attr('fill', (datum: Node) => this.nodeColor(datum.token.address))
-      .attr('opacity', NetworkGraphComponent.NODE_SELECTED_OPACITY);
+      .attr('fill', (datum: Node) =>
+        datum.online
+          ? NetworkGraphComponent.DEFAULT_ONLINE_COLOR
+          : NetworkGraphComponent.DEFAULT_OFFLINE_COLOR
+      )
+      .attr('opacity', NetworkGraphComponent.NODE_HIGHLIGHT_OPACITY);
     this.links
-      .attr('stroke-opacity', NetworkGraphComponent.NODE_DEFAULT_STROKE_OPACITY)
+      .attr('stroke-opacity', NetworkGraphComponent.LINK_DEFAULT_STROKE_OPACITY)
       .attr('stroke-width', NetworkGraphComponent.LINK_DEFAULT_STROKE_WIDTH);
     this.infoBoxOverlay.selectAll('.info').remove();
   }
@@ -902,16 +907,23 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     const neighbors: Node[] = this.getNeighbors(selectedNode);
 
     this.nodes
-      .attr('fill', (node: Node) =>
-        this.ifNodeElse(selectedNode, node, neighbors, [
-          NetworkGraphComponent.SELECTED_COLOR,
-          NetworkGraphComponent.HIGHLIGHT_COLOR,
-          this.nodeColor(node.token.address)
-        ])
-      )
+      .attr('fill', (node: Node) => {
+        if (node.online) {
+          return this.ifNodeElse(selectedNode, node, neighbors, [
+            NetworkGraphComponent.HIGHLIGHT_ONLINE_COLOR,
+            NetworkGraphComponent.HIGHLIGHT_NEIGHBOR_ONLINE_COLOR,
+            NetworkGraphComponent.DEFAULT_OFFLINE_COLOR
+          ]);
+        }
+        return this.ifNodeElse(selectedNode, node, neighbors, [
+          NetworkGraphComponent.HIGHTLIGHT_OFFLINE_COLOR,
+          NetworkGraphComponent.HIGHLIGHT_NEIGHBOR_OFFLINE_COLOR,
+          NetworkGraphComponent.DEFAULT_OFFLINE_COLOR
+        ]);
+      })
       .attr('opacity', (node: Node) =>
         this.ifNodeElse(selectedNode, node, neighbors, [
-          NetworkGraphComponent.NODE_SELECTED_OPACITY,
+          NetworkGraphComponent.NODE_HIGHLIGHT_OPACITY,
           NetworkGraphComponent.NODE_HIGHLIGHT_OPACITY,
           NetworkGraphComponent.NODE_DEFAULT_OPACITY
         ])
@@ -919,8 +931,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     this.links
       .attr('stroke-opacity', (link: Link) =>
         this.ifNeighborElse(selectedNode, link, [
-          NetworkGraphComponent.NODE_SELECTED_STROKE_OPACITY,
-          NetworkGraphComponent.NODE_DEFAULT_STROKE_OPACITY
+          NetworkGraphComponent.LINK_HIGHLIGHT_STROKE_OPACITY,
+          NetworkGraphComponent.LINK_DEFAULT_STROKE_OPACITY
         ])
       )
       .attr('stroke-width', (link: Link) => this.ifNeighborElse(selectedNode, link, [3, 2]));
@@ -1003,36 +1015,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     this.drawCanvas();
     document.querySelector('#network-graph').scrollIntoView();
     console.error(`There is no node to highlight for query parameter: ${query}`);
-  }
-
-  private generateColors(number: number): string[] {
-    const transform = (x, os, oe, ns, ne) => ((x - os) * (ne - ns)) / (oe - os) + ns;
-    const colors: string[] = [];
-
-    for (let i = 0; i < number; i++) {
-      const transform1 = Math.round(transform(i, 0, number, 10, 90));
-      const color = this.findColor(transform1);
-      colors.push(color);
-    }
-    return colors;
-  }
-
-  private findColor(j: number) {
-    for (let b = -40; b < 40; b++) {
-      for (let a = -40; a < 40; a++) {
-        const ja = jab(j, a, b);
-        const rgb = ja.rgb();
-        if (rgb.displayable()) {
-          return `#${this.formatHex(rgb.r)}${this.formatHex(rgb.g)}${this.formatHex(rgb.b)}`;
-        }
-      }
-    }
-
-    return NetworkGraphComponent.DEFAULT_COLOR;
-  }
-
-  private formatHex(v: number) {
-    return ('00' + Math.round(v).toString(16)).substr(-2);
   }
 
   private getNextKey(): number {

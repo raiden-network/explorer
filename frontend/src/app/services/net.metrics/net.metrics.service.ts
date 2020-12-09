@@ -111,12 +111,13 @@ export class NetMetricsService {
     const graph: NetworkGraph = { nodes: [], links: [] };
     const token = network.token;
 
-    for (const [address, channels] of Object.entries(network.nodes)) {
+    for (const [address, properties] of Object.entries(network.nodes)) {
       graph.nodes.push({
         id: address,
-        openChannels: channels.opened,
-        closedChannels: channels.closed,
-        settledChannels: channels.settled,
+        online: properties.online,
+        openChannels: properties.opened,
+        closedChannels: properties.closed,
+        settledChannels: properties.settled,
         token: token
       });
     }
