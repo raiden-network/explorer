@@ -10,6 +10,7 @@ export interface Link {
 
 export interface Node {
   readonly id: string;
+  readonly online: boolean;
   readonly openChannels: number;
   readonly closedChannels: number;
   readonly settledChannels: number;
