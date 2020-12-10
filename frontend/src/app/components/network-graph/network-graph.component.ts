@@ -1,5 +1,4 @@
 import {
-  AfterContentInit,
   AfterViewInit,
   Component,
   HostListener,
@@ -15,7 +14,6 @@ import * as d3 from 'd3';
 import { Simulation, SimulationLinkDatum, SimulationNodeDatum } from 'd3';
 import * as d3Scale from 'd3-scale';
 import * as deepEqual from 'deep-equal';
-import { jab } from 'd3-cam02';
 import { NetMetricsConfig } from '../../services/net.metrics/net.metrics.config';
 import { FormControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
@@ -55,13 +53,6 @@ class FilterElement {
   styleUrls: ['./network-graph.component.css']
 })
 export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-  // private static DEFAULT_ONLINE_COLOR = '#536DFE';
-  // private static HIGHLIGHT_ONLINE_COLOR = '#00E676';
-  // private static HIGHLIGHT_NEIGHBOR_ONLINE_COLOR = '#003D20';
-  // private static DEFAULT_OFFLINE_COLOR = '#536DFE';
-  // private static HIGHTLIGHT_OFFLINE_COLOR = '#FF495C';
-  // private static HIGHLIGHT_NEIGHBOR_OFFLINE_COLOR = '#8F000E';
-  // private static DEFAULT_COLOR = '#256EFF';
   private static DEFAULT_ONLINE_COLOR = '#00B35C';
   private static HIGHLIGHT_ONLINE_COLOR = '#00E676';
   private static HIGHLIGHT_NEIGHBOR_ONLINE_COLOR = '#006635';
@@ -97,7 +88,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
   private drawingLayer: Layer;
   private links: d3.Selection<SVGLineElement, SimulationLink, SVGGElement, NetworkGraph>;
   private nodes: d3.Selection<SVGCircleElement, SimulationNode, SVGGElement, NetworkGraph>;
-  private color: d3.ScaleOrdinal<string, any>;
+  private channelColors: d3.ScaleOrdinal<string, any>;
   private simulation: Simulation<SimulationNode, SimulationLink>;
   private circleSize: (value: number) => number;
   private graphData: { nodes: SimulationNode[]; links: SimulationLink[] } = {
@@ -142,11 +133,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
 
   public set showAllChannels(value: boolean) {
     this._showAllChannels = value;
-    if (!value) {
-      this.base.selectAll('.legend').remove();
-    } else {
-      this.drawLegend();
-    }
+    this.updateLegend();
     this.showGraph();
   }
 
@@ -250,12 +237,6 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     this.updateHeight();
 
     this.viewport.setSize(this.width, this.height);
-
-    this.base.selectAll('.legend').remove();
-    if (this._showAllChannels) {
-      this.drawLegend();
-    }
-
     this.showGraph();
   }
 
@@ -326,7 +307,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
       .attr('class', 'nodes')
       .selectAll('.node');
 
-    this.color = d3Scale
+    this.channelColors = d3Scale
       .scaleOrdinal()
       .domain(['opened', 'closed', 'settled'])
       .range([
@@ -497,6 +478,8 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
       return;
     }
 
+    this.updateLegend();
+
     this.simulation = d3
       .forceSimulation<SimulationNode, SimulationLink>()
       .force(
@@ -512,7 +495,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
       .enter()
       .append('line')
       .attr('class', 'link')
-      .attr('stroke', (datum: SimulationLink) => this.color(datum.status))
+      .attr('stroke', (datum: SimulationLink) => this.channelColors(datum.status))
       .attr('stroke-opacity', NetworkGraphComponent.LINK_DEFAULT_STROKE_OPACITY)
       .attr('stroke-width', NetworkGraphComponent.LINK_DEFAULT_STROKE_WIDTH)
       .merge(this.links);
@@ -577,14 +560,30 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
       const group = d3.select(elements[i]);
 
       const rect = group.select('.rect');
-      infoContext.fillStyle = rect.style('fill');
-      infoContext.strokeStyle = rect.style('stroke');
-      infoContext.fillRect(
-        Number(group.attr('x')),
-        Number(group.attr('y')),
-        Number(rect.attr('width')),
-        Number(rect.attr('height'))
-      );
+      if (!rect.empty()) {
+        infoContext.fillStyle = rect.attr('fill');
+        infoContext.strokeStyle = rect.attr('stroke');
+        infoContext.fillRect(
+          Number(group.attr('x')),
+          Number(group.attr('y')),
+          Number(rect.attr('width')),
+          Number(rect.attr('height'))
+        );
+      }
+
+      const circle = group.select('.circle');
+      if (!circle.empty()) {
+        infoContext.beginPath();
+        infoContext.arc(
+          Number(group.attr('x')) + Number(circle.attr('r')),
+          Number(group.attr('y')),
+          Number(circle.attr('r')),
+          0,
+          2 * Math.PI
+        );
+        infoContext.fillStyle = circle.attr('fill');
+        infoContext.fill();
+      }
 
       const text = group.select('.text');
       infoContext.font = '12px sans-serif';
@@ -685,33 +684,68 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
     }
   }
 
+  private updateLegend() {
+    this.base.selectAll('.legend').remove();
+    this.drawLegend();
+  }
+
   private drawLegend() {
-    const legendRectSize = 12;
+    const legendElementHeight = 12;
     const legendSpacing = 7;
-    const legendHeight = legendRectSize + legendSpacing;
-    const legend = this.base
-      .selectAll('.legend')
-      .data(this.color.domain())
+    const legendHeight = legendElementHeight + legendSpacing;
+    const offset = 20;
+    const legend = this.base.selectAll('.legend');
+
+    const statusScale: d3.ScaleOrdinal<string, any> = d3Scale.scaleOrdinal(
+      ['online', 'offline'],
+      [NetworkGraphComponent.DEFAULT_ONLINE_COLOR, NetworkGraphComponent.DEFAULT_OFFLINE_COLOR]
+    );
+    const statusLegend = legend
+      .data(statusScale.domain())
       .enter()
       .append('g')
       .classed('legend', true)
       .attr('x', this.width - 100)
-      .attr('y', (d, i: number) => i * legendHeight + 20);
+      .attr('y', (d, i: number) => i * legendHeight + offset);
 
-    legend
-      .append('rect')
-      .classed('rect', true)
-      .attr('width', legendRectSize)
-      .attr('height', legendRectSize / 5)
-      .style('fill', this.color)
-      .style('stroke', this.color);
+    statusLegend
+      .append('circle')
+      .classed('circle', true)
+      .attr('r', 5)
+      .attr('fill', statusScale);
 
-    legend
+    statusLegend
       .append('text')
       .classed('text', true)
       .attr('x', 20)
       .attr('y', 5)
       .text((d: string) => d);
+
+    if (this._showAllChannels) {
+      const channelLegendOffset = statusScale.domain().length * legendHeight + 2 * offset;
+
+      const channelLegend = legend
+        .data(this.channelColors.domain())
+        .enter()
+        .append('g')
+        .classed('legend', true)
+        .attr('x', this.width - 100)
+        .attr('y', (d, i: number) => i * legendHeight + channelLegendOffset);
+
+      channelLegend
+        .append('rect')
+        .classed('rect', true)
+        .attr('width', legendElementHeight)
+        .attr('height', legendElementHeight / 6)
+        .attr('fill', this.channelColors);
+
+      channelLegend
+        .append('text')
+        .classed('text', true)
+        .attr('x', 20)
+        .attr('y', 5)
+        .text((d: string) => d);
+    }
   }
 
   private selectLink(link: SimulationLink) {
