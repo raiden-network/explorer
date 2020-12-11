@@ -13,7 +13,6 @@ import { FormControl } from '@angular/forms';
 import { flatMap, map, pairwise, startWith } from 'rxjs/operators';
 import { Observable, of, Subscription } from 'rxjs';
 import { Token } from '../../models/NMNetwork';
-import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { ActiveNetworkSharedService } from '../../services/active-network-shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterAnimations } from './router.animations';
@@ -23,32 +22,7 @@ import { TokenNetworkRoutingService } from '../../services/token-network-routing
   selector: 'app-active-networks-section',
   templateUrl: './active-networks-section.component.html',
   styleUrls: ['./active-networks-section.component.css'],
-  animations: [
-    trigger('flyInOut', [
-      state('in', style({ transform: 'translateX(0)' })),
-      transition('void => *', [
-        animate(
-          300,
-          keyframes([
-            style({ opacity: 0, transform: 'translateX(-100%)', offset: 0 }),
-            style({ opacity: 1, transform: 'translateX(15px)', offset: 0.3 }),
-            style({ opacity: 1, transform: 'translateX(0)', offset: 1.0 })
-          ])
-        )
-      ]),
-      transition('* => void', [
-        animate(
-          300,
-          keyframes([
-            style({ opacity: 1, transform: 'translateX(0)', offset: 0 }),
-            style({ opacity: 1, transform: 'translateX(-15px)', offset: 0.7 }),
-            style({ opacity: 0, transform: 'translateX(100%)', offset: 1.0 })
-          ])
-        )
-      ])
-    ]),
-    RouterAnimations.routerSlide
-  ]
+  animations: [RouterAnimations.routerSlide]
 })
 export class ActiveNetworksSectionComponent implements OnInit, OnChanges, OnDestroy {
   @Input() metrics: RaidenNetworkMetrics;
