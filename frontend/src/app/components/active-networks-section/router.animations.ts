@@ -25,16 +25,16 @@ export class RouterAnimations {
   ]);
 
   static rightOffsets = {
-    enterStart: -100,
-    enterEnd: 0,
-    leaveStart: -100,
-    leaveEnd: 0
+    enterStart: -200,
+    enterEnd: -100,
+    leaveStart: 0,
+    leaveEnd: 100
   };
 
   static leftOffsets = {
-    enterStart: 100,
-    enterEnd: 0,
-    leaveStart: -100,
-    leaveEnd: -200
+    enterStart: 0,
+    enterEnd: -100,
+    leaveStart: 0,
+    leaveEnd: -100
   };
 }
