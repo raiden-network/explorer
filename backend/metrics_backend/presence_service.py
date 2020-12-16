@@ -79,7 +79,7 @@ class PresenceService(gevent.Greenlet):
 
     def handle_presence_update(self, event: Dict[str, Any], update_id: int) -> None:
         presence = UserPresence(event["content"]["presence"])
-        reachable = USER_PRESENCE_TO_ADDRESS_REACHABILITY[presence] == AddressReachability.REACHABLE
+        reachable = USER_PRESENCE_TO_ADDRESS_REACHABILITY[presence] is AddressReachability.REACHABLE
         node_address = address_from_userid(event["sender"])
         self.nodes_presence_status[node_address] = reachable
 
