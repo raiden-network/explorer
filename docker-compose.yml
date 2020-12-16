@@ -45,7 +45,7 @@ services:
     restart: always
     environment:
       - EXPLORER_ETH_RPC=http://geth.ropsten.ethnodes.brainbot.com:8545
-      - EXPLORER_USE_PRODUCTION_ENVIRONMENT=false
+      - EXPLORER_ENVIRONMENT=development
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:ropsten.explorer.raiden.network; Path: /json"
@@ -69,7 +69,7 @@ services:
     restart: always
     environment:
       - EXPLORER_ETH_RPC=http://geth.rinkeby.ethnodes.brainbot.com:8545
-      - EXPLORER_USE_PRODUCTION_ENVIRONMENT=false
+      - EXPLORER_ENVIRONMENT=development
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:rinkeby.explorer.raiden.network; Path: /json"
@@ -93,7 +93,7 @@ services:
     restart: always
     environment:
       - EXPLORER_ETH_RPC=http://parity.goerli.ethnodes.brainbot.com:8545
-      - EXPLORER_USE_PRODUCTION_ENVIRONMENT=false
+      - EXPLORER_ENVIRONMENT=development
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:goerli.explorer.raiden.network; Path: /json"
@@ -117,8 +117,7 @@ services:
     restart: always
     environment:
       - EXPLORER_ETH_RPC=http://parity.goerli.ethnodes.brainbot.com:8545
-      - EXPLORER_USE_PRODUCTION_ENVIRONMENT=false
-      - EXPLORER_USE_DEMOENV=true
+      - EXPLORER_ENVIRONMENT=demo
       - EXPLORER_REGISTRY_ADDRESS="0x5a5CF4A63022F61F1506D1A2398490c2e8dfbb98"
     labels:
       - "traefik.enable=true"

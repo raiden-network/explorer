@@ -87,16 +87,13 @@ def no_ssl_verification():
     help='Number of block confirmations to wait for'
 )
 @click.option(
-    '--use-production-environment',
-    default=True,
-    type=bool,
-    help='Use the production version of the contracts and transport server'
-)
-@click.option(
-    '--use-demoenv',
-    default=False,
-    type=bool,
-    help='Use the demo environment version of the contracts and transport server'
+    '--environment',
+    default='production',
+    type=click.Choice(['production', 'development', 'demo'], case_sensitive=False),
+    help=(
+        'Change the version of the used contracts and transport server '
+        'by setting the environment to "production" (default), "development" or "demo"'
+    )
 )
 def main(
     eth_rpc,
@@ -104,8 +101,7 @@ def main(
     start_block,
     port,
     confirmations,
-    use_production_environment,
-    use_demoenv
+    environment
 ):
     # setup logging
     logging.basicConfig(
@@ -129,13 +125,9 @@ def main(
         )
         sys.exit()
 
-    if use_production_environment and use_demoenv:
-        log.error('Both production and demo environment are set to true.')
-        sys.exit()
-
-    if use_production_environment:
+    if environment == 'production':
         contracts_version = PRODUCTION_CONTRACTS_VERSION
-    elif use_demoenv:
+    elif environment == 'demo':
         contracts_version = DEMOENV_CONTRACTS_VERSION
     else:
         contracts_version = CONTRACTS_VERSION
@@ -166,12 +158,12 @@ def main(
             )
 
             matrix_server = None
-            if use_demoenv:
+            if environment == 'demo':
                 matrix_server = DEMOENV_MATRIX_SERVER
             presence_service = PresenceService(
                 f'EXPLORER_{web3.eth.chainId}',
                 web3.eth.chainId,
-                use_production_environment,
+                environment == 'production',
                 matrix_server
             )
 
