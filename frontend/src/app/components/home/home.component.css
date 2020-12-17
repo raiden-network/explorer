@@ -1,7 +1,8 @@
 .warning-div {
   background: #ff7f00;
+  color: #ffffff;
   margin: auto;
-  padding: 1rem 8rem;
+  padding: 5% 10%;
   border-radius: 0.2rem;
 }
 
@@ -10,7 +11,8 @@
 }
 
 .warning-wrapper {
-  padding-top: 3em;
+  max-width: 1090px;
+  margin: 0 auto;
 }
 
 .horizontal-padding {
