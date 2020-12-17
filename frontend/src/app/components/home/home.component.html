@@ -21,9 +21,9 @@
 
 <ng-template #error>
   <div class="warning-wrapper" [@flyInOut]="'in'">
-    <div class="warning-div" fxLayout="column" fxFlex="0 0 60" *ngIf="messages$ | async as message">
-      <h2 fxLayout="row">{{ message.title }}</h2>
-      <p fxLayout="row">{{ message.description }}</p>
+    <div class="warning-div" fxLayout="column" *ngIf="messages$ | async as message">
+      <h2>{{ message.title }}</h2>
+      <p>{{ message.description }}</p>
     </div>
   </div>
 </ng-template>

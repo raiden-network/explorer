@@ -16,7 +16,7 @@ import { NMNetwork } from '../../models/NMNetwork';
 import * as NMMetricsSchema from '../../models/NMMetrics.schema';
 import * as NMNetworkSchema from '../../models/NMNetwork.schema';
 import { NetworkGraph } from '../../models/NetworkGraph';
-import { Observable, of, timer } from 'rxjs';
+import { Observable, throwError, timer } from 'rxjs';
 import {
   RaidenNetworkMetrics,
   TokenNetwork,
@@ -57,6 +57,10 @@ export class NetMetricsService {
     const networkMetrics = this.http
       .get<NMAPIResponse>(this.nmConfig.configuration.backend_url)
       .pipe(
+        catchError(error => {
+          this.handleError(error);
+          return throwError(error);
+        }),
         retryWhen(errors => errors.pipe(delay(this.nmConfig.configuration.poll_interval), take(3))),
         share()
       );
@@ -76,21 +80,9 @@ export class NetMetricsService {
 
         return metrics;
       }),
-      catchError(err => {
-        let message: Message;
-        if (err.name === 'HttpErrorResponse') {
-          message = {
-            title: 'Network error',
-            description: 'Communication with the metrics server could not be established.'
-          };
-        } else {
-          message = {
-            title: err.name,
-            description: err.message
-          };
-        }
-        this.sharedService.post(message);
-        return of(err.message);
+      catchError(error => {
+        this.handleError(error);
+        return throwError(error);
       })
     );
   }
@@ -209,5 +201,21 @@ export class NetMetricsService {
           : `${e.keyword}; ${e.message}.`;
       })
       .join('\n');
+  }
+
+  private handleError(error: Error) {
+    let message: Message;
+    if (error.name === 'HttpErrorResponse') {
+      message = {
+        title: 'Network error',
+        description: 'Communication with the metrics server could not be established.'
+      };
+    } else {
+      message = {
+        title: error.name,
+        description: error.message
+      };
+    }
+    this.sharedService.post(message);
   }
 }
