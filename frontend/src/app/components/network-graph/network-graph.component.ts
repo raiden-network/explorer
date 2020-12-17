@@ -946,7 +946,7 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
           return this.ifNodeElse(selectedNode, node, neighbors, [
             NetworkGraphComponent.HIGHLIGHT_ONLINE_COLOR,
             NetworkGraphComponent.HIGHLIGHT_NEIGHBOR_ONLINE_COLOR,
-            NetworkGraphComponent.DEFAULT_OFFLINE_COLOR
+            NetworkGraphComponent.DEFAULT_ONLINE_COLOR
           ]);
         }
         return this.ifNodeElse(selectedNode, node, neighbors, [
