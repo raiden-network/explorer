@@ -29,7 +29,7 @@ export class NetMetricsConfig {
 
   constructor(private http: HttpClient) {}
 
-  load(url: string): Promise<any> {
+  load(url: string): Promise<void> {
     return new Promise(resolve => {
       this.http.get<Config>(url).subscribe(config => {
         this._configuration = Object.assign({}, defaultConfiguration, config);
