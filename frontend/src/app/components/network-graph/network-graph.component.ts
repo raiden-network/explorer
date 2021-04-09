@@ -690,62 +690,37 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
   }
 
   private drawLegend() {
+    if (!this._showAllChannels) {
+      return;
+    }
+
     const legendElementHeight = 12;
     const legendSpacing = 7;
     const legendHeight = legendElementHeight + legendSpacing;
     const offset = 20;
     const legend = this.base.selectAll('.legend');
 
-    const statusScale: d3.ScaleOrdinal<string, any> = d3Scale.scaleOrdinal(
-      ['online', 'offline'],
-      [NetworkGraphComponent.DEFAULT_ONLINE_COLOR, NetworkGraphComponent.DEFAULT_OFFLINE_COLOR]
-    );
-    const statusLegend = legend
-      .data(statusScale.domain())
+    const channelLegend = legend
+      .data(this.channelColors.domain())
       .enter()
       .append('g')
       .classed('legend', true)
       .attr('x', this.width - 100)
       .attr('y', (d, i: number) => i * legendHeight + offset);
 
-    statusLegend
-      .append('circle')
-      .classed('circle', true)
-      .attr('r', 5)
-      .attr('fill', statusScale);
+    channelLegend
+      .append('rect')
+      .classed('rect', true)
+      .attr('width', legendElementHeight)
+      .attr('height', legendElementHeight / 6)
+      .attr('fill', this.channelColors);
 
-    statusLegend
+    channelLegend
       .append('text')
       .classed('text', true)
       .attr('x', 20)
       .attr('y', 5)
       .text((d: string) => d);
-
-    if (this._showAllChannels) {
-      const channelLegendOffset = statusScale.domain().length * legendHeight + 2 * offset;
-
-      const channelLegend = legend
-        .data(this.channelColors.domain())
-        .enter()
-        .append('g')
-        .classed('legend', true)
-        .attr('x', this.width - 100)
-        .attr('y', (d, i: number) => i * legendHeight + channelLegendOffset);
-
-      channelLegend
-        .append('rect')
-        .classed('rect', true)
-        .attr('width', legendElementHeight)
-        .attr('height', legendElementHeight / 6)
-        .attr('fill', this.channelColors);
-
-      channelLegend
-        .append('text')
-        .classed('text', true)
-        .attr('x', 20)
-        .attr('y', 5)
-        .text((d: string) => d);
-    }
   }
 
   private selectLink(link: SimulationLink) {
