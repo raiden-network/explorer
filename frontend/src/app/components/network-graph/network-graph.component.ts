@@ -56,9 +56,9 @@ export class NetworkGraphComponent implements OnInit, OnChanges, OnDestroy, Afte
   private static DEFAULT_ONLINE_COLOR = '#00B35C';
   private static HIGHLIGHT_ONLINE_COLOR = '#00E676';
   private static HIGHLIGHT_NEIGHBOR_ONLINE_COLOR = '#006635';
-  private static DEFAULT_OFFLINE_COLOR = '#CC3B4A';
-  private static HIGHTLIGHT_OFFLINE_COLOR = '#FF495C';
-  private static HIGHLIGHT_NEIGHBOR_OFFLINE_COLOR = '#80252E';
+  private static DEFAULT_OFFLINE_COLOR = '#3D51C3';
+  private static HIGHTLIGHT_OFFLINE_COLOR = '#30D9E6';
+  private static HIGHLIGHT_NEIGHBOR_OFFLINE_COLOR = '#011CB7';
 
   private static OPEN_CHANNEL_COLOR = '#4CAF50';
   private static CLOSED_CHANNEL_COLOR = '#F44336';
