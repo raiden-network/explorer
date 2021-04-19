@@ -19,7 +19,7 @@ services:
       context: ./backend
     restart: always
     environment:
-      - EXPLORER_ETH_RPC=http://parity.mainnet.ethnodes.brainbot.com:8545
+      - EXPLORER_ETH_RPC=http://1.geth.mainnet.ethnodes.brainbot.com:8545
       - EXPLORER_CONFIRMATIONS=5
     labels:
       - "traefik.enable=true"
@@ -114,9 +114,7 @@ services:
       - backend-ropsten
       - backend-rinkeby
       - backend-goerli
-      - backend-demoenv
       - frontend
       - frontend-ropsten
       - frontend-rinkeby
       - frontend-goerli
-      - frontend-demoenv
