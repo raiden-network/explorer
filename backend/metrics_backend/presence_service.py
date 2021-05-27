@@ -1,24 +1,19 @@
 import hashlib
 import logging
-from typing import Any, Dict
-from urllib.parse import urlparse
+import math
+from typing import Dict, List
 
 import gevent
-from raiden.constants import DISCOVERY_DEFAULT_ROOM, Environment
-from raiden.network.transport.matrix.utils import (
-    USER_PRESENCE_TO_ADDRESS_REACHABILITY,
-    AddressReachability,
-    UserPresence,
-    address_from_userid,
-    join_broadcast_room,
-    login,
-    make_client,
-    make_room_alias
-)
-from raiden.settings import DEFAULT_MATRIX_KNOWN_SERVERS
-from raiden.utils.cli import get_matrix_servers
-from raiden.utils.signer import LocalSigner, Signer
-from raiden_contracts.utils.type_aliases import ChainID
+import requests
+from eth_utils.address import to_canonical_address, to_checksum_address
+from raiden.constants import BLOCK_ID_LATEST
+from raiden.network.pathfinding import get_random_pfs
+from raiden.network.proxies.service_registry import ServiceRegistry
+from raiden.network.rpc.client import JSONRPCClient
+from requests import ConnectionError, HTTPError, Timeout
+from web3 import Web3
+
+from metrics_backend.utils import Address
 
 log = logging.getLogger(__name__)
 
@@ -27,66 +22,72 @@ class PresenceService(gevent.Greenlet):
     def __init__(
         self,
         privkey_seed: str,
-        chain_id: ChainID,
-        production_environment: bool,
-        server: str = None
+        contract_manager,
+        web3: Web3,
+        block_confirmations: int,
+        service_registry_address: Address,
+        poll_interval: int = 30,
+        error_poll_interval: int = 600,
     ) -> None:
-        """ Creates a new presence service listening on matrix presence updates
-        in the discovery room
-
-        Args:
-            privkey_seed: Seed for generating a private key for matrix login
-            chain_id: Chain id to listen on presence
-            production_environment: Determines which matrix server to use if none is explicitly set
-            server: Matrix server
-        """
+        """Creates a new presence service getting the online status of nodes from a PFS"""
         super().__init__()
-        self.signer = LocalSigner(hashlib.sha256(privkey_seed.encode()).digest())
-        self.server = server
-        self.chain_id = chain_id
-        self.production_environment = production_environment
-
-        self.is_running = gevent.event.Event()
-
+        self.running = False
+        self.poll_interval = poll_interval
+        self.error_poll_interval = error_poll_interval
+        jsonrpc_client = JSONRPCClient(
+            web3=web3,
+            privkey=hashlib.sha256(privkey_seed.encode()).digest(),
+            block_num_confirmations=block_confirmations,
+        )
+        self.service_registry = ServiceRegistry(
+            jsonrpc_client=jsonrpc_client,
+            service_registry_address=service_registry_address,
+            contract_manager=contract_manager,
+            block_identifier=BLOCK_ID_LATEST,
+        )
         self.nodes_presence_status: Dict[bytes, bool] = {}
-        log.info('Using address %s for matrix login', self.signer.address_hex)
 
     def _run(self):
-        available_servers = [self.server]
-        if not self.server:
-            environment_type = Environment.PRODUCTION if self.production_environment else Environment.DEVELOPMENT
-            available_servers_url = DEFAULT_MATRIX_KNOWN_SERVERS[environment_type]
-            available_servers = get_matrix_servers(available_servers_url)
+        self.running = True
 
-        client = make_client(lambda x: False, lambda x: None, available_servers)
-        self.server = client.api.base_url
-        server_name = urlparse(self.server).netloc
-        login(client=client, signer=self.signer)
-        client.add_presence_listener(self.handle_presence_update)
-        client.start_listener_thread(30_000, 1_000)
-
-        discovery_room_alias = make_room_alias(
-            self.chain_id, DISCOVERY_DEFAULT_ROOM
+        pfs_url = get_random_pfs(
+            service_registry=self.service_registry,
+            block_identifier=BLOCK_ID_LATEST,
+            pathfinding_max_fee=math.inf,
         )
-        join_broadcast_room(client, f'#{discovery_room_alias}:{server_name}')
+        if pfs_url is None:
+            self.running = False
+            log.warning(
+                "Could not get a PFS from ServiceRegistry %s. Disabling presence monitoring.",
+                to_checksum_address(self.service_registry.address),
+            )
+            return
 
-        log.info('Presence monitoring started, server: %s', self.server)
-        self.is_running.wait()
-        client.stop()
+        log.info("Presence service started, PFS: %s", pfs_url)
+        log.info("Presence polling interval: %ss", self.poll_interval)
+        while self.running:
+            try:
+                response = requests.get(f"{pfs_url}/api/v1/online_addresses")
+                response.raise_for_status()
+                self.update_presence(response.json())
+                gevent.sleep(self.poll_interval)
+            except (ConnectionError, HTTPError, Timeout):
+                log.warning(
+                    "Error while trying to request from the PFS. Retrying in %d seconds.",
+                    self.error_poll_interval,
+                )
+                gevent.sleep(self.error_poll_interval)
+
+        log.info("Stopped presence service")
 
     def stop(self):
-        self.is_running.set()
+        self.running = False
 
-    def handle_presence_update(self, event: Dict[str, Any], update_id: int) -> None:
-        presence = UserPresence(event["content"]["presence"])
-        reachable = USER_PRESENCE_TO_ADDRESS_REACHABILITY[presence] is AddressReachability.REACHABLE
-        node_address = address_from_userid(event["sender"])
-        self.nodes_presence_status[node_address] = reachable
-
+    def update_presence(self, online_addresses: List[str]):
+        self.nodes_presence_status = {
+            to_canonical_address(address): True for address in online_addresses
+        }
         log.info(
-            'Presence update, server: %s, user_id: %s, presence: %s, update_id: %d',
-            self.server,
-            event["sender"],
-            presence,
-            update_id
+            "Presence update, number of online nodes: %d",
+            len(online_addresses),
         )

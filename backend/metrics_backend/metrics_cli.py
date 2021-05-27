@@ -1,5 +1,4 @@
-from gevent import monkey, config  # isort:skip # noqa
-config.resolver = ['dnspython', 'ares', 'block']
+from gevent import monkey  # isort:skip # noqa
 monkey.patch_all()  # isort:skip # noqa
 
 import contextlib
@@ -13,8 +12,9 @@ from functools import partialmethod
 import click
 import gevent
 import requests
-from eth_utils import is_checksum_address
+from eth_utils import is_checksum_address, to_canonical_address
 from raiden_contracts.constants import (
+    CONTRACT_SERVICE_REGISTRY,
     CONTRACT_TOKEN_NETWORK_REGISTRY,
     CONTRACTS_VERSION
 )
@@ -25,7 +25,6 @@ from raiden_contracts.contract_manager import (
 )
 from requests.exceptions import ConnectionError
 from web3 import HTTPProvider, Web3
-from web3.middleware import geth_poa_middleware
 
 from metrics_backend.api.rest import NetworkInfoAPI
 from metrics_backend.metrics_service import MetricsService
@@ -41,7 +40,6 @@ OUTPUT_PERIOD = 10  # seconds
 REQUIRED_CONFIRMATIONS = 5
 PRODUCTION_CONTRACTS_VERSION = '0.37.0'
 DEMOENV_CONTRACTS_VERSION = '0.37.0'
-DEMOENV_MATRIX_SERVER = 'https://transport.demo001.env.raiden.network'
 
 
 @contextlib.contextmanager
@@ -117,7 +115,6 @@ def main(
     try:
         log.info(f'Starting Web3 client for node at {eth_rpc}')
         web3 = Web3(HTTPProvider(eth_rpc))
-        web3.middleware_onion.inject(geth_poa_middleware, layer=0)
     except ConnectionError:
         log.error(
             'Can not connect to the Ethereum client. Please check that it is running and that '
@@ -135,36 +132,37 @@ def main(
 
     with no_ssl_verification():
         valid_params_given = is_checksum_address(registry_address) and start_block >= 0
-        if not valid_params_given:
-            try:
-                contract_data = get_contracts_deployment_info(web3.eth.chainId, contracts_version)
+        try:
+            contract_data = get_contracts_deployment_info(web3.eth.chainId, contracts_version)
+            service_registry_address = contract_data['contracts'][CONTRACT_SERVICE_REGISTRY]['address']
+            if not valid_params_given:
                 token_network_registry_info = contract_data['contracts'][CONTRACT_TOKEN_NETWORK_REGISTRY]  # noqa
                 registry_address = token_network_registry_info['address']
                 start_block = max(0, token_network_registry_info['block_number'])
-            except ValueError:
-                log.error(
-                    'Provided registry address or start block are not valid and '
-                    'no deployed contracts were found'
-                )
-                sys.exit(1)
+        except ValueError:
+            log.error(
+                'Provided registry address or start block are not valid and '
+                'no deployed contracts were found'
+            )
+            sys.exit(1)
 
         try:
+            contract_manager = ContractManager(contracts_precompiled_path(contracts_version))
+
             metrics_service = MetricsService(
                 web3=web3,
-                contract_manager=ContractManager(contracts_precompiled_path(contracts_version)),
+                contract_manager=contract_manager,
                 registry_address=registry_address,
                 sync_start_block=start_block,
                 required_confirmations=confirmations,
             )
 
-            matrix_server = None
-            if environment == 'demo':
-                matrix_server = DEMOENV_MATRIX_SERVER
             presence_service = PresenceService(
-                f'EXPLORER_{web3.eth.chainId}',
-                web3.eth.chainId,
-                environment == 'production',
-                matrix_server
+                privkey_seed=f'EXPLORER_{web3.eth.chainId}',
+                contract_manager=contract_manager,
+                web3=web3,
+                block_confirmations=REQUIRED_CONFIRMATIONS,
+                service_registry_address=to_canonical_address(service_registry_address),
             )
 
             # re-enable once deployment works
