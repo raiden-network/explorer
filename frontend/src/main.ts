@@ -8,6 +8,13 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+(async () => {
+  const response = await fetch(environment.configurationFile);
+  const config = await response.json();
+
+  environment['config'] = config;
+
+  platformBrowserDynamic()
+    .bootstrapModule(AppModule)
+    .catch(err => console.error(err));
+})();

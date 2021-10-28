@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 
 export interface Config {
   backend_url: string;
@@ -27,14 +26,7 @@ export class NetMetricsConfig {
     return this._configuration;
   }
 
-  constructor(private http: HttpClient) {}
-
-  load(url: string): Promise<void> {
-    return new Promise(resolve => {
-      this.http.get<Config>(url).subscribe(config => {
-        this._configuration = Object.assign({}, defaultConfiguration, config);
-        resolve();
-      });
-    });
+  constructor(config: Config) {
+    this._configuration = config;
   }
 }
