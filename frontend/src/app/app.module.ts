@@ -45,6 +45,7 @@ import { TopParticipantsByChannelComponent } from './components/top-participants
 import { ExplorerRouteReuseStrategy } from './routing/explorer-route-reuse-strategy';
 import { DebounceClickDirective } from './directives/debounce-click.directive';
 import { ShortenAddressPipe } from './pipes/shorten-address.pipe';
+import { MatomoModule, MatomoModuleConfiguration, MATOMO_CONFIGURATION } from 'ngx-matomo';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/tokens', pathMatch: 'full' },
@@ -71,6 +72,29 @@ export function ConfigFactory() {
     network_name: environment['config'].network_name
   };
   return new NetMetricsConfig(config);
+}
+
+export function MatomoConfigFactory() {
+  const siteId = environment['config'].matomo_site_id;
+  const trackerUrl = environment['config'].matomo_tracker_url;
+  const scriptUrl = environment['config'].matomo_script_url;
+
+  const matomoConfig: MatomoModuleConfiguration = {
+    scriptVersion: 4,
+    trackers: [],
+    routeTracking: {
+      enable: true
+    },
+    scriptUrl
+  };
+  if (siteId && trackerUrl) {
+    matomoConfig.trackers.push({
+      trackerUrl: trackerUrl,
+      siteId: siteId
+    });
+  }
+
+  return matomoConfig;
 }
 
 @Injectable()
@@ -118,7 +142,8 @@ export class ExplorerHammerConfig extends HammerGestureConfig {
     CommonModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatIconModule
+    MatIconModule,
+    MatomoModule
   ],
   providers: [
     SharedService,
@@ -140,7 +165,11 @@ export class ExplorerHammerConfig extends HammerGestureConfig {
       provide: RouteReuseStrategy,
       useClass: ExplorerRouteReuseStrategy
     },
-    NetMetricsService
+    NetMetricsService,
+    {
+      provide: MATOMO_CONFIGURATION,
+      useFactory: MatomoConfigFactory
+    }
   ],
   bootstrap: [AppComponent]
 })

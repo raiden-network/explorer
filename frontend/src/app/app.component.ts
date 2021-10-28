@@ -3,6 +3,8 @@ import { Title, DomSanitizer } from '@angular/platform-browser';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MediaObserver } from '@angular/flex-layout';
 import { MatIconRegistry } from '@angular/material/icon';
+import { MatomoTracker } from 'ngx-matomo';
+import { NetMetricsConfig } from './services/net.metrics/net.metrics.config';
 
 @Component({
   selector: 'app-root',
@@ -40,9 +42,14 @@ export class AppComponent implements OnInit {
     private titleService: Title,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
-    private mediaObserver: MediaObserver
+    private mediaObserver: MediaObserver,
+    private matomoTracker: MatomoTracker,
+    private config: NetMetricsConfig
   ) {
     this.titleService.setTitle('Raiden Explorer');
+    this.matomoTracker.setDocumentTitle(
+      `Raiden Explorer ${this.config.configuration.network_name}`
+    );
     this.matIconRegistry.addSvgIcon(
       'burger',
       this.domSanitizer.bypassSecurityTrustResourceUrl('../assets/burger.svg')
