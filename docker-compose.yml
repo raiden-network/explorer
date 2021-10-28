@@ -9,6 +9,9 @@ services:
         poll_interval: 10000
         etherscan_base_url: https://etherscan.io/address/
         network_name: Mainnet
+        matomo_tracker_url: https://analytics.raiden.network/matomo.php
+        matomo_site_id: 3
+        matomo_script_url: https://analytics.raiden.network/matomo.js
     restart: always
     labels:
       - "traefik.enable=true"
@@ -34,6 +37,9 @@ services:
         etherscan_base_url: https://ropsten.etherscan.io/address/
         echo_node_address: "0x02f4b6BC65561A792836212Ebc54434Db0Ab759a"
         network_name: Ropsten
+        matomo_tracker_url: https://analytics.raiden.network/matomo.php
+        matomo_site_id: 3
+        matomo_script_url: https://analytics.raiden.network/matomo.js
     restart: always
     labels:
       - "traefik.enable=true"
@@ -58,6 +64,9 @@ services:
         poll_interval: 10000
         etherscan_base_url: https://rinkeby.etherscan.io/address/
         network_name: Rinkeby
+        matomo_tracker_url: https://analytics.raiden.network/matomo.php
+        matomo_site_id: 3
+        matomo_script_url: https://analytics.raiden.network/matomo.js
     restart: always
     labels:
       - "traefik.enable=true"
@@ -82,6 +91,9 @@ services:
         poll_interval: 10000
         etherscan_base_url: https://goerli.etherscan.io/address/
         network_name: Goerli
+        matomo_tracker_url: https://analytics.raiden.network/matomo.php
+        matomo_site_id: 3
+        matomo_script_url: https://analytics.raiden.network/matomo.js
     restart: always
     labels:
       - "traefik.enable=true"

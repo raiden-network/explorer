@@ -4,5 +4,8 @@
   "poll_interval": POLL_INTERVAL,
   "etherscan_base_url": "ETHERSCAN_BASE_URL",
   "echo_node_address": "ECHO_NODE_ADDRESS",
-  "network_name": "NETWORK_NAME"
+  "network_name": "NETWORK_NAME",
+  "matomo_tracker_url": "MATOMO_TRACKER_URL",
+  "matomo_site_id": MATOMO_SITE_ID,
+  "matomo_script_url": "MATOMO_SCRIPT_URL"
 }
