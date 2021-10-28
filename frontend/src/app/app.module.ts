@@ -3,11 +3,11 @@ import {
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig
 } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule, Injectable } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
-import { NetMetricsConfig } from './services/net.metrics/net.metrics.config';
+import { Config, NetMetricsConfig } from './services/net.metrics/net.metrics.config';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SharedService } from './services/net.metrics/shared.service';
 import { NetMetricsService } from './services/net.metrics/net.metrics.service';
@@ -61,8 +61,16 @@ const appRoutes: Routes = [
   { path: '**', redirectTo: '/tokens', pathMatch: 'full' }
 ];
 
-export function ConfigFactory(config: NetMetricsConfig) {
-  return () => config.load(environment.configurationFile);
+export function ConfigFactory() {
+  const config: Config = {
+    backend_url: environment['config'].backend_url,
+    http_timeout: environment['config'].http_timeout,
+    poll_interval: environment['config'].poll_interval,
+    etherscan_base_url: environment['config'].etherscan_base_url,
+    echo_node_address: environment['config'].echo_node_address,
+    network_name: environment['config'].network_name
+  };
+  return new NetMetricsConfig(config);
 }
 
 @Injectable()
@@ -120,12 +128,9 @@ export class ExplorerHammerConfig extends HammerGestureConfig {
       deps: [SharedService],
       multi: true
     },
-    NetMetricsConfig,
     {
-      provide: APP_INITIALIZER,
-      useFactory: ConfigFactory,
-      deps: [NetMetricsConfig],
-      multi: true
+      provide: NetMetricsConfig,
+      useFactory: ConfigFactory
     },
     {
       provide: HAMMER_GESTURE_CONFIG,
