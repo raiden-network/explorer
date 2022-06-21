@@ -114,6 +114,9 @@ services:
   traefik:
     image: traefik:1.7
     restart: always
+    ports:
+      - 80:80
+      - 443:443
     volumes:
       - ./config/traefik:/etc/traefik
       - ./data/traefik:/data
