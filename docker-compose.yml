@@ -111,6 +111,34 @@ services:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:goerli.explorer.raiden.network; Path: /json"
 
+  frontend-rinkarby:
+    build:
+      context: ./frontend
+      args:
+        backend_url: https://rinkarby.explorer.raiden.network/json
+        poll_interval: 10000
+        etherscan_base_url: https://testnet.arbiscan.io/
+        network_name: Rinkarby
+        matomo_tracker_url: https://analytics.raiden.network/matomo.php
+        matomo_site_id: 3
+        matomo_script_url: https://analytics.raiden.network/matomo.js
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:rinkarby.explorer.raiden.network"
+
+  backend-rinkarby:
+    build:
+      context: ./backend
+    restart: always
+    environment:
+      - EXPLORER_ETH_RPC=https://rinkeby.arbitrum.io/rpc
+      - EXPLORER_ENVIRONMENT=development
+      - EXPLORER_REGISTRY_ADDRESS="0xb287797edfb3334f5edce76bdeb02b044260067d"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:rinkarby.explorer.raiden.network; Path: /json"
+
   traefik:
     image: traefik:1.7
     restart: always

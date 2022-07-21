@@ -1,15 +1,16 @@
-Click==8.0.1
+raiden @ git+https://github.com/raiden-network/raiden.git@arbitrum-v0.14.0#egg=raiden
 
-web3==5.19.0
+Click
+
+web3
 eth-utils
 
-flask==1.1.2
-flask_restful==0.3.8
-flask-cors==3.0.10
-gevent==21.1.2
-requests==2.25.1
-cachetools==4.2.2
+flask
+flask_restful
+flask-cors
+gevent
+requests
+cachetools
 
-raiden==2.0.0rc0
-raiden-contracts==0.37.5
+raiden-contracts==0.50.1
 mypy-extensions
