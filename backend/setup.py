@@ -30,7 +30,7 @@ setup(
             'metrics_backend=metrics_backend.metrics_cli:main',
         ],
     },
-    install_requires=requirements,
+    # install_requires=requirements,
     long_description='',
     include_package_data=True,
     keywords='metrics_backend',
