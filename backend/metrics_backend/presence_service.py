@@ -6,10 +6,10 @@ from typing import Dict, List
 import gevent
 import requests
 from eth_utils.address import to_canonical_address, to_checksum_address
-from raiden.constants import BLOCK_ID_LATEST
-from raiden.network.pathfinding import get_random_pfs
-from raiden.network.proxies.service_registry import ServiceRegistry
-from raiden.network.rpc.client import JSONRPCClient
+from raiden_common.constants import BLOCK_ID_LATEST
+from raiden_common.network.pathfinding import get_random_pfs
+from raiden_common.network.proxies.service_registry import ServiceRegistry
+from raiden_common.network.rpc.client import JSONRPCClient
 from requests import ConnectionError, HTTPError, Timeout
 from web3 import Web3
 
