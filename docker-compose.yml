@@ -28,60 +28,32 @@ services:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:explorer.raiden.network; Path: /json"
 
-  frontend-ropsten:
+  frontend-arbitrum-one:
     build:
       context: ./frontend
       args:
-        backend_url: https://ropsten.explorer.raiden.network/json
+        backend_url: https://arbitrum-one.explorer.raiden.network/json
         poll_interval: 10000
-        etherscan_base_url: https://ropsten.etherscan.io/address/
-        echo_node_address: "0x02f4b6BC65561A792836212Ebc54434Db0Ab759a"
-        network_name: Ropsten
+        etherscan_base_url: https://arbiscan.io/
+        network_name: Arbitrum-One
         matomo_tracker_url: https://analytics.raiden.network/matomo.php
         matomo_site_id: 3
         matomo_script_url: https://analytics.raiden.network/matomo.js
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:ropsten.explorer.raiden.network"
+      - "traefik.frontend.rule=Host:arbitrum-one.explorer.raiden.network"
 
-  backend-ropsten:
+  backend-arbitrum-one:
     build:
       context: ./backend
     restart: always
     environment:
-      - EXPLORER_ETH_RPC=http://geth.ropsten.ethnodes.brainbot.com:8545
+      - EXPLORER_ETH_RPC=https://arb1.arbitrum.io/rpc
       - EXPLORER_ENVIRONMENT=development
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:ropsten.explorer.raiden.network; Path: /json"
-
-  frontend-rinkeby:
-    build:
-      context: ./frontend
-      args:
-        backend_url: https://rinkeby.explorer.raiden.network/json
-        poll_interval: 10000
-        etherscan_base_url: https://rinkeby.etherscan.io/address/
-        network_name: Rinkeby
-        matomo_tracker_url: https://analytics.raiden.network/matomo.php
-        matomo_site_id: 3
-        matomo_script_url: https://analytics.raiden.network/matomo.js
-    restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:rinkeby.explorer.raiden.network"
-
-  backend-rinkeby:
-    build:
-      context: ./backend
-    restart: always
-    environment:
-      - EXPLORER_ETH_RPC=http://geth.rinkeby.ethnodes.brainbot.com:8545
-      - EXPLORER_ENVIRONMENT=development
-    labels:
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:rinkeby.explorer.raiden.network; Path: /json"
+      - "traefik.frontend.rule=Host:arbitrum-one.explorer.raiden.network; Path: /json"
 
   frontend-goerli:
     build:
@@ -105,8 +77,6 @@ services:
     restart: always
     environment:
       - EXPLORER_ETH_RPC=http://parity.goerli.ethnodes.brainbot.com:8545
-      - EXPLORER_ENVIRONMENT=demo
-      - EXPLORER_REGISTRY_ADDRESS="0x5a5CF4A63022F61F1506D1A2398490c2e8dfbb98"
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:goerli.explorer.raiden.network; Path: /json"
@@ -134,7 +104,6 @@ services:
     environment:
       - EXPLORER_ETH_RPC=https://rinkeby.arbitrum.io/rpc
       - EXPLORER_ENVIRONMENT=development
-      - EXPLORER_REGISTRY_ADDRESS="0xb287797edfb3334f5edce76bdeb02b044260067d"
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:rinkarby.explorer.raiden.network; Path: /json"
@@ -151,10 +120,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - backend
-      - backend-ropsten
-      - backend-rinkeby
+      - backend-arbitrum-one
       - backend-goerli
+      - backend-rinkarby
       - frontend
-      - frontend-ropsten
-      - frontend-rinkeby
+      - frontend-arbitrum-one
       - frontend-goerli
+      - frontend-rinkarby
