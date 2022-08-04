@@ -1,4 +1,4 @@
-raiden @ git+https://github.com/raiden-network/raiden.git@arbitrum-v0.14.0#egg=raiden
+raiden-common == 0.1.3
 
 Click
 
