@@ -6,4 +6,5 @@
 last 2 versions
 Firefox ESR
 not dead
+not IE 11 # Angular does not support IE 11
 # IE 9-11
