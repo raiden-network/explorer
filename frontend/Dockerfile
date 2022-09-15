@@ -28,5 +28,6 @@ RUN cat ./src/assets/config/config.TEMPLATE.json \
     | sed "s#MATOMO_SCRIPT_URL#${matomo_script_url}#" \
     > ./src/assets/config/config.production.json
 
+ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN ng build --prod
 CMD ["node", "serv-dist/serv.js"]
