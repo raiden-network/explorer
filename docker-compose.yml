@@ -24,6 +24,7 @@ services:
     environment:
       - EXPLORER_ETH_RPC=http://1.geth.mainnet.ethnodes.brainbot.com:8545
       - EXPLORER_CONFIRMATIONS=5
+      - EXPLORER_CONTRACTS_VERSION=0.37.0
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:explorer.raiden.network; Path: /json"
@@ -50,7 +51,6 @@ services:
     restart: always
     environment:
       - EXPLORER_ETH_RPC=https://arb1.arbitrum.io/rpc
-      - EXPLORER_ENVIRONMENT=development
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:arbitrum-one.explorer.raiden.network; Path: /json"
@@ -103,7 +103,6 @@ services:
     restart: always
     environment:
       - EXPLORER_ETH_RPC=https://rinkeby.arbitrum.io/rpc
-      - EXPLORER_ENVIRONMENT=development
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:rinkarby.explorer.raiden.network; Path: /json"
