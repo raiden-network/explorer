@@ -38,8 +38,6 @@ OUTPUT_FILE = 'network-info.json'
 TEMP_FILE = 'tmp.json'
 OUTPUT_PERIOD = 10  # seconds
 REQUIRED_CONFIRMATIONS = 5
-PRODUCTION_CONTRACTS_VERSION = '0.37.0'
-DEMOENV_CONTRACTS_VERSION = '0.37.0'
 
 
 @contextlib.contextmanager
@@ -85,13 +83,10 @@ def no_ssl_verification():
     help='Number of block confirmations to wait for'
 )
 @click.option(
-    '--environment',
-    default='production',
-    type=click.Choice(['production', 'development', 'demo'], case_sensitive=False),
-    help=(
-        'Change the version of the used contracts and transport server '
-        'by setting the environment to "production" (default), "development" or "demo"'
-    )
+    '--contracts-version',
+    default=None,
+    type=str,
+    help='Use addresses for contracts of this version. Default: latest'
 )
 def main(
     eth_rpc,
@@ -99,7 +94,7 @@ def main(
     start_block,
     port,
     confirmations,
-    environment
+    contracts_version,
 ):
     # setup logging
     logging.basicConfig(
@@ -122,11 +117,7 @@ def main(
         )
         sys.exit()
 
-    if environment == 'production':
-        contracts_version = PRODUCTION_CONTRACTS_VERSION
-    elif environment == 'demo':
-        contracts_version = DEMOENV_CONTRACTS_VERSION
-    else:
+    if contracts_version is None:
         contracts_version = CONTRACTS_VERSION
     log.info(f'Using contracts version: {contracts_version}')
 
@@ -134,6 +125,9 @@ def main(
         valid_params_given = is_checksum_address(registry_address) and start_block >= 0
         try:
             contract_data = get_contracts_deployment_info(web3.eth.chainId, contracts_version)
+            if contract_data is None:
+                log.error(f'No deployment data for chain_id {web3.eth.chainId} and {contracts_version=}')
+                sys.exit(1)
             service_registry_address = contract_data['contracts'][CONTRACT_SERVICE_REGISTRY]['address']
             if not valid_params_given:
                 token_network_registry_info = contract_data['contracts'][CONTRACT_TOKEN_NETWORK_REGISTRY]  # noqa
