@@ -1,4 +1,4 @@
-raiden-common == 0.1.4
+raiden-common == 0.1.5
 
 Click
 
