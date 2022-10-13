@@ -23,6 +23,7 @@ from raiden_contracts.contract_manager import (
     contracts_precompiled_path,
     get_contracts_deployment_info
 )
+from raiden_common.blockchain.middleware import http_retry_with_backoff_middleware
 from requests.exceptions import ConnectionError
 from web3 import HTTPProvider, Web3
 
@@ -109,7 +110,14 @@ def main(
     log.info("Starting Raiden Metrics Server")
     try:
         log.info(f'Starting Web3 client for node at {eth_rpc}')
-        web3 = Web3(HTTPProvider(eth_rpc))
+        provider = HTTPProvider(eth_rpc)
+
+        # give web3 some time between retries before failing
+        provider.middlewares.replace(  # type: ignore
+            "http_retry_request", http_retry_with_backoff_middleware
+        )
+
+        web3 = Web3(provider)
     except ConnectionError:
         log.error(
             'Can not connect to the Ethereum client. Please check that it is running and that '
